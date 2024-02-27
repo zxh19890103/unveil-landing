@@ -3,18 +3,48 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico" />
-    <link rel="stylesheet" href="/assets/style.css" />
-    <title>Time-Space Photos</title>
-  </head>
-  <body>
-    <div class="App">{{ content }}</div>
-  </body>
+
+<head>
+  <meta charset="utf8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <title>Time-Space Photos</title>
+</head>
+
+<body>
+  <div class="App">
+    <header>
+      <div class="AppMenu">
+        <div class="Logo">
+          <img src="/assets/logo.png" />
+        </div>
+        <menu>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/demo">Demo</a></li>
+            <li><a href="/author">Author</a></li>
+            <li><a href="https://github.com/zxh19890103/photos-explorer">Github</a></li>
+          </ul>
+        </menu>
+      </div>
+    </header>
+    <main>
+      <div class="AppContent">
+        {{ content }}
+      </div>
+    </main>
+    <footer>
+      <div class="Footer">
+        <div class="Links">...</div>
+        <div class="Copyright">
+          Copyright &copy; Time-Space Photos 2024
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+
 </html>
