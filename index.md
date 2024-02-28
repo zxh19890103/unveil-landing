@@ -12,14 +12,14 @@ layout: default
 <hr />
 
 <section class="bg-slate-100 flex justify-center items-center">
-  <h1 class="text-6xl">This is where Time-Space Photos comes.</h1>
+  <h1 class="text-3xl lg:text-6xl">This is where Time-Space Photos comes.</h1>
 </section>
 
 <hr />
 
 <section class="flex items-center">
 
-<p class="w-full  text-3xl p-4 lg:w-2/3">
+<p class="w-full text-xl lg:text-3xl p-4 lg:w-2/3">
 Time-Space Photos is a photo management platform that allows you to conveniently organize and share your photos.
 
 First, you create a memory album called "2013, I Graduated," and then upload ten representative photos taken at different places and dates.
@@ -40,7 +40,7 @@ You can also share these wonderful memories on various platforms, allowing other
 
 <hr />
 
-<section class="bg-lime-50">
+<section class="bg-lime-50" style="height: auto;">
   <h1 class="text-5xl text-center mb-4">The Main Features</h1>
   <div class="flex flex-wrap text-2xl">
     <div class="w-full md:w-1/2 xl:w-1/4">
