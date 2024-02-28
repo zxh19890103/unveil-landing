@@ -1,0 +1,40 @@
+@import "./vars";
+
+.AppMenu {
+  li {
+    margin-right: 10px;
+  }
+  a {
+    color: inherit;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+  }
+}
+
+.Header {
+}
+
+.Footer {
+}
+
+.Copyright {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.AppContent {
+}
+
+.Page {
+  padding-top: $hh;
+  &__Title {
+  }
+  &__Content {
+  }
+}

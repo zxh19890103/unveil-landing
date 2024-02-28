@@ -1,5 +1,6 @@
 ---
-layout: default
+layout: page
+title: A Demo
 ---
 
-# Demo
+It's on the way.

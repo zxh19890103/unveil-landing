@@ -1,0 +1,15 @@
+title: Time-Space Photos - Your Best Memory Building and Sharing Tool
+keywords: photos,memeory,memories,old time, time space,private,share,friends,families
+description: Time-Space Photos is a powerful App to help you build old memories according to your photos. And, you can choose to share your stories with families and friends
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-postcss
+
+postcss:
+  cache: false
+
+feed:
+  path: /feed.xml
