@@ -3,52 +3,58 @@
 
 <!DOCTYPE html>
 <html lang="en-US">
+  <head>
+    <meta charset="utf8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/assets/favicon.ico?v=1.0"
+    />
 
-<head>
-  <meta charset="utf8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
-
-  {% if jekyll.environment == "production" %}
-   <link rel="stylesheet" href="/tailwind.css" />
-  {% else %}
+    {% if jekyll.environment == "production" %}
+    <link rel="stylesheet" href="/tailwind.css" />
+    {% else %}
     <link rel="stylesheet" href="/assets/tailwind.css" />
-  {% endif %}
-  <link rel="stylesheet" href="/assets/style.css" />
+    {% endif %}
+    <link rel="stylesheet" href="/assets/style.css" />
 
-  {%- feed_meta -%}
-  {%- seo -%}
-</head>
+    {%- feed_meta -%} {%- seo -%}
+  </head>
 
-<body>
-  <div class="App">
-    <header class="fixed z-10 w-full py-2 px-2 top-0 bg-green-500/75">
-      <div class="Header flex items-center">
-        <div class="Logo mr-20 flex items-center text-white">
-          <img class="w-10 p-2 bg-white rounded-full" src="/assets/logo.png" />
-          <div class="hidden md:block ml-1 font-bold text-xl">Time-Space Photos</div>
+  <body>
+    <div class="App">
+      <header class="fixed z-10 w-full py-2 px-2 top-0 bg-green-500/75">
+        <div class="Header h-full flex items-center">
+          <div class="Logo flex items-center text-white mr-2 sm:mr-20">
+            <img
+              class="w-10 h-10 bg-white rounded-full"
+              src="/assets/logo.png"
+            />
+            <div class="hidden sm:block ml-1 font-bold text-xl">
+              Time-Space Photos
+            </div>
+          </div>
+          <div class="AppMenu text-white">
+            <menu> {% include menu.html %} </menu>
+          </div>
         </div>
-        <div class="AppMenu text-white">
-          <menu>
-            {% include menu.html %}
-          </menu>
-        </div>
-      </div>
-    </header>
-    <main>
-      <div class="AppContent">
-        {{ content }}
-      </div>
-    </main>
-    <footer>
-     {% include footer.html %}
-    </footer>
-  </div>
-</body>
-
+      </header>
+      <main>
+        <div class="AppContent">{{ content }}</div>
+      </main>
+      <footer>{% include footer.html %}</footer>
+    </div>
+  </body>
 </html>
