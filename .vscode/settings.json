@@ -1,6 +1,6 @@
 {
-  "editor.fontFamily": "Wawati SC, HvDTrial Brandon Grotesque",
-  "window.zoomLevel": 2,
+  "editor.fontFamily": "Chalkboard, 'Yuppy TC'",
+  "window.zoomLevel": 1,
   // "workbench.colorTheme": "Default Dark+"
   "workbench.colorTheme": "Default Light+"
 }

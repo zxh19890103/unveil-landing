@@ -1,0 +1,215 @@
+import http from "http";
+import path from "path";
+import ts from "typescript";
+import fs from "node:fs";
+import { Transform } from "node:stream";
+
+const PORT = 3003;
+const allowedOrigin = "*";
+
+const IMPORTMAP = {
+  imports: Object.keys({
+    three: "/assets/jslibs/three/three.module.js",
+    "three/addons/": "https://threejs.org/examples/jsm/",
+    react: "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
+    "react/jsx-runtime":
+      "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
+    "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/+esm",
+    "react-dom/client":
+      "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm",
+    gsap: "https://cdn.skypack.dev/gsap",
+  }),
+};
+
+const ROOT_DIR = path.resolve("./");
+const TSCONFIG_PATH = path.resolve("./tsconfig.json");
+
+// Load tsconfig.json compiler options
+function loadTsConfig(tsconfigPath) {
+  const configFileText = ts.sys.readFile(tsconfigPath);
+  if (!configFileText) throw new Error(`Cannot read ${tsconfigPath}`);
+
+  const result = ts.parseConfigFileTextToJson(tsconfigPath, configFileText);
+  if (result.error) {
+    throw new Error(`Error parsing tsconfig.json: ${result.error.messageText}`);
+  }
+
+  const configParseResult = ts.parseJsonConfigFileContent(
+    result.config,
+    ts.sys,
+    path.dirname(tsconfigPath)
+  );
+
+  if (configParseResult.errors.length) {
+    throw new Error(
+      "Errors parsing tsconfig.json:\n" +
+        configParseResult.errors.map((e) => e.messageText).join("\n")
+    );
+  }
+
+  return configParseResult.options;
+}
+
+const compilerOptions = loadTsConfig(TSCONFIG_PATH);
+
+// Custom TS transformer to rewrite import paths
+function importRewriteTransformer(rewriteFn) {
+  return (context) => {
+    const visitor = (node) => {
+      if (
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier)
+      ) {
+        const oldPath = node.moduleSpecifier.text;
+        const newPath = rewriteFn(oldPath);
+        if (newPath !== oldPath) {
+          return ts.factory.updateImportDeclaration(
+            node,
+            // node.decorators,
+            node.modifiers,
+            node.importClause,
+            ts.factory.createStringLiteral(newPath),
+            node.assertClause
+          );
+        }
+      }
+      return ts.visitEachChild(node, visitor, context);
+    };
+    return (node) => ts.visitNode(node, visitor);
+  };
+}
+
+// Compile TS file with transformer, return JS code string
+async function compileTsFile(filePath, rewriteFn) {
+  const program = ts.createProgram([filePath], compilerOptions);
+  const sourceFile = program.getSourceFile(filePath);
+  if (!sourceFile) throw new Error(`File not found: ${filePath}`);
+
+  let outputText = "";
+  let outputMap = "";
+
+  // Custom writeFile to capture emitted files in memory
+  const writeFile = (fileName, data) => {
+    if (fileName.endsWith(".js")) {
+      outputText = data;
+    }
+
+    if (fileName.endsWith(".js.map")) {
+      outputMap = data;
+    }
+  };
+
+  const transformers = {
+    before: [importRewriteTransformer(rewriteFn)],
+  };
+
+  program.emit(sourceFile, writeFile, undefined, false, transformers);
+
+  return [outputText, outputMap];
+}
+
+// cahce
+
+function wrapStream({ prefix = "", suffix = "" }) {
+  let ended = false;
+
+  return new Transform({
+    transform(chunk, encoding, callback) {
+      if (!ended) {
+        this.push(prefix); // write once at start
+        ended = true;
+      }
+      this.push(chunk);
+      callback();
+    },
+    flush(callback) {
+      this.push(suffix); // write once at end
+      callback();
+    },
+  });
+}
+
+const npmPkgs = new Map();
+
+function getUnpackFile(folder, pkgname, exportDefault) {
+  const folderpath = path.join(ROOT_DIR, folder);
+  const modulepath = path.join(folderpath, "node_modules", pkgname);
+  const pkgjsonpath = path.join(modulepath, `package.json`);
+  const json = JSON.parse(fs.readFileSync(pkgjsonpath, { encoding: "utf8" }));
+  const unpkgfile = path.join(modulepath, json.unpkg);
+  return fs.createReadStream(unpkgfile, { encoding: "utf-8" });
+}
+
+const server = http.createServer(async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+
+  try {
+    if (/\$npm/.test(req.url)) {
+      // $npm/three-geojson-geometry
+      const [, folder, pkg] = /^\/(.+)\$npm\/(.+)$/.exec(req.url);
+      const js = getUnpackFile(folder, pkg);
+      res.setHeader("Content-Type", "application/javascript");
+      js.pipe(
+        wrapStream({
+          prefix: "// hahah \nimport * as THREE from \"three\"; \n globalThis['THREE'] = THREE;\n",
+          suffix: "\n \n export default globalThis['GeoJsonGeometry'];",
+        })
+      ).pipe(res);
+    } else {
+      if (!req.url.endsWith(".js")) {
+        res.statusCode = 404;
+        res.end("Only .js files are served");
+        return;
+      }
+
+      // Resolve and sanitize path
+      let filePath = path.join(ROOT_DIR, req.url);
+      if (!filePath.startsWith(ROOT_DIR)) {
+        res.statusCode = 403;
+        res.end("Forbidden");
+        return;
+      }
+
+      filePath = filePath.replace(/\.js$/, ".ts");
+
+      console.log("ts file", filePath);
+
+      // Compile with import rewrite
+      const [jsCode, _] = await compileTsFile(filePath, (importPath) => {
+        if (!importPath.startsWith(".") && !importPath.startsWith("/")) {
+          if (
+            IMPORTMAP.imports.some((name) => {
+              if (name.endsWith("/")) {
+                return importPath.startsWith(name);
+              } else {
+                return importPath === name;
+              }
+            })
+          )
+            return importPath;
+
+          console.log(importPath);
+
+          // Leave node_modules or absolute imports untouched
+          return "./$npm/" + importPath;
+        }
+
+        // Add ".js" extension if missing
+        if (!importPath.endsWith(".js")) {
+          return importPath + ".js";
+        }
+        return importPath;
+      });
+
+      res.setHeader("Content-Type", "application/javascript");
+      res.end(jsCode);
+    }
+  } catch (e) {
+    res.statusCode = 500;
+    res.end("Internal Server Error:\n" + e.message);
+  }
+});
+
+server.listen(PORT, () => {
+  console.log(`TS server running at http://localhost:${PORT}`);
+});

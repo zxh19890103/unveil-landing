@@ -1,0 +1,10 @@
+{
+  "name": "military",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "three-geojson-geometry": "^2.1.1"
+  }
+}

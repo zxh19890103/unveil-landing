@@ -1,7 +1,9 @@
 # _config.yml
 
-url: 'https://www.tsphotos.art'
-baseurl: ''
+url: "https://www.unveil2u.com"
+baseurl: ""
+port: 4002
+permalink: pretty
 
 title: Time-Space Photos - Your Best Memory Building and Sharing Tool
 tagline: photos,memeory,memories,old time, time space,private,share,friends,families
@@ -18,3 +20,11 @@ postcss:
 
 feed:
   path: /feed.xml
+
+include:
+  - quickdemo/dist/
+  - quickdemo/*.md
+  - quickdemo/**/data/
+
+exclude:
+  - quickdemo/**/node_modules/

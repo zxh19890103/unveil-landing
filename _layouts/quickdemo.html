@@ -1,0 +1,90 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet" />
+
+  {% if jekyll.environment == "production" %}
+  <link rel="stylesheet" href="/tailwind.css" />
+  {% else %}
+  <link rel="stylesheet" href="/assets/tailwind.css" />
+  {% endif %}
+  <link rel="stylesheet" href="/assets/style.css" />
+
+  {%- feed_meta -%}
+  <!-- // -->
+  {%- seo -%}
+  <!-- // -->
+  {% if page.env == "threejs" %}
+  <script type="importmap">
+    {
+      "imports": {
+          "three": "/assets/jslibs/three/three.module.js",
+          "three/addons/": "https://threejs.org/examples/jsm/",
+          "react": "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
+          "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
+          "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm",
+          "gsap": "https://cdn.skypack.dev/gsap"
+      }
+    }
+  </script>
+  {% endif %}
+  <style>
+    footer {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      padding: .2rem .5rem;
+    }
+
+    .Background {
+      position: fixed;
+      /* z-index: 100; */
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-color: #60d0e5;
+    }
+
+    canvas {
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="App">
+    <main class="hidden">
+      <div class="AppContent">
+        {{ content }}
+      </div>
+    </main>
+    <footer class=" text-white">
+      by @singhi
+    </footer>
+  </div>
+
+  <div class="Background" style="background-image: url('{{ page.background }}');" />
+
+  {% assign jsEntryfile = page.name | split: "." | first %}
+  {% if jekyll.environment == 'production' %}
+  <script type="module" src="dist/{{ jsEntryfile }}/index.js"></script>
+  {% else %}
+  <script type="module" src="http://localhost:3003/{{ jsEntryfile }}/index.js"></script>
+  {% endif %}
+</body>
+
+</html>
