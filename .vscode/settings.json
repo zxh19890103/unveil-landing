@@ -1,6 +1,7 @@
 {
-  "editor.fontFamily": "Chalkboard, 'Yuppy TC'",
+  "editor.fontFamily": "Cascadia Mono PL, Yuppy TC",
   "window.zoomLevel": 1,
-  // "workbench.colorTheme": "Default Dark+"
-  "workbench.colorTheme": "Default Light+"
+  "editor.letterSpacing": 0,
+  "workbench.colorTheme": "Default Dark+"
+  // "workbench.colorTheme": "Default Light+"
 }

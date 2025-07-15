@@ -92,7 +92,7 @@ function stableColorByName(name) {
   return `hsl(${h}, 70%, 60%)`;
 }
 
-const geoshapeMat = new THREE.LineBasicMaterial({ color: 0x000000 });
+const geoshapeMat = new THREE.LineBasicMaterial({ color: 0x3b2e16 });
 
 function CreateGeoLine(name: string, latlngs: Array<[number, number]>) {
   const ptsForMeshes = latlngs.map((latlng) => {
@@ -101,10 +101,53 @@ function CreateGeoLine(name: string, latlngs: Array<[number, number]>) {
   });
 
   const color = stableColorByName(name);
+  const rgb = new THREE.Color(color);
 
   const shape = new THREE.ShapeGeometry(new THREE.Shape(ptsForMeshes));
 
-  const mesh = new THREE.Mesh(shape, new THREE.MeshBasicMaterial({ color }));
+  const geomeshMat = new THREE.ShaderMaterial({
+    vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+    fragmentShader: `
+    // uniform vec3 uColor;
+    varying vec2 vUv;
+
+    // GLSL 2D noise 函數（你可以內嵌進 shader 中）
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f*f*(3.0-2.0*f);
+      return mix(
+        mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+        mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x),
+        u.y);
+    }
+
+    float fakeHeight(vec2 uv) {
+      float h = sin(uv.x * 10.0) * cos(uv.y * 10.0);
+      return h;
+    }
+
+    void main() {
+      float h = noise(vUv * 60.0);
+      // float h = fakeHeight(vUv);
+      // vec3 baseColor = mix(vec3(${rgb.toArray().join(',')}), vec3(0.8, 0.8, 0.6), h * 0.5 + 0.5);
+      gl_FragColor = vec4(${rgb.toArray().join(',')}, 0);
+    }
+  `,
+    side: THREE.DoubleSide,
+  });
+
+  const mesh = new THREE.Mesh(shape, geomeshMat);
 
   const lineGeo = new THREE.EdgesGeometry(shape);
   const lines = new THREE.LineSegments(lineGeo, geoshapeMat);
@@ -139,8 +182,8 @@ function CreateCountry(geojsonFile: string) {
     });
 }
 
-// CreateCountry("gadm41_CHN_1");
-// CreateCountry("gadm41_JPN_1");
+CreateCountry("gadm41_CHN_1");
+CreateCountry("gadm41_JPN_1");
 CreateCountry("gadm41_TWN_1");
 
 function CreateQQ(pic: string, size: number, position: XY) {
@@ -181,22 +224,22 @@ const missile = new Missile(
 
 const clock = new THREE.Clock();
 
-const loader = new GLTFLoader();
-loader.load(
-  "./data/t-90sm_main_battle_tank.glb", // 模型路徑
-  (gltf) => {
-    const model = gltf.scene;
-    model.scale.set(1, 1, 1);
-    model.position.set(0, 0, 0);
-    scene.add(model);
-  },
-  (xhr) => {
-    console.log(`Loading: ${((xhr.loaded / xhr.total) * 100).toFixed(1)}%`);
-  },
-  (error) => {
-    console.error("Failed to load GLTF model:", error);
-  }
-);
+// const loader = new GLTFLoader();
+// loader.load(
+//   "./data/t-90sm_main_battle_tank.glb", // 模型路徑
+//   (gltf) => {
+//     const model = gltf.scene;
+//     model.scale.set(1, 1, 1);
+//     model.position.set(0, 0, 0);
+//     scene.add(model);
+//   },
+//   (xhr) => {
+//     console.log(`Loading: ${((xhr.loaded / xhr.total) * 100).toFixed(1)}%`);
+//   },
+//   (error) => {
+//     console.error("Failed to load GLTF model:", error);
+//   }
+// );
 
 function animate() {
   requestAnimationFrame(animate);
