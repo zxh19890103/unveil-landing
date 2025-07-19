@@ -28,7 +28,7 @@ jobs:
       - name: "[_quickdemo] Install Node.js dependencies"
         run: npm install
         working-directory: _quickdemo
-        
+
       - name: Setup Ruby and Jekyll
         uses: ruby/setup-ruby@v1
         with:
@@ -40,6 +40,10 @@ jobs:
 
       - name: Build Jekyll site
         run: npm run build
+
+      - name: "[_quickdemo] Build Quickdemo Scripts."
+        run: npm run build
+        working-directory: _quickdemo
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

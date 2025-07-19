@@ -2,8 +2,7 @@
   "dependencies": {},
   "scripts": {
     "start": "bundle exec jekyll serve",
-    "build": "JEKYLL_ENV=production bundle exec jekyll build --config _config.yml,_config.prod.yml",
-    "postbuild": "cd _quickdemo && npm run build"
+    "build": "JEKYLL_ENV=production bundle exec jekyll build --config _config.yml,_config.prod.yml"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
