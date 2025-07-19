@@ -3,155 +3,93 @@
 
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <meta charset="utf8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/assets/favicon.ico?v=1.0"
-    />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap"
-      rel="stylesheet"
-    />
+{% assign jsEntryfile = page.name | split: "." | first %}
 
-    {% if jekyll.environment == "production" %}
-    <link rel="stylesheet" href="/tailwind.css" />
-    {% else %}
-    <link rel="stylesheet" href="/assets/tailwind.css" />
-    {% endif %}
-    <link rel="stylesheet" href="/assets/style.css" />
-
-    {%- feed_meta -%}
-    <!-- // -->
-    {%- seo -%}
-    <!-- // -->
-    {% if page.env == "threejs" %}
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "/assets/jslibs/three/three.module.js",
-          "three/addons/": "https://threejs.org/examples/jsm/",
-          "react": "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
-          "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
-          "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/+esm",
-          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm",
-          "gsap": "https://cdn.skypack.dev/gsap"
-        }
+<head>
+  <meta charset="utf8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico?t={{site.time | date: '%s'}}" />
+  <link rel="stylesheet" href="/assets/tailwind.css?t={{site.time | date: '%s'}}" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  {%- feed_meta -%}
+  <!-- // -->
+  {%- seo -%}
+  <!-- // -->
+  {% if page.env == "threejs" %}
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/assets/jslibs/three/three.module.js",
+        "three/addons/": "https://threejs.org/examples/jsm/",
+        "react": "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
+        "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
+        "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/+esm",
+        "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm",
+        "gsap": "https://cdn.skypack.dev/gsap",
+        "@/": "{{site.quickdemoJsHost}}"
       }
-    </script>
-    {% endif %}
-    <style>
-      footer {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        padding: 0.2rem 0.5rem;
-      }
+    }
+  </script>
+  {% endif %}
+  <style>
+    .App {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
 
-      .Background {
-        position: fixed;
-        /* z-index: 100; */
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-size: cover;
-        background-color: #10141a;
-      }
+    .Background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-color: #23395a;
+    }
 
-      canvas {
-        position: relative;
-      }
-    </style>
-  </head>
+    #threejs-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      /* Essential for positioning CSS2DRenderer */
+    }
 
-  <body>
-    <div class="App">
-      <!-- Floating Sidebar with Toggle -->
-      <div
-        id="sidebar"
-        class="fixed top-0 left-0 h-screen w-64 bg-[#111827]/70 border-r border-cyan-500 text-white font-mono shadow-lg z-50 transition-transform duration-300 transform translate-x-0"
-      >
-        <!-- Ear / Handle -->
-        <div
-          id="sidebar-ear"
-          class="absolute top-1/2 right-[-20px] transform -translate-y-1/2 w-6 h-16 bg-cyan-500 rounded-r-md flex items-center justify-center cursor-pointer shadow-lg hover:bg-cyan-400 transition-all"
-        >
-          <span class="rotate-90 text-black text-xs font-bold">≡</span>
-        </div>
+    /* Style for CSS2D labels (optional) */
+    #threejs-container .label {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      border-radius: 3px;
+      font-family: sans-serif;
+      font-size: 12px;
+      pointer-events: auto;
+      /* Allow interaction with labels if needed */
+    }
 
-        <!-- Panel Content -->
-        <div class="p-4 flex flex-col gap-4">
-          <div
-            class="text-cyan-400 text-xl font-bold tracking-widest border-b border-cyan-600 pb-2"
-          >
-            ⚙️ MISSILE OPS
-          </div>
+    #threejs-container canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
 
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-gray-300">國家：</span>
-              <span class="text-cyan-300 font-semibold">Eastland</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-300">導彈數：</span>
-              <span class="text-green-400 font-semibold">12</span>
-            </div>
-          </div>
+<body>
+  <div class="Background"></div>
+  <div class="ThreeJsContainer" id="threejs-container"></div>
+  <div class="App"></div>
 
-          <div class="border-t border-cyan-700 mt-2"></div>
+  <!-- // -->
+  {% if jekyll.environment == "development" %}
+  <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/index.js"></script>
+  <script src="{{site.quickdemoJsHost}}events-client"></script>
+  {% else %}
+  <script type="module" src="./index.js"></script>
+  {% endif %}
+</body>
 
-          <div class="mt-2 space-y-2">
-            <button
-              class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-4 rounded-md shadow transition-all"
-            >
-              發射導彈
-            </button>
-          </div>
-
-          <div
-            class="mt-auto text-xs text-gray-400 text-center border-t border-cyan-800 pt-2"
-          >
-            SYSTEM READY v1.0
-          </div>
-        </div>
-      </div>
-
-      <script>
-        const sidebar = document.getElementById("sidebar");
-        const handle = document.getElementById("sidebar-ear");
-        let open = true;
-
-        handle.addEventListener("click", () => {
-          open = !open;
-          sidebar.classList.toggle("translate-x-0", open);
-          sidebar.classList.toggle("-translate-x-full", !open);
-        });
-      </script>
-    </div>
-
-    <div
-      class="Background"
-      style="background-image: url('{{ page.background }}');"
-    />
-
-    {% assign jsEntryfile = page.name | split: "." | first %} {% if
-    jekyll.environment == 'production' %}
-    <script type="module" src="dist/{{ jsEntryfile }}/index.js"></script>
-    {% else %}
-    <script
-      type="module"
-      src="http://localhost:3003/{{ jsEntryfile }}/index.js"
-    ></script>
-    {% endif %}
-  </body>
 </html>

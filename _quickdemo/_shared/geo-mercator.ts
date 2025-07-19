@@ -10,22 +10,17 @@ class GeoMercator {
   private translateX: number = 0;
   private translateY: number = 0;
 
-  project([λ, φ]: LngLat): XYZ {
-    const x = this.scaleFactorLon * (λ - this.λ0) + this.translateX;
-    const y =
-      this.scaleFactorLat *
-        Math.log(Math.tan(Math.PI / 4 + ((φ - this.φ0) * Math.PI) / 360)) +
-      this.translateY;
-    return [x, y, 0];
-  }
-
-  project2d([λ, φ]: LngLat): XY {
+  project([λ, φ]: LngLat): XY {
     const x = this.scaleFactorLon * (λ - this.λ0) + this.translateX;
     const y =
       this.scaleFactorLat *
         Math.log(Math.tan(Math.PI / 4 + ((φ - this.φ0) * Math.PI) / 360)) +
       this.translateY;
     return [x, y];
+  }
+
+  getCenter() {
+    return [this.λ0, this.φ0];
   }
 
   center([λc, φc]: LngLat): this {

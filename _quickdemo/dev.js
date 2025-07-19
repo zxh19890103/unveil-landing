@@ -2,6 +2,7 @@ import http from "http";
 import path from "path";
 import ts from "typescript";
 import fs from "node:fs";
+import chokidar from "chokidar";
 import { Transform } from "node:stream";
 
 const PORT = 3003;
@@ -129,7 +130,32 @@ function wrapStream({ prefix = "", suffix = "" }) {
   });
 }
 
-const npmPkgs = new Map();
+const moduleCache = new Map();
+
+// Watch TypeScript files in the 'src' folder
+const watcher = chokidar.watch(
+  ["./_shared/**/*.{ts,tsx}", "./military/**/*.{ts,tsx}"],
+  {
+    ignored: /node_modules/,
+    persistent: true,
+    ignoreInitial: true,
+  }
+);
+
+const onSourceChanged = (_path) => {
+  const filepath = path.join(ROOT_DIR, _path);
+  if (moduleCache.has(filepath)) {
+    moduleCache.delete(filepath);
+  }
+
+  notifySseReqClients("reload");
+  console.log("source file changed", _path);
+};
+
+watcher
+  // .on("add", () => {})
+  .on("change", onSourceChanged)
+  .on("unlink", onSourceChanged);
 
 function getUnpackFile(folder, pkgname, exportDefault) {
   const folderpath = path.join(ROOT_DIR, folder);
@@ -140,8 +166,44 @@ function getUnpackFile(folder, pkgname, exportDefault) {
   return fs.createReadStream(unpkgfile, { encoding: "utf-8" });
 }
 
+const sseReqClients = new Set();
+
+const notifySseReqClients = (type) => {
+  sseReqClients.forEach((res) => {
+    res.write(`event: ${type}\ndata: hello\n\n`);
+  });
+};
+
 const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+
+  if (req.url === "/events-client") {
+    res.setHeader("Content-Type", "application/javascript");
+    res.end(
+      `
+      const end = "http://" + location.hostname + ":" + ${PORT} + "/events";
+      const __evtSource__ = new EventSource(end);
+      __evtSource__.addEventListener("reload", () => {
+        window.location.reload();
+      });
+      `
+    );
+    return;
+  }
+
+  if (req.url === "/events") {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    sseReqClients.add(res);
+
+    req.on("close", () => {
+      res.end();
+      sseReqClients.delete(res);
+    });
+    return;
+  }
 
   try {
     if (/\$npm/.test(req.url)) {
@@ -151,7 +213,8 @@ const server = http.createServer(async (req, res) => {
       res.setHeader("Content-Type", "application/javascript");
       js.pipe(
         wrapStream({
-          prefix: "// hahah \nimport * as THREE from \"three\"; \n globalThis['THREE'] = THREE;\n",
+          prefix:
+            "// hahah \nimport * as THREE from \"three\"; \n globalThis['THREE'] = THREE;\n",
           suffix: "\n \n export default globalThis['GeoJsonGeometry'];",
         })
       ).pipe(res);
@@ -171,12 +234,25 @@ const server = http.createServer(async (req, res) => {
       }
 
       filePath = filePath.replace(/\.js$/, ".ts");
+      if (!fs.existsSync(filePath)) {
+        filePath = filePath.replace(/\.ts$/, ".tsx");
+      }
 
-      console.log("ts file", filePath);
+      // console.log("ts file", filePath);
+      if (moduleCache.has(filePath)) {
+        res.setHeader("Content-Type", "application/javascript");
+        res.end(moduleCache.get(filePath));
+        return;
+      }
 
       // Compile with import rewrite
       const [jsCode, _] = await compileTsFile(filePath, (importPath) => {
-        if (!importPath.startsWith(".") && !importPath.startsWith("/")) {
+        const isLike3rdPartyPkg =
+          !importPath.startsWith(".") &&
+          !importPath.startsWith("/") &&
+          !importPath.startsWith("@");
+
+        if (isLike3rdPartyPkg) {
           if (
             IMPORTMAP.imports.some((name) => {
               if (name.endsWith("/")) {
@@ -187,8 +263,6 @@ const server = http.createServer(async (req, res) => {
             })
           )
             return importPath;
-
-          console.log(importPath);
 
           // Leave node_modules or absolute imports untouched
           return "./$npm/" + importPath;
@@ -202,6 +276,7 @@ const server = http.createServer(async (req, res) => {
       });
 
       res.setHeader("Content-Type", "application/javascript");
+      moduleCache.set(filePath, jsCode);
       res.end(jsCode);
     }
   } catch (e) {

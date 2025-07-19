@@ -3,7 +3,9 @@
 url: "https://www.unveil2u.com"
 baseurl: ""
 port: 4002
+host: "0.0.0.0"
 permalink: pretty
+quickdemoJsHost: "http://192.168.10.132:3003/"
 
 title: Time-Space Photos - Your Best Memory Building and Sharing Tool
 tagline: photos,memeory,memories,old time, time space,private,share,friends,families
@@ -21,10 +23,9 @@ postcss:
 feed:
   path: /feed.xml
 
-include:
-  - quickdemo/dist/
-  - quickdemo/*.md
-  - quickdemo/**/data/
-
 exclude:
-  - quickdemo/**/node_modules/
+  - postcss.config.js
+  - package.json
+  - tailwind.config.js
+  - yarn.lock
+  - _quickdemo

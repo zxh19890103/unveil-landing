@@ -1,7 +1,8 @@
 @import "./vars";
 
 html {
-  font-family: "Indie Flower", cursive;
+  font-family: "Space_Grotesk", "PingFang SC", "Microsoft YaHei", "Heiti SC",
+    sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
@@ -39,7 +40,6 @@ section {
 }
 
 hr {
-
 }
 
 @import "./layout";

@@ -1,4 +1,5 @@
-
+---
+---
 
 <!DOCTYPE html>
 <html lang="en-US">
@@ -8,34 +9,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=1.0" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet" />
-
-  {% if jekyll.environment == "production" %}
-  <link rel="stylesheet" href="/tailwind.css" />
-  {% else %}
   <link rel="stylesheet" href="/assets/tailwind.css" />
-  {% endif %}
   <link rel="stylesheet" href="/assets/style.css" />
 
   {%- feed_meta -%}
   <!-- // -->
   {%- seo -%}
-  <!-- // -->
 </head>
 
 <body>
   <div class="App">
     <main>
-      <div class="AppContent">
-        {{ content }}
-      </div>
+      <div class="AppContent">{{ content }}</div>
     </main>
-    <footer>
-      by @singhi
-    </footer>
   </div>
 </body>
 

@@ -1,10 +1,9 @@
 {
   "dependencies": {},
   "scripts": {
-    "start": "bundle exec jekyll serve --incremental --livereload",
-    "start:demo": "",
-    "build:demo": "",
-    "build": "JEKYLL_ENV=production jekyll build && cp ./_site/assets/tailwind.css ./tailwind.css"
+    "start": "bundle exec jekyll serve",
+    "build": "JEKYLL_ENV=production jekyll build --config _config.yml,_config.prod.yml",
+    "postbuild": "cd _quickdemo && npm run build"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
