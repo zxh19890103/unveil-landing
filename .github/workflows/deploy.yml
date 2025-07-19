@@ -28,10 +28,7 @@ jobs:
       - name: "[_quickdemo] Install Node.js dependencies"
         run: npm install
         working-directory: _quickdemo
-
-      - name: Run Node.js build script
-        run: npm run build # Adjust this based on your package.json
-
+        
       - name: Setup Ruby and Jekyll
         uses: ruby/setup-ruby@v1
         with:
