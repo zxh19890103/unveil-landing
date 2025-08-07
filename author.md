@@ -1,20 +1,20 @@
 ---
 layout: page
-title: About the Author
+title: 關於作者
 ---
 
-Hello, first of all, welcome to your visit.
+你好，首先感謝你的來訪。
 
-I believe there must be something that has piqued your interest in this website, perhaps something related to photos, albums, or the concept of time and space.
+我相信一定有某些內容引起了你對這個網站的興趣，也許是與照片、相冊，或者時空這個概念有關的某些東西。
 
-I'm delighted to inform you that the creation of the product Time-Space Photos is specifically aimed at addressing these aspects.
+我很高興地告訴你，這個產品「時空相冊（Time-Space Photos）」的創建正是為了回應這些方面的需求。
 
-It's not an AI product; both images and text require your personal maintenance because it concerns the authenticity of the content and the personal experience of time and space.
+這不是一個 AI 產品，因為圖片與文字都需要你親自維護，這關係到內容的真實性，以及你個人對時間與空間的體驗。
 
-My name is singhi, I am Chinese, and I have been engaged in software development for a decade. I have traveled extensively throughout China. I am not particularly successful, and success, in my view, means accumulating wealth that one can't spend in a lifetime. I am quite ordinary and, compared to other Chinese software developers, I would consider myself a failure.
+我叫星海，是一名中國人，從事軟體開發已有十年。我走遍了中國很多地方。談不上成功，在我看來，所謂「成功」是那種可以擁有一輩子都花不完的財富。而我則非常普通，如果與其他中國的軟體開發者相比，我甚至可以說是一個失敗者。
 
-I have also been disenchanted with this job because I feel that the term "programmer" carries a derogatory meaning in the eyes of the Chinese. It implies being awkward, uninteresting, unromantic, and lacking a sense of life. While I don't see these labels as positive, I had to enter this industry to make a living and engage in programming work.
+我也曾對這份工作感到失望，因為我覺得「程式員」這個詞在中國人的眼中有些貶義，意味著笨拙、無趣、不浪漫、缺乏生活氣息。雖然我並不認同這些標籤是正面的，但我還是為了生活選擇了這份工作，從事編程的職業。
 
-In my view, programming is a very interesting thing, at least much more interesting than assembly line work. However, it also has some issues, such as limited interaction with people and fewer outdoor activities.
+在我看來，編程是一件非常有趣的事情，至少比在流水線上工作要有趣得多。不過它也存在一些問題，比如與人交流的機會較少，戶外活動的時間也不多。
 
-Currently, I have accepted the reality of being a "programmer," and I don't find it embarrassing.
+如今，我已經接受了「程式員」這個身份，我也不再覺得這是一件丟臉的事。

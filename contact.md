@@ -1,10 +1,10 @@
 ---
 layout: page
-title: You Can Contact Me
+title: 聯繫我
 ---
 
-Welcome to contact me to ask any questions about Time-Space Photos.
+聯繫方式：
 
-my twitter: [https://twitter.com/singhijohn89](https://twitter.com/singhijohn89)
-
-my Gmail: zhangxinghai79@gmail.com
+- 郵箱: zhangxinghai79@gmail.com
+- 微信：singhijohn89
+- 電話：18742538743

@@ -1,45 +1,17 @@
 @import "./vars";
 
 html {
-  font-family: "Space_Grotesk", "PingFang SC", "Microsoft YaHei", "Heiti SC",
-    sans-serif;
+  font-family: "Fredoka", "Smiley Sans", "ui-sans-serif", system-ui, sans-serif;
+  background: #fafafa;
+  color: #374151;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
-  color: #000;
-  background-color: #fff;
 }
 
 body {
   margin: 0;
   padding: 0;
-}
-
-a {
-  &:hover {
-    color: #008000;
-  }
-}
-
-.App {
-}
-
-header {
-  height: $hh;
-}
-
-footer {
-}
-
-main {
-}
-
-section {
-  padding: 2rem 1rem;
-  height: 100vh;
-}
-
-hr {
 }
 
 @import "./layout";

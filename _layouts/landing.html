@@ -1,0 +1,80 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ page.title | default: site.title }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/tailwind.css" />
+  <link rel="stylesheet" href="/assets/style.css" />
+
+  {%- feed_meta -%}
+  <!-- // -->
+  {%- seo -%}
+
+  <style>
+    .fade-in {
+      animation: fadeInEase 1.5s ease forwards;
+      opacity: 0;
+    }
+
+    .fade-in-delay-1 {
+      animation-delay: 0.5s;
+    }
+
+    .fade-in-delay-2 {
+      animation-delay: 1.2s;
+    }
+
+    .fade-in-delay-3 {
+      animation-delay: 1.9s;
+    }
+
+    @keyframes fadeInEase {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    button:hover {
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <header class="flex items-center justify-around w-full mx-auto px-6 py-6">
+    <div class="text-3xl font-bold text-indigo-600 select-none cursor-default">
+      Unveil
+    </div>
+    <nav class="space-x-6 text-gray-500 font-medium">
+      <a href="/#demo" class="hover:text-indigo-600 transition">示例動畫</a>
+      <a href="/quickdemo" class="hover:text-indigo-600 transition">案例</a>
+      <a href="/#features" class="hover:text-indigo-600 transition">特色</a>
+      <a href="/contact" class="hover:text-indigo-600 transition">聯絡</a>
+      <a href="/author" class="hover:text-indigo-600 transition">作者</a>
+    </nav>
+  </header>
+
+  <main class="flex-grow max-w-6xl mx-auto px-6">
+    {{ content }}
+  </main>
+
+  <footer class="py-6 text-center text-gray-400 text-sm">
+    © 2025 Unveil — 用動畫讓複雜變簡單
+  </footer>
+
+</body>
+
+</html>

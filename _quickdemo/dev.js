@@ -134,7 +134,7 @@ const moduleCache = new Map();
 
 // Watch TypeScript files in the 'src' folder
 const watcher = chokidar.watch(
-  ["./_shared/**/*.{ts,tsx}", "./military/**/*.{ts,tsx}"],
+  ["./_shared/**/*.{ts,tsx}", "./military/**/*.{ts,tsx}", "./smart-rc/**/*.{ts,tsx}"],
   {
     ignored: /node_modules/,
     persistent: true,
@@ -176,6 +176,12 @@ const notifySseReqClients = (type) => {
 
 const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
 
   if (req.url === "/events-client") {
     res.setHeader("Content-Type", "application/javascript");

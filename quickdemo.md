@@ -3,7 +3,7 @@ layout: blank
 title: Threejs 3D Demo
 ---
 
-{% assign demo_pages = site.pages | where_exp: "p", "p.path contains 'quickdemo/'" %}
+{% assign demo_pages = site.pages |  where_exp: "p", "p.path contains 'quickdemo/'" %}
 
 <div class="p-8 bg-gradient-to-b from-neutral-100 to-white min-h-screen">
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

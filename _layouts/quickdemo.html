@@ -13,11 +13,11 @@
   <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico?t={{site.time | date: '%s'}}" />
   <link rel="stylesheet" href="/assets/tailwind.css?t={{site.time | date: '%s'}}" />
   <link rel="stylesheet" href="/assets/style.css" />
+  <!-- // -->
   {%- feed_meta -%}
   <!-- // -->
   {%- seo -%}
   <!-- // -->
-  {% if page.env == "threejs" %}
   <script type="importmap">
     {
       "imports": {
@@ -32,7 +32,6 @@
       }
     }
   </script>
-  {% endif %}
   <style>
     .App {
       position: fixed;

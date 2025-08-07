@@ -1,6 +1,7 @@
 {
   // "editor.fontFamily": "Cascadia Mono PL, Yuppy TC",
   "editor.fontFamily": "Chalkboard, Yuppy TC",
+  "editor.fontWeight": "300",
   "window.zoomLevel": 1,
   "editor.letterSpacing": 0,
   // "workbench.colorTheme": "Default Dark+"

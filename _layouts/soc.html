@@ -1,0 +1,53 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/png" href="/quickdemo/tree.png" />
+  <!-- // -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/assets/jslibs/three/three.module.js",
+        "three/addons/": "https://threejs.org/examples/jsm/",
+        "react": "https://cdn.jsdmirror.com/npm/react@19.1.0/+esm",
+        "react/jsx-runtime": "https://cdn.jsdmirror.com/npm/react@19.1.0/jsx-runtime/+esm",
+        "react-dom": "https://cdn.jsdmirror.com/npm/react-dom@19.1.0/+esm",
+        "react-dom/client": "https://cdn.jsdmirror.com/npm/react-dom@19.1.0/client/+esm",
+        "gsap": "https://cdn.jsdmirror.com/npm/gsap@3.13.0/+esm",
+        "@/": "{{site.quickdemoJsHost}}"
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Remove default body margin and scrollbars */
+    canvas {
+      display: block;
+    }
+
+    /* Ensure canvas takes full space */
+  </style>
+  <script>
+    var __quickdemoJsHost__ = "{{site.quickdemoJsHost}}";
+  </script>
+</head>
+
+<body>
+  <!-- Container -->
+  <div class="ThreeJsContainer" id="threejs-container"></div>
+  <!-- // -->
+  <script type="module" src="{{site.quickdemoJsHost}}_shared/SoC.js"></script>
+  <script src="{{site.quickdemoJsHost}}events-client"></script>
+</body>
+
+</html>
