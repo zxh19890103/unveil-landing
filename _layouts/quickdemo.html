@@ -81,7 +81,9 @@
   <div class="Background"></div>
   <div class="ThreeJsContainer" id="threejs-container"></div>
   <div class="App"></div>
-
+  <template id="Content">
+    {{content}}
+  </template>
   <!-- // -->
   {% if jekyll.environment == "development" %}
   <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/index.js"></script>

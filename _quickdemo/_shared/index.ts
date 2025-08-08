@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import MacWindow from "./Win.js";
 
 export { ThreeJsSetup } from "./ThreeJsSetup.class.js";
 export { geoMercator } from "./geo-mercator.js";
@@ -7,6 +8,7 @@ export { ImageObj } from "./ImageObj.class.js";
 export { ModelObj } from "./ModelObj.class.js";
 export { createWave } from "./Wave.class.js";
 export * as sounds from "./sounds.js";
+export { MacWindow };
 
 /**
  * Slice a partial segment from a THREE.Curve.

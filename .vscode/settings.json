@@ -1,9 +1,10 @@
 {
-  // "editor.fontFamily": "Cascadia Mono PL, Yuppy TC",
+  // "editor.fontFamily": "Anonymous Pro",
   "editor.fontFamily": "Chalkboard, Yuppy TC",
+  "editor.fontSize": 16,
   "editor.fontWeight": "300",
   "window.zoomLevel": 1,
   "editor.letterSpacing": 0,
   // "workbench.colorTheme": "Default Dark+"
-  "workbench.colorTheme": "Default Light+"
+  "workbench.colorTheme": "Visual Studio 2017 Light - C++"
 }
