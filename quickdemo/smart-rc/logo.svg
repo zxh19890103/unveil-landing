@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g transform="translate(32,32) scale(1.45)">
+    <!-- 第一環 -->
+    <ellipse rx="18" ry="7" fill="none" stroke="#61dafb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="rotate(25)"/>
+    <!-- 第二環 -->
+    <ellipse rx="18" ry="7" fill="none" stroke="#61dafb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-25)"/>
+    <!-- 中心點 -->
+    <circle cx="0" cy="0" r="4" fill="#61dafb" />
+    <!-- 簡化符號 -->
+    <rect x="6" y="10" width="8" height="4" rx="1" ry="1" fill="#0f2333" opacity="0.95" />
+  </g>
+</svg>

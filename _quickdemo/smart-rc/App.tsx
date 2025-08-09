@@ -4,9 +4,11 @@ import MacWindow from "@/_shared/Win.js";
 
 export default () => {
   const content = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     content.current.innerHTML = document.querySelector("#Content").innerHTML;
   }, []);
+
   return (
     <div
       style={{
@@ -22,7 +24,7 @@ export default () => {
         flexDirection: "row",
       }}
     >
-      <div style={{ width: "33%" }}>
+      <div className=" w-1/3">
         <div ref={content} />
       </div>
       <div style={{ width: 0, flex: `1 auto` }}>

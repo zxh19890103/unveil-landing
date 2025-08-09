@@ -1,6 +1,6 @@
 const MacWindow = ({ title = "My Mac Window", children }) => {
   return (
-    <div className="w-full max-w-md mx-auto mt-10 border border-gray-300 rounded-xl shadow-lg overflow-hidden bg-white">
+    <div className="w-full mx-auto border border-gray-300 rounded-xl shadow-lg overflow-hidden bg-white">
       {/* Title Bar */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-300">
         {/* Control Dots */}

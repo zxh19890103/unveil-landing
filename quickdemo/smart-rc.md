@@ -1,14 +1,15 @@
 ---
 layout: quickdemo
-title: Nations Military March
-pic: "./military/data/tank.png"
-description: "Nations Military March"
+title: Simplify React Usage
+pic: "./smart-rc/logo.svg"
+ico: "logo.svg"
+description: "Make React Simple"
 ---
 
 ```tsx
 const Page = () => {
   const data = useData({
-    age: 18,
+    // age: 18,
   });
 
   const { age } = data;
