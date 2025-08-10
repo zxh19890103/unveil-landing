@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useReducer, useState } from "react";
+import "./shim.js";
 import { getId } from "./id.js";
 
 const $h = React.createElement;
@@ -9,38 +10,38 @@ type AnyObj = Record<string, any>;
 const emptyDeps = [];
 const noop = () => {};
 
-const noopSet = function (this, val) {
-  console.log(`%c can't set the value to [${this}]`, "color: red");
-};
-const noopStrictEq = function (this, to) {
-  return this === to;
-};
-const noopAdd = function (this, add) {};
-
-const prototypeExtends = {
-  __d: "oh my god!",
-  set: noopSet,
-  stictEq: noopStrictEq,
-  add: noopAdd,
-};
-
-Array.prototype.forEach.call([String, Number, Boolean], (C) => {
-  Object.assign(C.prototype, prototypeExtends);
-});
-
 type DoomyProps<V extends Primitive> = {
   children: V;
   atom: Atom<V>;
 };
 
 class Notifier {
+  readonly $$notifier = true;
   __id: string = getId();
-  private $$renders: VoidFunction[] = [];
-  parent: Notifier;
+  private $$renders: RenderFn[] = [];
+
+  parent: Notifier = null;
+  private parents: Notifier[] = [];
 
   notify() {
-    for (const r of this.$$renders) r();
+    for (const render of this.$$renders) {
+      render();
+    }
+
     this.parent?.notify();
+
+    for (const parent of this.parents) {
+      parent.notify();
+    }
+  }
+
+  mount(n: Notifier) {
+    this.parents.push(n);
+  }
+
+  unmount(n: Notifier) {
+    const i = this.parents.indexOf(n);
+    this.parents.splice(i, 1);
   }
 
   effect(render: RenderFn) {
@@ -49,33 +50,46 @@ class Notifier {
     }
 
     return () => {
-      this.on(render);
+      this.addRender(render);
       return () => {
-        this.off(render);
+        this.offRender(render);
+        this.effectRecycle();
       };
     };
   }
 
-  on(fn) {
-    this.$$renders.push(fn);
+  protected effectRecycle() {}
+
+  addRender(render: RenderFn) {
+    this.$$renders.push(render);
   }
 
-  off(fn) {
-    const i = this.$$renders.indexOf(fn);
+  offRender(render: RenderFn) {
+    const i = this.$$renders.indexOf(render);
     this.$$renders.splice(i, 1);
   }
 }
 
-const Dommy = memo(<V extends Primitive = string>({ atom }: DoomyProps<V>) => {
+/**
+ * can this be a primitive node.
+ */
+const Dommy = <V extends Primitive = string>({ atom }: DoomyProps<V>) => {
   const [, forceUpdate] = useReducer(ticker, 0);
   useEffect(atom.effect(forceUpdate), emptyDeps);
   return atom.valueOf();
-});
+};
 
-const dommy = $h(Dommy);
-class Atom<V extends Primitive = Primitive> extends Notifier {
-  readonly $$typeof = dommy["$$typeof"];
+const DommyTypeof = memo(() => null);
+
+const dommyTypeof = $h(DommyTypeof);
+
+class Atom<V extends Primitive = Primitive>
+  extends Notifier
+  implements BooleanExtends
+{
+  readonly $$typeof = dommyTypeof["$$typeof"];
   readonly type = Dommy;
+  readonly compare = null;
   private props: DoomyProps<V> = { children: null, atom: this };
 
   constructor(private value: V) {
@@ -97,9 +111,13 @@ class Atom<V extends Primitive = Primitive> extends Notifier {
     return this.value === to;
   }
 
-  // add(val: V) {
-  //   this.value += val;
-  // }
+  get yes() {
+    return this.value === true;
+  }
+
+  get no() {
+    return this.value === false;
+  }
 
   [Symbol.toPrimitive](hint) {
     return this.value; // default case
@@ -107,22 +125,49 @@ class Atom<V extends Primitive = Primitive> extends Notifier {
 }
 
 class AtomComplex<O extends AnyObj = AnyObj> extends Notifier {
+  protected fields: string[] = [];
+
   constructor(readonly $$data: O) {
     super();
+
     for (const [name, value] of Object.entries($$data)) {
-      const a = createAtomFromAny(value);
+      const a = fromAny(value);
       if (a === null) continue;
+
+      this.fields.push(name);
+      this.relation(a);
       this.attach(name, a);
     }
   }
 
   protected attach(name: string, a: AtomValue) {
-    a.parent = this;
     if (a instanceof Atom) {
-      def(this, name, a);
+      definePrimitive(this, name, a);
+    } else if (a instanceof AtomComplex) {
+      defineComplex(this, name, a);
     } else {
-      def2(this, name, a);
+      defineArray(this, name, a);
     }
+  }
+
+  protected relation(a: AtomValue) {
+    a.parent = this;
+  }
+}
+
+class AtomComplexWrap extends AtomComplex {
+  protected override relation(a: AtomValue): void {
+    a.mount(this);
+  }
+
+  protected override effectRecycle(): void {
+    this.dispose();
+  }
+
+  dispose() {
+    this.fields.forEach((field) => {
+      (this[field] as AtomValue).unmount(this);
+    });
   }
 }
 
@@ -133,7 +178,7 @@ class AtomArray extends Notifier {
     super();
 
     for (const value of $$data) {
-      const a = createAtomFromAny(value);
+      const a = fromAny(value);
       if (a === null) continue;
       this._push(a);
     }
@@ -175,8 +220,8 @@ class AtomArray extends Notifier {
     this.$array.unshift(a);
   }
 
-  push(items: any[]) {
-    const atoms = items.map(createAtomFromAny).filter(Boolean);
+  push(...items: any[]) {
+    const atoms = items.map(fromAny).filter(Boolean);
     for (const a of atoms) this._push(a);
     const count = atoms.length;
     if (atoms.length > 0) this.notify();
@@ -198,7 +243,7 @@ class AtomArray extends Notifier {
   }
 
   unshift(...items: any) {
-    const atoms = items.map(createAtomFromAny).filter(Boolean);
+    const atoms = items.map(fromAny).filter(Boolean);
     for (const a of atoms) this._unshift(a);
     const count = atoms.length;
     if (atoms.length > 0) this.notify();
@@ -211,9 +256,49 @@ type ForEachFn = (a: AtomValue, index: number, arr: AtomArray) => void;
 type MapFn = (a: AtomValue, index: number, arr: AtomArray) => any;
 type FilterFn = (a: AtomValue, index: number, arr: AtomArray) => boolean;
 
-const createAtomFromAny = (value: any) => {
+export const useData = <O extends AnyObj>(factoryOrValue: O | (() => O)) => {
+  const [, forceUpdate] = useReducer(ticker, 0);
+
+  const [data] = useState(() => {
+    const o: O = isFunc(factoryOrValue)
+      ? (factoryOrValue as Function)()
+      : factoryOrValue;
+    if (isAtom(o)) return o;
+    return new AtomComplex(o);
+  });
+
+  useEffect(data.effect(forceUpdate), emptyDeps);
+
+  return data as unknown as O;
+};
+
+export const wrapReactProps = (obj: AnyObj) => {
+  const data = Object.fromEntries(
+    Object.entries(obj)
+      .map(([k, v]) => {
+        if (isNullish(v)) {
+          return null;
+        }
+
+        if (isAtom(v)) {
+          return [k, v];
+        } else {
+          return null;
+        }
+      })
+      .filter(Boolean)
+  );
+
+  return new AtomComplexWrap(data);
+};
+
+const fromAny = (value: any) => {
   if (isNullish(value) || isFunc(value)) {
     return null;
+  }
+
+  if (isAtom(value)) {
+    return value;
   }
 
   if (isObject(value)) {
@@ -229,22 +314,6 @@ const ticker = () => {
   return performance.now();
 };
 
-export const useData = <O extends AnyObj>(factoryOrValue: O | (() => O)) => {
-  const [, forceUpdate] = useReducer(ticker, 0);
-
-  const [data] = useState(() => {
-    const o: O = isFunc(factoryOrValue)
-      ? (factoryOrValue as Function)()
-      : factoryOrValue;
-
-    return new AtomComplex(o);
-  });
-
-  useEffect(data.effect(forceUpdate), emptyDeps);
-
-  return data as unknown as O;
-};
-
 const isNullish = (val: any) => {
   return val === undefined || val === null;
 };
@@ -257,8 +326,13 @@ const isArray = (val: any) => {
 const isObject = (val: any) => {
   return Object.getPrototypeOf(val) === Object.prototype;
 };
+const isAtom = (val: any) => {
+  return Object.hasOwn(val, "$$notifier");
+};
 
-const def = (obj: AtomComplex, name: string, a: Atom) => {
+//#region define
+
+const definePrimitive = (obj: AtomComplex, name: string, a: Atom) => {
   Object.defineProperty(obj, name, {
     configurable: false,
     enumerable: false,
@@ -269,7 +343,7 @@ const def = (obj: AtomComplex, name: string, a: Atom) => {
   });
 };
 
-const def2 = (obj: AtomComplex, name: string, a: AtomComplex | AtomArray) => {
+const defineComplex = (obj: AtomComplex, name: string, a: AtomComplex) => {
   Object.defineProperty(obj, name, {
     configurable: false,
     enumerable: false,
@@ -277,3 +351,14 @@ const def2 = (obj: AtomComplex, name: string, a: AtomComplex | AtomArray) => {
     value: a,
   });
 };
+
+const defineArray = (obj: AtomComplex, name: string, a: AtomArray) => {
+  Object.defineProperty(obj, name, {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: a,
+  });
+};
+
+//#endregion

@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from "react";
-import { useData } from "./atom.js";
+import { useData, atom } from "./atom/index.js";
 import MacWindow from "@/_shared/Win.js";
 
 export default () => {
@@ -39,7 +39,7 @@ export default () => {
 const Page = () => {
   const data = useData({
     age: 18,
-    yes: false,
+    yes: true,
     name: {
       firstName: "星海",
       lastName: "張",
@@ -48,10 +48,7 @@ const Page = () => {
   });
 
   const { age } = data;
-
-  if (!data.yes) {
-    console.log("root render", !data.yes);
-  }
+  console.log("root");
 
   return (
     <div>
@@ -67,15 +64,54 @@ const Page = () => {
       >
         +1
       </button>
-      {age == 32 && <Sub data={data} />}
+      {age == 20 && <Sub name={data.name} />}
       <Books books={data.books} />
       <AR age={age} />
-      <Svg color={"#019ade"} />
+      <Input
+        name="lastName"
+        value={data.name.lastName}
+        onChange={(val) => {
+          data.name.lastName = val;
+        }}
+      />
+      {/* <Svg color={"#019ade"} /> */}
     </div>
   );
 };
 
-const Books = ({ books }: { books: number[] }) => {
+const Input = (props: {
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
+}) => {
+  const id = `input-${props.name}`;
+
+  return (
+    <div className="max-w-sm mx-auto">
+      <label
+        htmlFor={id}
+        className="block mb-2 text-sm font-medium text-gray-700"
+      >
+        Your Name
+      </label>
+      <input
+        type="text"
+        id={id}
+        placeholder="Enter your name..."
+        value={props.value}
+        onChange={(e) => {
+          props.value.set(e.target.value);
+        }}
+        className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 
+           text-gray-900 shadow-sm outline-none 
+           focus:border-blue-500 focus:ring-2 focus:ring-blue-200 
+           transition duration-200"
+      />
+    </div>
+  );
+};
+
+const Books = atom(({ books }: { books: number[] }) => {
   return (
     <>
       <div>
@@ -87,7 +123,7 @@ const Books = ({ books }: { books: number[] }) => {
               <li
                 key={b.__id}
                 onClick={() => {
-                  b.set(910);
+                  books.push(Math.random(), Math.random());
                 }}
               >
                 book: {b}
@@ -98,7 +134,7 @@ const Books = ({ books }: { books: number[] }) => {
       </div>
     </>
   );
-};
+});
 
 const Svg = ({ color }) => {
   return (
@@ -137,10 +173,32 @@ const Svg = ({ color }) => {
   );
 };
 
-const AR = memo((props: { age: number }) => {
-  return <div>{props.age}</div>;
+const AR = atom<{ age: number }>((props) => {
+  return (
+    <div
+      onClick={() => {
+        console.log("age", props.age + 1);
+        props.age.set(props.age + 1);
+      }}
+    >
+      Age:{props.age}
+    </div>
+  );
 });
 
-const Sub = memo((props: { data: any }) => {
-  return <div>{props.data.name.firstName}</div>;
+const Sub = atom(({ name }: { name: any }) => {
+  const rand = Math.random();
+
+  return (
+    <div>
+      <Input
+        name="lastName2"
+        value={name.lastName}
+        onChange={(val) => {
+          name.lastName = val;
+        }}
+      />
+      {name.lastName}, r = {rand}
+    </div>
+  );
 });
