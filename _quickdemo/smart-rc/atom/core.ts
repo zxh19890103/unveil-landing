@@ -103,6 +103,10 @@ class Atom<V extends Primitive = Primitive>
     return true;
   }
 
+  get(): V {
+    return this.value;
+  }
+
   valueOf() {
     return this.value;
   }

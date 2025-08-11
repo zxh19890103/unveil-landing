@@ -2,6 +2,7 @@ import { useData, atom } from "./atom/index.js";
 import MacWindow from "@/_shared/MacWindow.js";
 import { Content } from "@/_shared/Content.js";
 import type React from "react";
+import { singal, useSignal } from "./atom/signal.js";
 
 const PageCSS: React.CSSProperties = {
   width: "100vw",
@@ -26,12 +27,19 @@ export default () => {
         <MacWindow>
           <Page />
         </MacWindow>
+        <MacWindow>
+          <Page2 />
+        </MacWindow>
       </div>
     </div>
   );
 };
 
+let myAge = singal<number>(36);
+
 const Page = () => {
+  useSignal();
+
   const data = useData({
     age: 18,
     yes: true,
@@ -47,6 +55,14 @@ const Page = () => {
 
   return (
     <div>
+      <button
+        onClick={() => {
+          myAge.set(myAge + 1);
+        }}
+      >
+        click here
+      </button>
+      {myAge}
       <Svg color={"#910"} />
       <p>
         {data.name.firstName}
@@ -71,6 +87,25 @@ const Page = () => {
         }}
       />
       {/* <Svg color={"#019ade"} /> */}
+    </div>
+  );
+};
+
+const Page2 = () => {
+  useSignal();
+
+  return (
+    <div>
+      {myAge}
+      <div>
+        <button
+          onClick={() => {
+            myAge.set(myAge + 3);
+          }}
+        >
+          if you click
+        </button>
+      </div>
     </div>
   );
 };
