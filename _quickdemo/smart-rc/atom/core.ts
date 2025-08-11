@@ -85,7 +85,7 @@ const dommyTypeof = $h(DommyTypeof);
 
 class Atom<V extends Primitive = Primitive>
   extends Notifier
-  implements BooleanExtends
+  implements BooleanExtends, PrimitiveExtends<V>
 {
   readonly $$typeof = dommyTypeof["$$typeof"];
   readonly type = Dommy;
@@ -107,7 +107,7 @@ class Atom<V extends Primitive = Primitive>
     return this.value;
   }
 
-  stictEq(to: V) {
+  strictEq(to: V) {
     return this.value === to;
   }
 

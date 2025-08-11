@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import MacWindow from "./Win.js";
+import MacWindow from "./MacWindow.js";
 
 export { ThreeJsSetup } from "./ThreeJsSetup.class.js";
 export { geoMercator } from "./geo-mercator.js";

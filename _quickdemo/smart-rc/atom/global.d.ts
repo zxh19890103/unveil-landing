@@ -3,7 +3,7 @@ type AnyObject = Record<string, any>;
 
 interface PrimitiveExtends<V extends Primitive> {
   readonly __id: string;
-  stictEq(to: V): boolean;
+  strictEq(to: V): boolean;
   set(val: V): void;
 }
 

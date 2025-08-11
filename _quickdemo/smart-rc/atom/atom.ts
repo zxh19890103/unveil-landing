@@ -6,17 +6,17 @@ const $h = React.createElement;
 /**
  * `memo`
  */
-const atom = <P extends AnyObject>(C: React.FC<P>) => {
+const atom = <P extends AnyObject>(C: React.FC<P & { $?: P }>) => {
   return memo((props: P) => {
     const [, forceUpdate] = useReducer(ticker, 0);
 
     const [data] = useState(() => {
-      return wrapReactProps(props);
+      return wrapReactProps(props) as unknown as P;
     });
 
     useEffect(data.effect(forceUpdate), emptyDeps);
 
-    return $h(C, { ...props, data });
+    return $h(C, { ...props, $: data });
   });
 };
 

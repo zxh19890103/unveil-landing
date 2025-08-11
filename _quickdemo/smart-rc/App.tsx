@@ -1,33 +1,28 @@
-import { memo, useEffect, useRef } from "react";
 import { useData, atom } from "./atom/index.js";
-import MacWindow from "@/_shared/Win.js";
+import MacWindow from "@/_shared/MacWindow.js";
+import { Content } from "@/_shared/Content.js";
+import type React from "react";
+
+const PageCSS: React.CSSProperties = {
+  width: "100vw",
+  height: "100vh",
+  padding: "12px",
+  background: "#fff",
+  display: "flex",
+  justifyContent: "space-around",
+  alignItems: "center",
+  gap: "12px",
+  overflow: "hidden",
+  flexDirection: "row",
+};
 
 export default () => {
-  const content = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    content.current.innerHTML = document.querySelector("#Content").innerHTML;
-  }, []);
-
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        padding: "12px",
-        background: "#fff",
-        display: "flex",
-        justifyContent: "space-around",
-        alignItems: "center",
-        gap: "12px",
-        overflow: "hidden",
-        flexDirection: "row",
-      }}
-    >
-      <div className=" w-1/3">
-        <div ref={content} />
+    <div style={PageCSS}>
+      <div className=" w-1/2">
+        <Content />
       </div>
-      <div style={{ width: 0, flex: `1 auto` }}>
+      <div className="flex-1 w-0">
         <MacWindow>
           <Page />
         </MacWindow>
@@ -52,6 +47,7 @@ const Page = () => {
 
   return (
     <div>
+      <Svg color={"#910"} />
       <p>
         {data.name.firstName}
         {data.name.lastName}
@@ -64,7 +60,7 @@ const Page = () => {
       >
         +1
       </button>
-      {age == 20 && <Sub name={data.name} />}
+      {age.strictEq(20) && <Sub name={data.name} />}
       <Books books={data.books} />
       <AR age={age} />
       <Input
@@ -141,6 +137,7 @@ const Svg = ({ color }) => {
     <svg
       viewBox="0 0 841.9 595.3"
       fill="none"
+      width={120}
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Electron orbitals */}
@@ -177,8 +174,7 @@ const AR = atom<{ age: number }>((props) => {
   return (
     <div
       onClick={() => {
-        console.log("age", props.age + 1);
-        props.age.set(props.age + 1);
+        props.$.age += 1;
       }}
     >
       Age:{props.age}
