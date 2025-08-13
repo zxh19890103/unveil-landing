@@ -15,6 +15,7 @@ const threejsContainer = document.querySelector(
 
 const threeJs = new ThreeJsSetup(threejsContainer);
 threeJs.setupControls();
+
 const staticWorld = threeJs.createWorld();
 
 const { camera, scene: world } = threeJs;

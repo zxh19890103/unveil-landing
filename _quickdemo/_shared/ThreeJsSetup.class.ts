@@ -94,7 +94,7 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
   }
 
   public setupControls() {
-    const controls = new MapControls(this.camera, this.mainContainerElement);
+    const controls = new OrbitControls(this.camera, this.mainContainerElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.update();
@@ -127,7 +127,7 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
       }
     });
     this.resizeObserver.observe(this.mainContainerElement);
-    console.log("ResizeObserver set up for main container.");
+    // console.log("ResizeObserver set up for main container.");
   }
 
   /**
@@ -299,9 +299,9 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
 
     this.dispatchEvent({ type: "viewportResize" });
 
-    console.log(
-      `Container resized to ${width}x${height}. Camera and renderers updated.`
-    );
+    // console.log(
+    //   `Container resized to ${width}x${height}. Camera and renderers updated.`
+    // );
   }
 
   /**

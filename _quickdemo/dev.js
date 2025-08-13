@@ -24,6 +24,7 @@ const IMPORTMAP = {
 
 const ROOT_DIR = path.resolve("./");
 const TSCONFIG_PATH = path.resolve("./tsconfig.json");
+const WATCHED_FOLDERS = ["samrt-rc", "military", "_shared", "harbor3d"];
 
 // Load tsconfig.json compiler options
 function loadTsConfig(tsconfigPath) {
@@ -134,7 +135,9 @@ const moduleCache = new Map();
 
 // Watch TypeScript files in the 'src' folder
 const watcher = chokidar.watch(
-  ["./_shared/**/*.{ts,tsx}", "./military/**/*.{ts,tsx}", "./smart-rc/**/*.{ts,tsx}"],
+  WATCHED_FOLDERS.map((folder) => {
+    return `./${folder}/**/*.{ts,tsx}`;
+  }),
   {
     ignored: /node_modules/,
     persistent: true,
