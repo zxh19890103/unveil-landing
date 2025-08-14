@@ -6,6 +6,8 @@ import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
 import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
 import { Land } from "./Land.class.js";
+import { Cargo } from "./Cargo.class.js";
+import { Dock } from "./Dock.class.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -13,12 +15,32 @@ const threejsContainer = document.querySelector(
   "#threejs-container"
 ) as HTMLElement;
 
-const threeJs = new ThreeJsSetup(threejsContainer, 120);
+const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
 
 const { scene, camera } = threeJs;
 
-camera.position.set(-10, 60, 10);
+camera.position.set(-1, 2, 3);
+camera.position.setLength(300);
+
+{
+  const group = new THREE.Group();
+
+  for (let x = 0; x < 7; x++) {
+    for (let y = 0; y < 10; y++) {
+      const cargo = new Cargo(0 ^ (Math.random() * 0xffffff));
+      cargo.position.set(
+        x * (cargo.size.x + 0.6),
+        cargo.size.y / 2,
+        y * (cargo.size.z + 0.2)
+      );
+      group.add(cargo);
+    }
+  }
+
+  group.position.y = 3;
+  scene.add(group);
+}
 
 // const truck = new ModelObj("./3d_truck__model.glb", "truck", "#ffffff", {
 //   scaleFactor: 5,
@@ -39,6 +61,7 @@ const sky = new Sky();
 sky.scale.setScalar(1000); // Large scale to encompass the scene
 scene.add(sky);
 
+// water
 {
   const waterGeometry = new THREE.PlaneGeometry(5000, 5000);
   // 创建水面
@@ -69,7 +92,16 @@ scene.add(sky);
   });
 }
 
-scene.add(new Land());
+{
+  const land = new Land();
+  const dock = new Dock();
+
+  dock.position.set(land.size.x / 2 + dock.size.x / 2, 0, 0);
+
+  land.add(dock);
+
+  scene.add(land);
+}
 
 // Set sky uniforms
 const uniforms = sky.material.uniforms;
