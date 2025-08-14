@@ -1,0 +1,35 @@
+<svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .cls-1 {
+      fill: none;
+      stroke: #00FFFF;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+    }
+    .cls-2 {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      fill: #00FFFF;
+      letter-spacing: 2px;
+    }
+  </style>
+
+  <g id="Crane">
+    <line class="cls-1" x1="75" y1="30" x2="75" y2="120"/>
+    <line class="cls-1" x1="75" y1="30" x2="120" y2="30"/>
+    <line class="cls-1" x1="75" y1="60" x2="105" y2="30"/>
+    <path class="cls-1" d="M55,120 h40 M65,115 h20 M70,110 h10"/>
+  </g>
+
+  <g id="DataFlow">
+    <line class="cls-1" x1="45" y1="120" x2="25" y2="100"/>
+    <line class="cls-1" x1="50" y1="120" x2="30" y2="100"/>
+    <line class="cls-1" x1="105" y1="120" x2="125" y2="100"/>
+    <line class="cls-1" x1="100" y1="120" x2="120" y2="100"/>
+  </g>
+
+  <text x="75" y="138" class="cls-2" text-anchor="middle">
+    PORT-OS
+  </text>
+  
+</svg>

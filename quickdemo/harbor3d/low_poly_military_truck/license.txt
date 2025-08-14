@@ -1,0 +1,11 @@
+Model Information:
+* title:	low poly military truck
+* source:	https://sketchfab.com/3d-models/low-poly-military-truck-9fd961a22cb84b9383570869b2f0efa9
+* author:	Kolos Studios (https://sketchfab.com/KolosStudios)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "low poly military truck" (https://sketchfab.com/3d-models/low-poly-military-truck-9fd961a22cb84b9383570869b2f0efa9) by Kolos Studios (https://sketchfab.com/KolosStudios) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

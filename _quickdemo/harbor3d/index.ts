@@ -4,10 +4,12 @@ import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
-import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
+// import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
+// import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { Land } from "./Land.class.js";
 import { Cargo } from "./Cargo.class.js";
 import { Dock } from "./Dock.class.js";
+import Panel from "./Panel.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -92,6 +94,32 @@ scene.add(sky);
   });
 }
 
+/*
+{
+  const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
+    rotation: [0, 1, 0],
+    scaleFactor: 20,
+  });
+
+  scene.add(ship);
+
+  ship.position.set(600, 10, 0);
+
+  threeJs.onAnimate((_, elapse) => {
+    ship.rotation.x = 0.03 * Math.sin(elapse);
+  });
+}*/
+
+/*
+{
+  const ship = new ModelObj("./low_poly_truck_tank/scene.gltf", "ship", 0xffffff, {
+    rotation: [0, 0, 0],
+    scaleFactor: 0.08,
+  });
+
+  scene.add(ship);
+}*/
+
 {
   const land = new Land();
   const dock = new Dock();
@@ -113,7 +141,7 @@ uniforms["mieDirectionalG"].value = 0.5;
 // Set sun position
 const sun = new THREE.Vector3();
 const phi = THREE.MathUtils.degToRad(86); // Near horizon for sunset
-const theta = THREE.MathUtils.degToRad(90);
+const theta = THREE.MathUtils.degToRad(-180);
 sun.setFromSphericalCoords(1, phi, theta);
 uniforms["sunPosition"].value.copy(sun);
 
@@ -179,15 +207,13 @@ threeJs.startAnimation();
 }
   */
 
-scene.add(new THREE.AxesHelper(10));
+const Crs = new THREE.AxesHelper(50);
+Crs.position.y = 15;
+
+scene.add(Crs);
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
-  React.createElement("div", {
-    children: "hello",
-    style: {
-      background: "#fff",
-    },
-  })
+  React.createElement(Panel)
 );
 
 export {};
