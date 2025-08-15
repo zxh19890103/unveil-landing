@@ -3,7 +3,7 @@ const Sidebar = () => {
     <div className="cyber-scroll w-96 h-screen p-8 bg-[#1a1a1aa9] text-gray-300 border-l border-cyan-400/30 flex flex-col space-y-8 overflow-y-auto font-mono">
       {/* 头部标题 */}
       <div className="pb-4 border-b border-gray-400">
-        <img src="./logo2.svg" />
+        {/* <img src="./logo2.svg" /> */}
         <h2 className="text-2xl font-thin tracking-widest text-cyan-400 uppercase">
           [ PORT STATUS ]
         </h2>

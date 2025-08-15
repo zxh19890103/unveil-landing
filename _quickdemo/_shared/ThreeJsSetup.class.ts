@@ -98,7 +98,7 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.update();
-    controls.autoRotate = true;
+    // controls.autoRotate = true;
     this.controls = controls;
   }
 

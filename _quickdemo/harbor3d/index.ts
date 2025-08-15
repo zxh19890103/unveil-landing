@@ -94,7 +94,6 @@ scene.add(sky);
   });
 }
 
-/*
 {
   const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
     rotation: [0, 1, 0],
@@ -108,7 +107,18 @@ scene.add(sky);
   threeJs.onAnimate((_, elapse) => {
     ship.rotation.x = 0.03 * Math.sin(elapse);
   });
-}*/
+}
+
+{
+  const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
+    rotation: [0, 0, 0],
+    scaleFactor: 0.5,
+    offset: [0, -100, 0],
+    count: 5,
+  });
+
+  scene.add(road);
+}
 
 /*
 {

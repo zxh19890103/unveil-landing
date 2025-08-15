@@ -1,0 +1,11 @@
+Model Information:
+* title:	Road
+* source:	https://sketchfab.com/3d-models/road-ed122998c0c447a19f07946252ed4b36
+* author:	bahriddin (https://sketchfab.com/bahriddin)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Road" (https://sketchfab.com/3d-models/road-ed122998c0c447a19f07946252ed4b36) by bahriddin (https://sketchfab.com/bahriddin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
