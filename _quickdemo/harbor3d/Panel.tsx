@@ -64,10 +64,11 @@ const AlertLine = ({ message, time }) => (
   </div>
 );
 
-export default () => {
+export default ({ children }) => {
   return (
     <div className=" h-screen">
       <Sidebar />
+      {children}
     </div>
   );
 };

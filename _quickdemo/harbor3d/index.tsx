@@ -10,6 +10,7 @@ import { Land } from "./Land.class.js";
 import { Cargo } from "./Cargo.class.js";
 import { Dock } from "./Dock.class.js";
 import Panel from "./Panel.js";
+import { Label } from "@/_shared/Label.class.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -19,12 +20,14 @@ const threejsContainer = document.querySelector(
 
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
+threeJs.addCSS2DRenderer();
 
 const { scene, camera } = threeJs;
 
 camera.position.set(-1, 2, 3);
 camera.position.setLength(300);
 
+/*
 {
   const group = new THREE.Group();
 
@@ -42,26 +45,31 @@ camera.position.setLength(300);
 
   group.position.y = 3;
   scene.add(group);
-}
-
-// const truck = new ModelObj("./3d_truck__model.glb", "truck", "#ffffff", {
-//   scaleFactor: 5,
-//   rotation: [0, 0, 0],
-// });
-
-// scene.add(plane);
-
-// threeJs.onAnimate(() => {
-//   truck.position.z += 0.01;
-// });
+}*/
 
 scene.add(new THREE.DirectionalLight("white", 1.2));
 scene.add(new THREE.AmbientLight("white", 0.8));
 
+//#region  sky
 // Create and configure Sky
 const sky = new Sky();
 sky.scale.setScalar(1000); // Large scale to encompass the scene
 scene.add(sky);
+
+// Set sky uniforms
+const uniforms = sky.material.uniforms;
+uniforms["turbidity"].value = 1;
+uniforms["rayleigh"].value = 2;
+uniforms["mieCoefficient"].value = 0.0001;
+uniforms["mieDirectionalG"].value = 0.5;
+
+// Set sun position
+const sun = new THREE.Vector3();
+const phi = THREE.MathUtils.degToRad(86); // Near horizon for sunset
+const theta = THREE.MathUtils.degToRad(-180);
+sun.setFromSphericalCoords(1, phi, theta);
+uniforms["sunPosition"].value.copy(sun);
+//#endregion
 
 // water
 {
@@ -111,25 +119,54 @@ scene.add(sky);
 
 {
   const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
-    rotation: [0, 0, 0],
+    rotation: [0, 1, 0],
     scaleFactor: 0.5,
     offset: [0, -100, 0],
-    count: 5,
   });
+
+  road.repeat(6, "z");
 
   scene.add(road);
 }
 
-/*
+// truck
+
+const Labels: React.ReactPortal[] = [];
+
 {
-  const ship = new ModelObj("./low_poly_truck_tank/scene.gltf", "ship", 0xffffff, {
+  const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
+    offset: [0, 15, 0],
     rotation: [0, 0, 0],
-    scaleFactor: 0.08,
+    scaleFactor: 0.3,
   });
 
-  scene.add(ship);
-}*/
+  truck.traverse((child) => {
+    if (Object.hasOwn(child, "isMesh")) {
+      if (child["material"]) {
+        child["material"].depthWrite = true;
+      }
+    }
+  });
 
+  const label = new Label(({ obj }) => {
+    return (
+      <div className=" rounded text-sm bg-slate-600/75 text-white p-1">
+        pos: {obj.position.x}
+      </div>
+    );
+  });
+  Labels.push(label.portal);
+
+  label.$for(truck);
+
+  scene.add(truck);
+
+  threeJs.onAnimate(() => {
+    truck.position.x += 0.1;
+  });
+}
+
+// land and dock
 {
   const land = new Land();
   const dock = new Dock();
@@ -141,19 +178,9 @@ scene.add(sky);
   scene.add(land);
 }
 
-// Set sky uniforms
-const uniforms = sky.material.uniforms;
-uniforms["turbidity"].value = 1;
-uniforms["rayleigh"].value = 2;
-uniforms["mieCoefficient"].value = 0.0001;
-uniforms["mieDirectionalG"].value = 0.5;
-
-// Set sun position
-const sun = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad(86); // Near horizon for sunset
-const theta = THREE.MathUtils.degToRad(-180);
-sun.setFromSphericalCoords(1, phi, theta);
-uniforms["sunPosition"].value.copy(sun);
+{
+  // scene.add(label);
+}
 
 threeJs.startAnimation();
 
@@ -223,7 +250,7 @@ Crs.position.y = 15;
 scene.add(Crs);
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
-  React.createElement(Panel)
+  React.createElement(Panel, { children: Labels })
 );
 
 export {};
