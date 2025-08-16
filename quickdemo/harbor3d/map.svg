@@ -1,20 +1,2 @@
-<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
-  <!-- Water -->
-  <rect x="0" y="0" width="600" height="400" fill="#4B9CD3"/>
-  <!-- Irregular Land -->
-  <path d="M0 400 L0 300 Q50 280 100 290 T200 270 T300 280 T400 260 T500 270 T600 290 L600 400 Z" fill="#4A7043"/>
-  <!-- Dock 1 (Irregular Shape) -->
-  <path d="M100 290 L150 290 Q160 280 170 290 L200 290 L200 240 Q190 230 180 240 L120 240 Q110 250 100 240 Z" fill="#808080"/>
-  <!-- Dock 2 (Irregular Shape) -->
-  <path d="M250 270 L300 270 Q310 260 320 270 L350 270 L350 230 Q340 220 330 230 L260 230 Q250 240 250 230 Z" fill="#808080"/>
-  <!-- Dock 3 (Irregular Shape) -->
-  <path d="M400 260 L440 260 Q450 250 460 260 L480 260 L480 220 Q470 210 460 220 L410 220 Q400 230 400 220 Z" fill="#808080"/>
-  <!-- Curved Road -->
-  <path d="M0 350 Q100 340 200 350 T400 340 T600 350" fill="none" stroke="#333333" stroke-width="20"/>
-  <!-- Labels for Docks -->
-  <text x="120" y="260" font-size="14" fill="white">Dock 1</text>
-  <text x="270" y="250" font-size="14" fill="white">Dock 2</text>
-  <text x="420" y="240" font-size="14" fill="white">Dock 3</text>
-  <!-- Road Label -->
-  <text x="10" y="370" font-size="14" fill="white">Truck Road</text>
-</svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580.1807110590357 409.6437051629293" width="1160.3614221180715" height="819.2874103258586"><!-- svg-source:excalidraw --><metadata></metadata><defs><style class="style-fonts">
+      </style></defs><rect x="0" y="0" width="580.1807110590357" height="409.6437051629293" fill="#ffffff"></rect><g stroke-linecap="round"><g transform="translate(9.982162573393452 209.75590473627886) rotate(0 262.68359375 -2.4650991106966558)"><path d="M0.97 -1.1 C88.88 -33.48, 441.78 -226.31, 526.27 -194.6 C610.76 -162.88, 511.25 125.01, 507.89 189.19 M0.02 0.93 C87.95 -31.75, 441.22 -227.84, 525.8 -196.34 C610.38 -164.85, 510.84 125.22, 507.51 189.89" stroke="#f08c00" stroke-width="1" fill="none"></path></g></g><mask></mask></svg>

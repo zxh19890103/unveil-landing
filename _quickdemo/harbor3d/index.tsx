@@ -11,6 +11,7 @@ import { Cargo } from "./Cargo.class.js";
 import { Dock } from "./Dock.class.js";
 import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
+import { Road } from "./Road.class.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -24,8 +25,8 @@ threeJs.addCSS2DRenderer();
 
 const { scene, camera } = threeJs;
 
-camera.position.set(-1, 2, 3);
-camera.position.setLength(300);
+camera.position.set(-1, 16, 3);
+camera.position.setLength(700);
 
 /*
 {
@@ -85,8 +86,8 @@ uniforms["sunPosition"].value.copy(sun);
       }
     ),
     sunDirection: new THREE.Vector3(0, 1, 0), // 光照方向
-    sunColor: 0xffffff, // 阳光颜色
-    waterColor: 0x001e0f, // 水体颜色
+    sunColor: 0xffff4f, // 阳光颜色
+    waterColor: 0x1240ff, // 水体颜色
     distortionScale: 3.7, // 波纹强度
     fog: scene.fog !== undefined, // 是否跟随场景雾
   });
@@ -118,15 +119,13 @@ uniforms["sunPosition"].value.copy(sun);
 }
 
 {
-  const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
-    rotation: [0, 1, 0],
-    scaleFactor: 0.5,
-    offset: [0, -100, 0],
-  });
-
-  road.repeat(6, "z");
-
-  scene.add(road);
+  // const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
+  //   rotation: [0, 1, 0],
+  //   scaleFactor: 0.2,
+  //   offset: [0, -50, 0],
+  // });
+  // road.repeat(6, "z");
+  // scene.add(road);
 }
 
 // truck
@@ -136,9 +135,12 @@ const Labels: React.ReactPortal[] = [];
 {
   const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
     offset: [0, 15, 0],
-    rotation: [0, 0, 0],
+    rotation: [0, -1, 0],
     scaleFactor: 0.3,
   });
+
+  const road2 = new Road("./map.svg", 1);
+  scene.add(road2);
 
   truck.traverse((child) => {
     if (Object.hasOwn(child, "isMesh")) {
@@ -163,10 +165,27 @@ const Labels: React.ReactPortal[] = [];
 
   setTimeout(() => {
     truck.userData.distance = 1901;
-  }, 4000)
+  }, 4000);
 
-  threeJs.onAnimate(() => {
-    truck.position.x += 0.1;
+  const pos = new THREE.Vector2();
+  const dir = new THREE.Vector2();
+  let i = 0;
+
+  threeJs.onAnimate((delta, elapse) => {
+    if (road2.path) {
+      road2.path.getPointAt(i, pos);
+
+      if (pos.x === null) return;
+
+      truck.position.x = pos.x;
+      truck.position.z = pos.y;
+
+      road2.path.getTangentAt(i, dir);
+      pos.add(dir);
+
+      truck.lookAt(new THREE.Vector3(pos.x, 0, pos.y));
+      i += 0.001;
+    }
   });
 }
 
@@ -180,10 +199,6 @@ const Labels: React.ReactPortal[] = [];
   land.add(dock);
 
   scene.add(land);
-}
-
-{
-  // scene.add(label);
 }
 
 threeJs.startAnimation();

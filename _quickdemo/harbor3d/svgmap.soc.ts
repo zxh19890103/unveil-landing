@@ -1,22 +1,20 @@
 import * as THREE from "three";
+import { __lights__, whenReady } from "@/_shared/SoCFramework.js";
 import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
 
-const loader = new SVGLoader();
+whenReady((world) => {
+  const loader = new SVGLoader();
+  loader.load("/quickdemo/harbor3d/map.svg", (data) => {
+    const group = new THREE.Group();
 
-export class Road extends THREE.Group {
-  public path: THREE.Path;
+    group.scale.setScalar(0.01);
 
-  onReady: { (path: THREE.Path): any } = null;
+    const { paths } = data;
 
-  constructor(map: string, pick: number, scale: number = 1) {
-    super();
-
-    loader.load(map, (data) => {
-      const path = data.paths[pick];
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths[i];
       // Get the points from the path
       const points = path.currentPath.getPoints();
-
-      this.path = path.currentPath;
 
       // Create a BufferGeometry and set its attributes
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -29,14 +27,13 @@ export class Road extends THREE.Group {
 
       // Create the line and add it to the group
       const line = new THREE.Line(geometry, material);
+      group.add(line);
+    }
 
-      line.scale.setScalar(scale);
-      line.rotation.x = Math.PI / 2;
-      line.position.y = 5;
+    const box = new THREE.Box3().setFromObject(group);
+    const size = new THREE.Vector3();
+    console.log(box.getSize(size));
 
-      this.onReady?.call(this, this.path);
-
-      this.add(line);
-    });
-  }
-}
+    world.add(group);
+  });
+});
