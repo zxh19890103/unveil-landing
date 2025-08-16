@@ -10,6 +10,19 @@ class GeoMercator {
   private translateX: number = 0;
   private translateY: number = 0;
 
+  constructor(
+    scaleLon = 1,
+    scaleLat = 80,
+    centerLon = 116.3974,
+    centerLat = 40
+  ) {
+    this.λ0 = centerLon;
+    this.φ0 = centerLat;
+
+    this.scaleFactorLon = scaleLon;
+    this.scaleFactorLat = scaleLat;
+  }
+
   project([λ, φ]: LngLat): XY {
     const x = this.scaleFactorLon * (λ - this.λ0) + this.translateX;
     const y =
@@ -41,6 +54,11 @@ class GeoMercator {
   }
 }
 
-export function geoMercator(): GeoMercator {
-  return new GeoMercator();
+export function geoMercator(
+  scaleLon = 1,
+  scaleLat = 80,
+  centerLon = 116.3974,
+  centerLat = 40
+): GeoMercator {
+  return new GeoMercator(scaleLon, scaleLat, centerLon, centerLat);
 }

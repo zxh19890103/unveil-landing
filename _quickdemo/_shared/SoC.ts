@@ -78,10 +78,10 @@ __lights__.amb = ambientLight;
 {
   let fn: ReadyFn = null;
   while ((fn = readyFns.shift())) {
-    fn(scene, camera, renderer);
+    fn(scene, camera, renderer, controls);
   }
 
-  readyFns["__args"] = [scene, camera, renderer];
+  readyFns["__args"] = [scene, camera, renderer, controls];
 }
 
 const urlS = new URLSearchParams(location.search);

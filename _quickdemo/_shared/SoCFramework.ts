@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { type OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 type Lights = {
   dir: THREE.DirectionalLight;
@@ -13,7 +14,8 @@ export const __lights__: Lights = {
 export type ReadyFn = (
   world: THREE.Scene,
   camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  renderer: THREE.WebGLRenderer,
+  controls: OrbitControls
 ) => void;
 
 export type AnimationLoopFn = (
@@ -29,7 +31,7 @@ export const readyFns: ReadyFn[] = [];
 export const whenReady = (fn: ReadyFn) => {
   if (readyFns["__args"]) {
     const params = readyFns["__args"] as any[];
-    fn(params[0], params[1], params[2]);
+    fn(params[0], params[1], params[2], params[3]);
   } else {
     readyFns.push(fn);
   }
