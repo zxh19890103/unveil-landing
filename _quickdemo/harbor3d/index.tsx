@@ -148,10 +148,10 @@ const Labels: React.ReactPortal[] = [];
     }
   });
 
-  const label = new Label(({ obj }) => {
+  const label = new Label(({ obj, distance }) => {
     return (
-      <div className=" rounded text-sm bg-slate-600/75 text-white p-1">
-        pos: {obj.position.x}
+      <div className=" rounded text-xs bg-slate-600/75 text-white p-1">
+        pos: {obj.position.x}; dis: {distance}km
       </div>
     );
   });
@@ -160,6 +160,10 @@ const Labels: React.ReactPortal[] = [];
   label.$for(truck);
 
   scene.add(truck);
+
+  setTimeout(() => {
+    truck.userData.distance = 1901;
+  }, 4000)
 
   threeJs.onAnimate(() => {
     truck.position.x += 0.1;
