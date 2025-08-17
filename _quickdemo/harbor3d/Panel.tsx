@@ -66,7 +66,7 @@ const AlertLine = ({ message, time }) => (
 
 export default ({ children }) => {
   return (
-    <div className=" h-screen">
+    <div className=" hidden h-screen">
       <Sidebar />
       {children}
     </div>

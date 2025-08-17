@@ -55,7 +55,7 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
     containerElement: HTMLElement,
     fov: number = 75,
     near: number = 0.1,
-    far: number = 1000
+    far: number = 8000
   ) {
     super();
 
@@ -299,10 +299,6 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
     }
 
     this.dispatchEvent({ type: "viewportResize" });
-
-    // console.log(
-    //   `Container resized to ${width}x${height}. Camera and renderers updated.`
-    // );
   }
 
   /**

@@ -31,11 +31,13 @@ const parse = (coordinates: string) => {
 
       const xy = mercator.project(lnglat as LngLat);
 
-      return new THREE.Vector3(xy[0], 0, -xy[1]);
+      return new THREE.Vector3(xy[0], 0, xy[1]);
     });
 };
 
 whenReady((world, camera, _, controls) => {
+  _.setPixelRatio(window.devicePixelRatio);
+
   fetch("/quickdemo/harbor3d/path.kml")
     .then((r) => r.text())
     .then((txt) => {
@@ -68,22 +70,37 @@ whenReady((world, camera, _, controls) => {
     })
     .then((res) => {
       const center = new THREE.Vector3();
+      const space = new THREE.Object3D();
+
+      space.rotation.x = Math.PI;
+
+      world.add(space);
 
       for (const item of res) {
         switch (item.type) {
           case "Polygon": {
-            const geometry = new THREE.BufferGeometry().setFromPoints(
-              item.points
-            );
-
-            world.add(
-              new THREE.LineLoop(
-                geometry,
-                new THREE.LineBasicMaterial({
-                  color: 0xffffff,
+            const geo = new THREE.ShapeGeometry(
+              new THREE.Shape(
+                item.points.map((vec) => {
+                  return new THREE.Vector2(vec.x, vec.z);
                 })
               )
             );
+
+            const mesh = new THREE.Mesh(
+              geo,
+              new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: 0.5,
+                side: THREE.DoubleSide,
+                color: 0xffffff,
+              })
+            );
+
+            mesh.rotation.x = Math.PI / 2;
+            mesh.position.y = -0.1;
+
+            space.add(mesh);
             break;
           }
           case "LineString": {
@@ -110,7 +127,7 @@ whenReady((world, camera, _, controls) => {
             );
 
             line.computeLineDistances();
-            world.add(line);
+            space.add(line);
             break;
           }
           case "Point": {
@@ -132,13 +149,13 @@ whenReady((world, camera, _, controls) => {
               circle.rotation.x = Math.PI / 2;
               circle.position.copy(item.points[0]);
 
-              world.add(circle);
+              space.add(circle);
             }
             break;
           }
         }
       }
     });
-
+    
   world.add(new THREE.AxesHelper());
 });

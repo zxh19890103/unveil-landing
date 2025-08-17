@@ -12,6 +12,7 @@ import { Dock } from "./Dock.class.js";
 import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
 import { Road } from "./Road.class.js";
+import { KmlGisMap } from "@/_shared/kml.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -54,7 +55,7 @@ scene.add(new THREE.AmbientLight("white", 0.8));
 //#region  sky
 // Create and configure Sky
 const sky = new Sky();
-sky.scale.setScalar(1000); // Large scale to encompass the scene
+sky.scale.setScalar(100); // Large scale to encompass the scene
 scene.add(sky);
 
 // Set sky uniforms
@@ -72,29 +73,30 @@ sun.setFromSphericalCoords(1, phi, theta);
 uniforms["sunPosition"].value.copy(sun);
 //#endregion
 
-// water
+//#region  water
+/*
 {
-  const waterGeometry = new THREE.PlaneGeometry(5000, 5000);
+  const waterGeometry = new THREE.PlaneGeometry(80, 80);
   // 创建水面
   const water = new Water(waterGeometry, {
-    textureWidth: 512,
-    textureHeight: 512,
+    textureWidth: 1000,
+    textureHeight: 1000,
     waterNormals: new THREE.TextureLoader().load(
-      "https://threejs.org/examples/textures/waternormals.jpg", // 法线贴图
+      "./waternormals.jpg", // 法线贴图
       (texture) => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
       }
     ),
     sunDirection: new THREE.Vector3(0, 1, 0), // 光照方向
-    sunColor: 0xffff4f, // 阳光颜色
+    sunColor: 0xffffff, // 阳光颜色
     waterColor: 0x1240ff, // 水体颜色
-    distortionScale: 3.7, // 波纹强度
+    distortionScale: 0.01, // 波纹强度
     fog: scene.fog !== undefined, // 是否跟随场景雾
   });
 
   // 旋转到水平
   water.rotation.x = -Math.PI / 2;
-
+  water.position.y = -0.2;
   scene.add(water);
 
   threeJs.onAnimate((delta) => {
@@ -102,21 +104,26 @@ uniforms["sunPosition"].value.copy(sun);
     water.material.uniforms["time"].value += delta;
   });
 }
+*/
 
 {
-  const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
-    rotation: [0, 1, 0],
-    scaleFactor: 20,
-  });
+  const waterGeometry = new THREE.PlaneGeometry(200, 200);
 
-  scene.add(ship);
+  const water = new THREE.Mesh(
+    waterGeometry,
+    new THREE.MeshBasicMaterial({
+      color: 0x126ad1,
+      side: THREE.DoubleSide,
+    })
+  );
 
-  ship.position.set(600, 10, 0);
+  water.rotation.x = -Math.PI / 2;
+  water.position.y = -0.2;
 
-  threeJs.onAnimate((_, elapse) => {
-    ship.rotation.x = 0.03 * Math.sin(elapse);
-  });
+  scene.add(water);
 }
+
+//#endregion
 
 {
   // const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
@@ -129,18 +136,26 @@ uniforms["sunPosition"].value.copy(sun);
 }
 
 // truck
+const map = new KmlGisMap("./大連港.kml", {
+  center: "38.92186, 121.62554",
+  scale: 100,
+  onCenter: (center) => {
+    camera.position.set(center.x, 5, center.y);
+    threeJs.controls["target"].copy(center);
+  },
+  onReady: () => {},
+});
+
+scene.add(map);
 
 const Labels: React.ReactPortal[] = [];
 
 {
   const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
-    offset: [0, 15, 0],
+    offset: [0, 0, 0],
     rotation: [0, -1, 0],
-    scaleFactor: 0.3,
+    scaleFactor: 0.0008,
   });
-
-  const road2 = new Road("./map.svg", 1);
-  scene.add(road2);
 
   truck.traverse((child) => {
     if (Object.hasOwn(child, "isMesh")) {
@@ -150,123 +165,90 @@ const Labels: React.ReactPortal[] = [];
     }
   });
 
-  const label = new Label(({ obj, distance }) => {
+  truck.userData.licenseNo = "川A91001";
+  truck.userData.cargos = [1, 1, 1, 1];
+  truck.userData.distance = 9;
+
+  const label = new Label(({ obj, distance, licenseNo, cargos }) => {
     return (
-      <div className=" rounded text-xs bg-slate-600/75 text-white p-1">
-        pos: {obj.position.x}; dis: {distance}km
+      <div className=" bg-slate-200/70 text-sm p-1 rounded-sm">
+        <ul>
+          <li>車牌號: {licenseNo}</li>
+          <li>集裝箱: {cargos?.length}, 1ton/1, 1x1x2 (m)</li>
+          <li>距離港口: {distance}km</li>
+          <li>預計達到: {new Date().toTimeString()}</li>
+        </ul>
       </div>
     );
   });
-  Labels.push(label.portal);
 
+  Labels.push(label.portal);
   label.$for(truck);
 
-  scene.add(truck);
+  map.add(truck);
 
-  setTimeout(() => {
-    truck.userData.distance = 1901;
-  }, 4000);
+  map.onReady(() => {
+    const pos = new THREE.Vector3();
+    const dir = new THREE.Vector3();
+    let u = 0;
 
-  const pos = new THREE.Vector2();
-  const dir = new THREE.Vector2();
-  let i = 0;
+    const road = map.roads[0];
 
-  threeJs.onAnimate((delta, elapse) => {
-    if (road2.path) {
-      road2.path.getPointAt(i, pos);
+    threeJs.onAnimate((delta) => {
+      if (u >= 1) return;
 
-      if (pos.x === null) return;
+      road.getPointAt(u, pos);
 
-      truck.position.x = pos.x;
-      truck.position.z = pos.y;
+      truck.position.copy(pos);
 
-      road2.path.getTangentAt(i, dir);
+      road.getTangentAt(u, dir);
       pos.add(dir);
+      truck.lookAt(pos);
 
-      truck.lookAt(new THREE.Vector3(pos.x, 0, pos.y));
-      i += 0.001;
-    }
+      u += 0.0001;
+
+      label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
+    });
   });
 }
 
-// land and dock
 {
-  const land = new Land();
-  const dock = new Dock();
+  const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
+    offset: [0, -1.5, 0],
+    rotation: [0, 1, 0],
+    scaleFactor: 0.05,
+  });
 
-  dock.position.set(land.size.x / 2 + dock.size.x / 2, 0, 0);
+  map.add(ship);
 
-  land.add(dock);
+  map.onReady(() => {
+    const pos = new THREE.Vector3();
+    const dir = new THREE.Vector3();
+    let u = 0;
 
-  scene.add(land);
+    const waterway = map.waterways[1];
+
+    threeJs.onAnimate((_, elapse) => {
+      if (u >= 1) return;
+
+      waterway.getPointAt(u, pos);
+      ship.position.copy(pos);
+
+      waterway.getTangentAt(u, dir);
+      pos.add(dir);
+      ship.lookAt(pos);
+
+      u += 0.0001;
+      // ship.rotation.x = 0.03 * Math.sin(elapse);
+    });
+  });
 }
 
 threeJs.startAnimation();
 
-/*
-{
-  const svgLoader = new SVGLoader(new THREE.LoadingManager());
-
-  svgLoader.load("./map.svg", (data) => {
-    console.log(data);
-    const paths = data.paths;
-    const group = new THREE.Group();
-
-    const extrudeSettings = {
-      steps: 2,
-      depth: 4,
-      bevelEnabled: true,
-      bevelThickness: 1,
-      bevelSize: 1,
-      bevelOffset: 0,
-      bevelSegments: 1,
-    };
-
-    for (let i = 0; i < paths.length; i++) {
-      const path = paths[i];
-
-      const material = new THREE.MeshBasicMaterial({
-        color: path.color,
-        side: THREE.FrontSide,
-        depthWrite: false,
-      });
-
-      if (i === 2) {
-        // road
-        // material.map = loader.load("./close-up-bright-glitter.jpg")
-      }
-
-      console.log(material.color.getHexString());
-
-      const shapes = SVGLoader.createShapes(path);
-
-      // const geometry = new THREE.ExtrudeGeometry(shapes, extrudeSettings);
-      // const mesh = new THREE.Mesh(geometry, material);
-      // group.add(mesh);
-
-      for (let j = 0; j < shapes.length; j++) {
-        const shape = shapes[j];
-        const geometry = new THREE.ShapeGeometry(shape);
-        const mesh = new THREE.Mesh(geometry, material);
-        group.add(mesh);
-      }
-    }
-
-    const scale = 5.5;
-    group.scale.setScalar(scale);
-    const Offset = new THREE.Vector3(600, 0, 400).multiplyScalar(scale);
-    // group.position.set(-Offset.x / 2, 1, Offset.z / 2);
-    group.rotateX(-90 * DEG2RAD);
-
-    scene.add(group);
-  });
-}
-  */
-
-const Crs = new THREE.AxesHelper(50);
-Crs.position.y = 15;
-
-scene.add(Crs);
+const Crs = new THREE.AxesHelper(1);
+// Crs.position.y = 15;
+map.add(Crs);
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
   React.createElement(Panel, { children: Labels })
