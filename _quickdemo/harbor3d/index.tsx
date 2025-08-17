@@ -1,18 +1,13 @@
-import { ModelObj, ThreeJsSetup } from "@/_shared/index.js";
+import { dateFormat, ModelObj, ThreeJsSetup } from "@/_shared/index.js";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
-// import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
-// import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { Land } from "./Land.class.js";
-import { Cargo } from "./Cargo.class.js";
-import { Dock } from "./Dock.class.js";
 import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
-import { Road } from "./Road.class.js";
 import { KmlGisMap } from "@/_shared/kml.js";
+import { Cargo } from "./Cargo.class.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -22,59 +17,56 @@ const threejsContainer = document.querySelector(
 
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
+
 threeJs.addCSS2DRenderer();
 
-const { scene, camera } = threeJs;
+const { scene: world, camera } = threeJs;
+const staticWorld = threeJs.createWorld();
+const rendererTiles = threeJs.addWebGLRenderer("static", threejsContainer, {
+  animated: false,
+  antialias: true,
+  zIndex: 1,
+});
 
-camera.position.set(-1, 16, 3);
-camera.position.setLength(700);
+const renderRendererTiles = () => {
+  rendererTiles.render(staticWorld, camera);
+};
 
-/*
+threeJs.onAnimate(renderRendererTiles);
+
+//#region lights
 {
-  const group = new THREE.Group();
-
-  for (let x = 0; x < 7; x++) {
-    for (let y = 0; y < 10; y++) {
-      const cargo = new Cargo(0 ^ (Math.random() * 0xffffff));
-      cargo.position.set(
-        x * (cargo.size.x + 0.6),
-        cargo.size.y / 2,
-        y * (cargo.size.z + 0.2)
-      );
-      group.add(cargo);
-    }
-  }
-
-  group.position.y = 3;
-  scene.add(group);
-}*/
-
-scene.add(new THREE.DirectionalLight("white", 1.2));
-scene.add(new THREE.AmbientLight("white", 0.8));
+  const dirLight = new THREE.DirectionalLight("white", 1.2);
+  const ambLight = new THREE.AmbientLight("white", 0.8);
+  world.add(dirLight, ambLight);
+  staticWorld.add(dirLight.clone(), ambLight.clone());
+}
+//#endregion
 
 //#region  sky
 // Create and configure Sky
-const sky = new Sky();
-sky.scale.setScalar(100); // Large scale to encompass the scene
-scene.add(sky);
+{
+  const sky = new Sky();
+  sky.scale.setScalar(100); // Large scale to encompass the scene
+  staticWorld.add(sky);
 
-// Set sky uniforms
-const uniforms = sky.material.uniforms;
-uniforms["turbidity"].value = 1;
-uniforms["rayleigh"].value = 2;
-uniforms["mieCoefficient"].value = 0.0001;
-uniforms["mieDirectionalG"].value = 0.5;
+  // Set sky uniforms
+  const uniforms = sky.material.uniforms;
+  uniforms["turbidity"].value = 1;
+  uniforms["rayleigh"].value = 2;
+  uniforms["mieCoefficient"].value = 0.0001;
+  uniforms["mieDirectionalG"].value = 0.5;
 
-// Set sun position
-const sun = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad(86); // Near horizon for sunset
-const theta = THREE.MathUtils.degToRad(-180);
-sun.setFromSphericalCoords(1, phi, theta);
-uniforms["sunPosition"].value.copy(sun);
+  // Set sun position
+  const sun = new THREE.Vector3();
+  const phi = THREE.MathUtils.degToRad(86); // Near horizon for sunset
+  const theta = THREE.MathUtils.degToRad(-180);
+  sun.setFromSphericalCoords(1, phi, theta);
+  uniforms["sunPosition"].value.copy(sun);
+}
 //#endregion
 
 //#region  water
-/*
 {
   const waterGeometry = new THREE.PlaneGeometry(80, 80);
   // 创建水面
@@ -91,52 +83,24 @@ uniforms["sunPosition"].value.copy(sun);
     sunColor: 0xffffff, // 阳光颜色
     waterColor: 0x1240ff, // 水体颜色
     distortionScale: 0.01, // 波纹强度
-    fog: scene.fog !== undefined, // 是否跟随场景雾
+    fog: world.fog !== undefined, // 是否跟随场景雾
   });
 
   // 旋转到水平
   water.rotation.x = -Math.PI / 2;
   water.position.y = -0.2;
-  scene.add(water);
+  staticWorld.add(water);
 
   threeJs.onAnimate((delta) => {
     // 驱动波浪时间
     water.material.uniforms["time"].value += delta;
   });
 }
-*/
-
-{
-  const waterGeometry = new THREE.PlaneGeometry(200, 200);
-
-  const water = new THREE.Mesh(
-    waterGeometry,
-    new THREE.MeshBasicMaterial({
-      color: 0x126ad1,
-      side: THREE.DoubleSide,
-    })
-  );
-
-  water.rotation.x = -Math.PI / 2;
-  water.position.y = -0.2;
-
-  scene.add(water);
-}
 
 //#endregion
 
-{
-  // const road = new ModelObj("./road/scene.gltf", "road", 0xfe9102, {
-  //   rotation: [0, 1, 0],
-  //   scaleFactor: 0.2,
-  //   offset: [0, -50, 0],
-  // });
-  // road.repeat(6, "z");
-  // scene.add(road);
-}
-
 // truck
-const map = new KmlGisMap("./大連港.kml", {
+const map = new KmlGisMap("./dalianharbor.kml", {
   center: "38.92186, 121.62554",
   scale: 100,
   onCenter: (center) => {
@@ -146,9 +110,21 @@ const map = new KmlGisMap("./大連港.kml", {
   onReady: () => {},
 });
 
-scene.add(map);
+world.add(map);
 
 const Labels: React.ReactPortal[] = [];
+
+// cargo
+{
+  map.onReady(() => {
+    const cargoPlace = map.cargoplaces[1];
+    cargoPlace.points.forEach((pt) => {
+      const cargo = new Cargo(0xfe9101);
+      map.add(cargo);
+      cargo.position.copy(pt);
+    });
+  });
+}
 
 {
   const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
@@ -175,8 +151,11 @@ const Labels: React.ReactPortal[] = [];
         <ul>
           <li>車牌號: {licenseNo}</li>
           <li>集裝箱: {cargos?.length}, 1ton/1, 1x1x2 (m)</li>
-          <li>距離港口: {distance}km</li>
-          <li>預計達到: {new Date().toTimeString()}</li>
+          <li>距離港口: {distance?.toFixed(2)}km</li>
+          <li>預計達到: {dateFormat(new Date())}</li>
+          <li>
+            當前位置: {obj.position.x.toFixed(2)},{obj.position.z.toFixed(2)}
+          </li>
         </ul>
       </div>
     );
@@ -207,6 +186,8 @@ const Labels: React.ReactPortal[] = [];
 
       u += 0.0001;
 
+      truck.userData.distance = 100 * Math.random();
+
       label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
     });
   });
@@ -218,8 +199,6 @@ const Labels: React.ReactPortal[] = [];
     rotation: [0, 1, 0],
     scaleFactor: 0.05,
   });
-
-  map.add(ship);
 
   map.onReady(() => {
     const pos = new THREE.Vector3();
@@ -242,6 +221,8 @@ const Labels: React.ReactPortal[] = [];
       // ship.rotation.x = 0.03 * Math.sin(elapse);
     });
   });
+
+  world.add(ship);
 }
 
 threeJs.startAnimation();

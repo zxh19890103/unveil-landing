@@ -9,6 +9,7 @@ export { ModelObj } from "./ModelObj.class.js";
 export { createWave } from "./Wave.class.js";
 export * as sounds from "./sounds.js";
 export { MacWindow };
+export * from "./dayjs.js";
 
 /**
  * Slice a partial segment from a THREE.Curve.

@@ -13,11 +13,10 @@ export class KmlGisMap extends THREE.Object3D {
   readonly roads: THREE.CatmullRomCurve3[] = [];
   readonly waterways: THREE.CatmullRomCurve3[] = [];
   readonly shipplaces: KmlParsedRes[] = [];
+  readonly cargoplaces: KmlParsedRes[] = [];
 
   constructor(url: string, readonly options: KmlGisOptions) {
     super();
-
-    // this.rotation.x = -Math.PI;
 
     const center = options.center.split(", ").map(Number);
     const mercator = geoMercator(
@@ -53,13 +52,13 @@ export class KmlGisMap extends THREE.Object3D {
         for (const mark of marks) {
           const lastChild = mark.lastElementChild;
           const type = lastChild.tagName as KmlParsedResType;
-          const [nameTag, descriptionTag] = mark.children;
+          const [nameTag, descriptionTag, _, extendedDataTag] = mark.children;
           const coordinates =
             lastChild.querySelector("coordinates").textContent;
 
           const id = nameTag.textContent.trim();
           const name = id.split("_")[0] as KmlParsedResName;
-          const desc = descriptionTag.textContent.trim();
+          const desc = extendedDataTag.firstElementChild.textContent.trim();
 
           result.push({
             type,
@@ -76,28 +75,37 @@ export class KmlGisMap extends THREE.Object3D {
         for (const item of res) {
           switch (item.type) {
             case "Polygon": {
-              const geo = new THREE.ShapeGeometry(
-                new THREE.Shape(
-                  item.points.map((vec) => {
-                    return new THREE.Vector2(vec.x, vec.z);
-                  })
-                )
-              );
+              switch (item.name) {
+                case "cargos": {
+                  this.cargoplaces.push(item);
+                  break;
+                }
+                case "land": {
+                  const geo = new THREE.ShapeGeometry(
+                    new THREE.Shape(
+                      item.points.map((vec) => {
+                        return new THREE.Vector2(vec.x, vec.z);
+                      })
+                    )
+                  );
 
-              const mesh = new THREE.Mesh(
-                geo,
-                new THREE.MeshBasicMaterial({
-                  transparent: false,
-                  opacity: 0.5,
-                  side: THREE.DoubleSide,
-                  color: 0xffffff,
-                })
-              );
+                  const mesh = new THREE.Mesh(
+                    geo,
+                    new THREE.MeshBasicMaterial({
+                      transparent: false,
+                      opacity: 0.5,
+                      side: THREE.DoubleSide,
+                      color: 0xffffff,
+                    })
+                  );
 
-              mesh.rotation.x = Math.PI / 2;
-              mesh.position.y = -0.01;
+                  mesh.rotation.x = Math.PI / 2;
+                  mesh.position.y = -0.01;
 
-              this.add(mesh);
+                  this.add(mesh);
+                  break;
+                }
+              }
               break;
             }
             case "LineString": {
@@ -202,9 +210,12 @@ export class KmlGisMap extends THREE.Object3D {
 
   createMarker(text: string) {
     const div = document.createElement("div");
-    div.style.cssText = `font-size: 0.87rem;`;
+    div.style.cssText = `font-size: 0.9rem;`;
     const label = new CSS2DObject(div);
-    div.innerHTML = text;
+    div.innerHTML = `
+      <div style="font-size: 0.86em; float: left; line-height: 36px;">${text}</div>
+      <img src="/quickdemo/harbor3d/marker.svg" style="width: 36px; height: auto; vertical-align: middle" />
+    `;
     this.add(label);
     return label;
   }
@@ -224,6 +235,7 @@ type KmlParsedResName =
   | "landmark"
   | "road"
   | "land"
+  | "cargos"
   | "center";
 
 type KmlParsedResType = "Polygon" | "LineString" | "Point";

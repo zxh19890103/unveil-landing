@@ -4,7 +4,7 @@ export class Cargo extends THREE.Mesh {
   readonly size: THREE.Vector3;
 
   constructor(color: THREE.ColorRepresentation) {
-    const geometry = new THREE.BoxGeometry(5, 5, 15);
+    const geometry = new THREE.BoxGeometry(0.02, 0.01, 0.01);
 
     super(geometry, new THREE.MeshPhongMaterial({ color }));
 

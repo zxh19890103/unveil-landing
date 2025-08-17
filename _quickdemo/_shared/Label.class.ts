@@ -26,7 +26,9 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
   private _$for: F;
   private _$forUserData: Record<string, any>;
   private _htmlRender: VoidFunction;
-  private box = new THREE.Box3();
+
+  private renderRate = 500;
+  private lastRenderAt = 0;
 
   constructor(_html: HtmlConstruct<F>) {
     const container = document.createElement("div");
@@ -44,6 +46,7 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
         const [_, forceUpdate] = useReducer(ticker, 0);
         this._htmlRender = forceUpdate;
         useEffect(effect, emptyDeps);
+        this.lastRenderAt = performance.now();
 
         if (this._$for) {
           return $h(_html, { obj: this._$for, ...this._$forUserData });
@@ -57,9 +60,13 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
 
   $unfor() {
     if (!this._$for) return;
+    const $for = this._$for;
+    this._$for = null;
     this._htmlRender?.();
-    this._$for.remove(this);
-    this._$for.userData = this._$forUserData;
+
+    $for.remove(this);
+    $for.userData = this._$forUserData;
+
     this._$forUserData = null;
   }
 
@@ -67,17 +74,12 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
     // this.box.setFromObject(this._$for);
     // const size = new THREE.Vector3();
     // this.box.getSize(size);
-
     // const s = new THREE.Vector2();
     // renderer.getSize(s);
-
     // size.project(camera);
-
     // const width = Math.abs((size.x * s.y) / 2);
     // const height = Math.abs((size.y * s.x) / 2);
-
     // console.log(width, height);
-
     // const { width, height } = getScreenSize(this._$for, camera);
     // console.log(width, height);
   }
@@ -99,7 +101,12 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
       },
       set: (target, p, newValue, receiver) => {
         target[p as string] = newValue;
-        this._htmlRender?.();
+
+        const now = performance.now();
+        if (now - this.lastRenderAt > this.renderRate) {
+          this._htmlRender?.();
+        } else {
+        }
         return true;
       },
     });
