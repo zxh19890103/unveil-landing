@@ -7,10 +7,10 @@ import { Water } from "three/addons/objects/Water.js";
 import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
 import { KmlGisMap } from "@/_shared/kml.js";
-import { Cargo } from "./Cargo.class.js";
+import { Cargo, CargoSpec } from "./Cargo.class.js";
 import { createSelector } from "@/_shared/select.js";
 
-const DEG2RAD = THREE.MathUtils.DEG2RAD;
+// const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
 const threejsContainer = document.querySelector(
   "#threejs-container"
@@ -71,7 +71,7 @@ threeJs.onAnimate(renderRendererTiles);
 
 //#region  water
 {
-  const waterGeometry = new THREE.PlaneGeometry(80, 80);
+  const waterGeometry = new THREE.PlaneGeometry(400, 400);
   // 创建水面
   const water = new Water(waterGeometry, {
     textureWidth: 1000,
@@ -119,12 +119,61 @@ const Labels: React.ReactPortal[] = [];
 
 // cargo
 {
+  class StockYard extends THREE.Object3D {
+    constructor(
+      readonly origin: THREE.Vector3,
+      readonly to: THREE.Vector3,
+      readonly dimensions: THREE.Vector3Tuple
+    ) {
+      super();
+
+      const xA = new THREE.Vector2(to.x - origin.x, to.z - origin.z);
+      this.position.copy(origin);
+      this.rotation.y = -xA.angle();
+    }
+
+    create(spec: THREE.Vector3Tuple, each: (pt: THREE.Vector3) => Cargo) {
+      const [nx, nz, ny] = this.dimensions;
+      const [ux, uy, uz] = spec;
+
+      this.position.add({ x: ux / 2, y: uy / 2, z: uz / 2 });
+      const gap = ux * 0.1;
+
+      for (let ix = 0; ix < nx; ix++) {
+        for (let iy = 0; iy < ny; iy++) {
+          for (let iz = 0; iz < nz; iz++) {
+            const pt = new THREE.Vector3(
+              ix * (ux + gap),
+              iy * (uy + gap),
+              iz * (uz + gap)
+            );
+            const cargo = each(pt);
+            this.add(cargo);
+          }
+        }
+      }
+    }
+  }
+
   map.onReady(() => {
-    const cargoPlace = map.cargoplaces[1];
-    cargoPlace.points.forEach((pt) => {
-      const cargo = new Cargo(0xfe9101);
-      map.add(cargo);
-      cargo.position.copy(pt);
+    map.stockyards.forEach((stockYard) => {
+      const dimensions = stockYard.marker
+        .split("x")
+        .map(Number) as THREE.Vector3Tuple;
+
+      const stockYard2 = new StockYard(
+        stockYard.points[0],
+        stockYard.points[1],
+        dimensions
+      );
+
+      world.add(stockYard2);
+
+      stockYard2.create(CargoSpec, (pt) => {
+        const cargo = new Cargo(Math.floor(Math.random() * 0xffffff));
+        cargo.position.copy(pt);
+        return cargo;
+      });
     });
   });
 }

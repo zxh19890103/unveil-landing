@@ -25,8 +25,8 @@ export const createSelector = (
   const enter = () => {};
   const leave = () => {};
   const move = (e: PointerEvent) => {
-    const x = 2 * (e.clientX / w) - 1;
-    const y = 1 - 2 * (e.clientY / h);
+    const x = 2 * (e.pageX / w) - 1;
+    const y = 1 - 2 * (e.pageY / h);
     coords.set(x, y);
     console.log(x, y);
     caster.setFromCamera(coords, camera);

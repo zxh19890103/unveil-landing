@@ -10,6 +10,7 @@ export { createWave } from "./Wave.class.js";
 export * as sounds from "./sounds.js";
 export { MacWindow };
 export * from "./dayjs.js";
+export * from "./grid.js";
 
 /**
  * Slice a partial segment from a THREE.Curve.

@@ -118,7 +118,8 @@
               121.6005997,38.9181014,0
               121.6538267,38.8998124,0
               121.710463,38.8871086,0
-              121.7060644,38.9215403,0
+              121.7221672,38.904659,0
+              121.720484,38.9176671,0
               121.678491,38.9288521,0
               121.6793064,38.9302877,0
               121.6779331,38.9322907,0
@@ -179,9 +180,9 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          121.6609864,38.9371912,0
-          121.6574673,38.9307818,0
-          121.6535191,38.9323174,0
+          121.6607027,38.9367472,0
+          121.6574888,38.9309153,0
+          121.6531899,38.9325448,0
           121.6498284,38.9305147,0
           121.6476778,38.931189,0
           121.6470818,38.9309153,0
@@ -190,6 +191,7 @@
           121.6359238,38.9329851,0
           121.6318039,38.9314495,0
           121.6194443,38.9269759,0
+          121.6129079,38.9264731,0
         </coordinates>
       </LineString>
     </Placemark>
@@ -202,7 +204,7 @@
           <value>大連俄羅斯風情街</value>
         </Data>
         <Data name="type">
-          <value>spot</value>
+          <value>park</value>
         </Data>
       </ExtendedData>
       <Point>
@@ -358,11 +360,11 @@
     </Placemark>
     <Placemark>
       <name>road_02</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: 人民路<br>type: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
-          <value/>
+          <value>人民路</value>
         </Data>
         <Data name="type">
           <value/>
@@ -388,9 +390,10 @@
           121.658799,38.9262359,0
           121.6606015,38.92677,0
           121.6618031,38.929107,0
-          121.6621464,38.9297079,0
+          121.6623181,38.9296745,0
+          121.6621035,38.9299249,0
           121.6615456,38.929975,0
-          121.6580266,38.9309098,0
+          121.6578549,38.9310433,0
           121.6591424,38.9334469,0
           121.6609448,38.9366516,0
         </coordinates>
@@ -398,11 +401,11 @@
     </Placemark>
     <Placemark>
       <name>road_03</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: 港隆路<br>type: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
-          <value/>
+          <value>港隆路</value>
         </Data>
         <Data name="type">
           <value/>
@@ -411,7 +414,10 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          121.7065234,38.913817,0
+          121.7171108,38.9107785,0
+          121.7136775,38.9109788,0
+          121.7107593,38.9121142,0
+          121.707725,38.9133495,0
           121.6772551,38.9246352,0
           121.6729636,38.9245017,0
           121.6703886,38.9250359,0
@@ -419,7 +425,8 @@
           121.6658396,38.9282409,0
           121.6629214,38.9273061,0
           121.6606015,38.92677,0
-          121.6621464,38.9297079,0
+          121.6621035,38.9299249,0
+          121.6635209,38.9325715,0
           121.6649813,38.935118,0
         </coordinates>
       </LineString>
@@ -457,64 +464,160 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          121.6629793,38.9343354,0
+          121.6629364,38.9341017,0
           121.6639664,38.9358376,0
         </coordinates>
       </LineString>
     </Placemark>
     <Placemark>
-      <name>cargos_01</name>
-      <description><![CDATA[description: <br>type: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <name>road_04</name>
+      <description><![CDATA[description: 通往碼頭<br>type: ]]></description>
+      <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
-          <value/>
+          <value>通往碼頭</value>
         </Data>
         <Data name="type">
           <value/>
         </Data>
       </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.660205,38.9351324,0
-              121.6605215,38.9350114,0
-              121.6612779,38.9364343,0
-              121.6609882,38.9365261,0
-              121.660205,38.9351324,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          121.6531899,38.9325448,0
+          121.6543915,38.9348482,0
+          121.6554644,38.9369513,0
+          121.6562798,38.9383533,0
+        </coordinates>
+      </LineString>
     </Placemark>
     <Placemark>
-      <name>cargos_02</name>
-      <description><![CDATA[description: <br>type: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <name>landmark_05</name>
+      <description><![CDATA[description: 海軍廣場<br>type: park]]></description>
+      <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
-          <value/>
+          <value>海軍廣場</value>
+        </Data>
+        <Data name="type">
+          <value>park</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6688842,38.9187236,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>road_05</name>
+      <description><![CDATA[description: 港浦路<br>type: ]]></description>
+      <styleUrl>#line-000000-1200</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value>港浦路</value>
         </Data>
         <Data name="type">
           <value/>
         </Data>
       </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.659072,38.934983,0
-              121.6594046,38.9348411,0
-              121.6600537,38.9361055,0
-              121.6597103,38.936214,0
-              121.659072,38.934983,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          121.6649813,38.935118,0
+          121.664023,38.9334361,0
+          121.6628213,38.9311994,0
+          121.6621035,38.9299249,0
+          121.6629501,38.9292631,0
+          121.6647525,38.928729,0
+          121.6658396,38.9282409,0
+          121.6668554,38.928729,0
+          121.6703315,38.9296637,0
+          121.6709323,38.9291296,0
+          121.6716619,38.9285954,0
+          121.6729923,38.9280613,0
+          121.6745372,38.9277942,0
+          121.6756959,38.9277942,0
+          121.6769834,38.9279945,0
+          121.6782708,38.9277942,0
+          121.681747,38.9264921,0
+          121.6849656,38.9255573,0
+          121.6877551,38.9245891,0
+          121.6913262,38.9234169,0
+          121.6936866,38.9226824,0
+          121.6986219,38.9209462,0
+          121.7017976,38.9199111,0
+          121.7047587,38.9190096,0
+          121.7083636,38.9177408,0
+          121.7104236,38.9171064,0
+          121.7141572,38.9156372,0
+          121.7155734,38.9145686,0
+          121.7168609,38.9129324,0
+          121.7173329,38.9110958,0
+          121.71729,38.9097935,0
+          121.7166463,38.9082239,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>stockyard_01</name>
+      <description><![CDATA[description: 堆場 1<br>type: 2x6x3]]></description>
+      <styleUrl>#line-000000-1200</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value>堆場 1</value>
+        </Data>
+        <Data name="type">
+          <value>2x6x3</value>
+        </Data>
+      </ExtendedData>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          121.6594448,38.9353894,0
+          121.6597452,38.9352809,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>stockyard_02</name>
+      <description><![CDATA[description: 堆場2<br>type: 3x7x5]]></description>
+      <styleUrl>#line-000000-1200</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value>堆場2</value>
+        </Data>
+        <Data name="type">
+          <value>3x7x5</value>
+        </Data>
+      </ExtendedData>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          121.6603138,38.9354153,0
+          121.6606947,38.9352859,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>stockyard_03</name>
+      <description><![CDATA[description: 堆場3<br>type: 2x8x9]]></description>
+      <styleUrl>#line-000000-1200</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value>堆場3</value>
+        </Data>
+        <Data name="type">
+          <value>2x8x9</value>
+        </Data>
+      </ExtendedData>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          121.6549044,38.9353497,0
+          121.6555267,38.9351327,0
+        </coordinates>
+      </LineString>
     </Placemark>
   </Document>
 </kml>

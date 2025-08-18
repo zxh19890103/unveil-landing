@@ -1,10 +1,12 @@
 import * as THREE from "three";
 
+export const CargoSpec: THREE.Vector3Tuple = [0.05, 0.05, 0.1];
+
 export class Cargo extends THREE.Mesh {
   readonly size: THREE.Vector3;
 
   constructor(color: THREE.ColorRepresentation) {
-    const geometry = new THREE.BoxGeometry(0.02, 0.01, 0.01);
+    const geometry = new THREE.BoxGeometry(...CargoSpec);
 
     super(geometry, new THREE.MeshPhongMaterial({ color }));
 

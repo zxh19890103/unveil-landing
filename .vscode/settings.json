@@ -8,5 +8,5 @@
   "window.zoomLevel": 1.2,
   "editor.letterSpacing": 0,
   // "workbench.colorTheme": "Default Dark+"
-  "workbench.colorTheme": "Atom One Light"
+  "workbench.colorTheme": "Atom One Dark"
 }
