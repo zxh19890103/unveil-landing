@@ -8,15 +8,18 @@ import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
 import { KmlGisMap } from "@/_shared/kml.js";
 import { Cargo } from "./Cargo.class.js";
+import { createSelector } from "@/_shared/select.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
 const threejsContainer = document.querySelector(
   "#threejs-container"
-) as HTMLElement;
+) as HTMLDivElement;
 
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
+
+// createSelector(threeJs.camera, threeJs.scene, threejsContainer)
 
 threeJs.addCSS2DRenderer();
 
@@ -102,7 +105,7 @@ threeJs.onAnimate(renderRendererTiles);
 // truck
 const map = new KmlGisMap("./dalianharbor.kml", {
   center: "38.92186, 121.62554",
-  scale: 100,
+  scale: 300,
   onCenter: (center) => {
     camera.position.set(center.x, 5, center.y);
     threeJs.controls["target"].copy(center);
@@ -131,7 +134,7 @@ const Labels: React.ReactPortal[] = [];
     const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
       offset: [0, 0, 0],
       rotation: [0, -1, 0],
-      scaleFactor: 0.0005,
+      scaleFactor: 0.001,
     });
 
     truck.traverse((child) => {
@@ -145,25 +148,21 @@ const Labels: React.ReactPortal[] = [];
     truck.userData.licenseNo = "川A91001";
     truck.userData.cargos = [1, 1, 1, 1];
     truck.userData.distance = 9;
+    truck.userData.action = "運輸中";
+    truck.userData.driver = "張星海";
 
-    // const label = new Label(({ obj, distance, licenseNo, cargos }) => {
-    //   return (
-    //     <div className=" bg-slate-200/70 text-sm p-1 rounded-sm">
-    //       <ul>
-    //         <li>車牌號: {licenseNo}</li>
-    //         <li>集裝箱: {cargos?.length}, 1ton/1, 1x1x2 (m)</li>
-    //         <li>距離港口: {distance?.toFixed(2)}km</li>
-    //         <li>預計達到: {dateFormat(new Date())}</li>
-    //         <li>
-    //           當前位置: {obj.position.x.toFixed(2)},{obj.position.z.toFixed(2)}
-    //         </li>
-    //       </ul>
-    //     </div>
-    //   );
-    // });
+    const label = new Label(
+      ({ obj, driver, action, distance, licenseNo, cargos }) => {
+        return (
+          <div className=" bg-slate-200/70 text-xs p-1 rounded">
+            {licenseNo} / {driver} / {action}...
+          </div>
+        );
+      }
+    );
 
-    // Labels.push(label.portal);
-    // label.$for(truck);
+    Labels.push(label.portal);
+    label.$for(truck);
 
     map.add(truck);
 
@@ -185,7 +184,7 @@ const Labels: React.ReactPortal[] = [];
         pos.add(dir);
         truck.lookAt(pos);
 
-        u += 0.001;
+        u += 0.0001;
 
         truck.userData.distance = 100 * Math.random();
         // label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
@@ -198,7 +197,7 @@ const Labels: React.ReactPortal[] = [];
   const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
     offset: [0, -1.5, 0],
     rotation: [0, 1, 0],
-    scaleFactor: 0.05,
+    scaleFactor: 0.1,
   });
 
   map.onReady(() => {

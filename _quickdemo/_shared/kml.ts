@@ -36,7 +36,7 @@ export class KmlGisMap extends THREE.Object3D {
 
           const xy = mercator.project(lnglat as LngLat);
 
-          return new THREE.Vector3(xy[0], 0, xy[1]);
+          return new THREE.Vector3(xy[0], 0, -xy[1]);
         });
     };
 
@@ -59,12 +59,15 @@ export class KmlGisMap extends THREE.Object3D {
           const id = nameTag.textContent.trim();
           const name = id.split("_")[0] as KmlParsedResName;
           const desc = extendedDataTag.firstElementChild.textContent.trim();
+          const marker =
+            extendedDataTag.lastElementChild.textContent.trim() as KmlParsedResMarker;
 
           result.push({
             type,
             id,
             name,
             desc,
+            marker,
             points: parse(coordinates),
           });
         }
@@ -193,7 +196,8 @@ export class KmlGisMap extends THREE.Object3D {
                 this.onCenter();
                 this.options.onCenter?.(this.center);
               } else {
-                this.createMarker(item.desc).position.copy(item.points[0]);
+                const marker = this.createMarker(item.desc, item.marker);
+                marker.position.copy(item.points[0]);
               }
               break;
             }
@@ -208,13 +212,16 @@ export class KmlGisMap extends THREE.Object3D {
 
   createRoad() {}
 
-  createMarker(text: string) {
+  createMarker(text: string, type: KmlParsedResMarker = null) {
     const div = document.createElement("div");
     div.style.cssText = `font-size: 0.9rem;`;
     const label = new CSS2DObject(div);
+    const markerIcon = type
+      ? `/quickdemo/harbor3d/marker-${type}.svg`
+      : "/quickdemo/harbor3d/marker.svg";
     div.innerHTML = `
-      <div style="font-size: 0.86em; float: left; line-height: 36px;">${text}</div>
-      <img src="/quickdemo/harbor3d/marker.svg" style="width: 36px; height: auto; vertical-align: middle" />
+      <div style="font-size: 0.86em; float: left; line-height: 24px;">${text}</div>
+      <img src="${markerIcon}" style="width: 24px; height: auto; vertical-align: middle" />
     `;
     this.add(label);
     return label;
@@ -239,9 +246,11 @@ type KmlParsedResName =
   | "center";
 
 type KmlParsedResType = "Polygon" | "LineString" | "Point";
+type KmlParsedResMarker = "park" | "station" | "hotel";
 
 type KmlParsedRes = {
   type: KmlParsedResType;
+  marker: KmlParsedResMarker;
   id: string;
   desc: string;
   name: KmlParsedResName;
