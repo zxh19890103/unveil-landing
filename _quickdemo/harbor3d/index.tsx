@@ -127,70 +127,71 @@ const Labels: React.ReactPortal[] = [];
 }
 
 {
-  const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
-    offset: [0, 0, 0],
-    rotation: [0, -1, 0],
-    scaleFactor: 0.0008,
-  });
-
-  truck.traverse((child) => {
-    if (Object.hasOwn(child, "isMesh")) {
-      if (child["material"]) {
-        child["material"].depthWrite = true;
-      }
-    }
-  });
-
-  truck.userData.licenseNo = "川A91001";
-  truck.userData.cargos = [1, 1, 1, 1];
-  truck.userData.distance = 9;
-
-  const label = new Label(({ obj, distance, licenseNo, cargos }) => {
-    return (
-      <div className=" bg-slate-200/70 text-sm p-1 rounded-sm">
-        <ul>
-          <li>車牌號: {licenseNo}</li>
-          <li>集裝箱: {cargos?.length}, 1ton/1, 1x1x2 (m)</li>
-          <li>距離港口: {distance?.toFixed(2)}km</li>
-          <li>預計達到: {dateFormat(new Date())}</li>
-          <li>
-            當前位置: {obj.position.x.toFixed(2)},{obj.position.z.toFixed(2)}
-          </li>
-        </ul>
-      </div>
-    );
-  });
-
-  Labels.push(label.portal);
-  label.$for(truck);
-
-  map.add(truck);
-
-  map.onReady(() => {
-    const pos = new THREE.Vector3();
-    const dir = new THREE.Vector3();
-    let u = 0;
-
-    const road = map.roads[0];
-
-    threeJs.onAnimate((delta) => {
-      if (u >= 1) return;
-
-      road.getPointAt(u, pos);
-
-      truck.position.copy(pos);
-
-      road.getTangentAt(u, dir);
-      pos.add(dir);
-      truck.lookAt(pos);
-
-      u += 0.0001;
-
-      truck.userData.distance = 100 * Math.random();
-
-      label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
+  for (let i = 0; i < 3; i++) {
+    const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
+      offset: [0, 0, 0],
+      rotation: [0, -1, 0],
+      scaleFactor: 0.0005,
     });
-  });
+
+    truck.traverse((child) => {
+      if (Object.hasOwn(child, "isMesh")) {
+        if (child["material"]) {
+          child["material"].depthWrite = true;
+        }
+      }
+    });
+
+    truck.userData.licenseNo = "川A91001";
+    truck.userData.cargos = [1, 1, 1, 1];
+    truck.userData.distance = 9;
+
+    // const label = new Label(({ obj, distance, licenseNo, cargos }) => {
+    //   return (
+    //     <div className=" bg-slate-200/70 text-sm p-1 rounded-sm">
+    //       <ul>
+    //         <li>車牌號: {licenseNo}</li>
+    //         <li>集裝箱: {cargos?.length}, 1ton/1, 1x1x2 (m)</li>
+    //         <li>距離港口: {distance?.toFixed(2)}km</li>
+    //         <li>預計達到: {dateFormat(new Date())}</li>
+    //         <li>
+    //           當前位置: {obj.position.x.toFixed(2)},{obj.position.z.toFixed(2)}
+    //         </li>
+    //       </ul>
+    //     </div>
+    //   );
+    // });
+
+    // Labels.push(label.portal);
+    // label.$for(truck);
+
+    map.add(truck);
+
+    map.onReady(() => {
+      const pos = new THREE.Vector3();
+      const dir = new THREE.Vector3();
+      let u = 0;
+
+      const road = map.roads[i];
+
+      threeJs.onAnimate((delta) => {
+        if (u >= 1) return;
+
+        road.getPointAt(u, pos);
+
+        truck.position.copy(pos);
+
+        road.getTangentAt(u, dir);
+        pos.add(dir);
+        truck.lookAt(pos);
+
+        u += 0.001;
+
+        truck.userData.distance = 100 * Math.random();
+        // label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
+      });
+    });
+  }
 }
 
 {

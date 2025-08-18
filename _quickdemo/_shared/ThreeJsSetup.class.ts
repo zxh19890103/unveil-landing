@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { MapControls } from "three/addons/controls/MapControls.js";
+import Stats from "three/addons/libs/stats.module.js";
 
 /**
  * Interface to define the options for adding a WebGLRenderer.
@@ -31,6 +32,8 @@ interface WebGLRendererOptions {
 export class ThreeJsSetup extends THREE.EventDispatcher<{
   viewportResize: any;
 }> {
+  private stats: Stats = new Stats();
+
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
   private webGLRenderers: Map<string, THREE.WebGLRenderer>;
@@ -91,6 +94,9 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
       scene: this.scene,
       camera: this.camera,
     });
+
+    this.stats.showPanel(0);
+    document.body.appendChild(this.stats.dom);
   }
 
   public setupControls() {
@@ -317,6 +323,8 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
+    this.stats.begin();
+
     const delta = this.clock.getDelta();
     const eplased = this.clock.getElapsedTime();
 
@@ -334,6 +342,8 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
     }
 
     this.controls?.update(delta);
+
+    this.stats.end();
   };
 
   /**

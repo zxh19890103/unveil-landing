@@ -118,7 +118,7 @@ export class KmlGisMap extends THREE.Object3D {
                   const path = new THREE.CatmullRomCurve3(
                     item.points,
                     false,
-                    "catmullrom",
+                    "centripetal",
                     0.5
                   );
 
@@ -143,7 +143,7 @@ export class KmlGisMap extends THREE.Object3D {
                   const path = new THREE.CatmullRomCurve3(
                     item.points,
                     false,
-                    "chordal",
+                    "centripetal",
                     0.5
                   );
 
