@@ -4,11 +4,11 @@ import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
-import Panel from "./Panel.js";
 import { Label } from "@/_shared/Label.class.js";
 import { KmlGisMap } from "@/_shared/kml.js";
 import { Cargo, CargoSpec } from "./Cargo.class.js";
-import { createSelector } from "@/_shared/select.js";
+import { createInteractive } from "@/_shared/interactive.js";
+import App from "./html/App.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -279,11 +279,11 @@ const Crs = new THREE.AxesHelper(1);
 map.add(Crs);
 
 {
-  // createSelector(threeJs.camera, threeJs.scene, threejsContainer);
+  createInteractive(threeJs.camera, threeJs.scene, threejsContainer);
 }
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
-  React.createElement(Panel, { children: Labels })
+  React.createElement(App, { children: Labels })
 );
 
 export {};

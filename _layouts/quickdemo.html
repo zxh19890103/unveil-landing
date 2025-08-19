@@ -86,7 +86,7 @@
   </template>
   <!-- // -->
   {% if jekyll.environment == "development" %}
-  <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/index.js"></script>
+  <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/{{ page.mainjs | default: 'index'}}.js"></script>
   <script src="{{site.quickdemoJsHost}}events-client"></script>
   {% else %}
   <script type="module" src="./index.js"></script>

@@ -3,3 +3,30 @@
     margin-top: -20px;
   }
 }
+
+.Side {
+  transition: opacity 0.3s linear, transform 0.3s ease-in-out;
+
+  aside {
+    width: 30vw;
+  }
+
+  &.Left {
+    top: 50vh;
+    transform: translate(0, -50%);
+  }
+  &.Right {
+  }
+}
+
+.Simple {
+  .Side {
+    opacity: 0;
+    &.Left {
+      transform: translate(-100%, -50%);
+    }
+    &.Right {
+      transform: translate(100%, 0);
+    }
+  }
+}

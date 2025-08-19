@@ -191,9 +191,13 @@ export class KmlGisMap extends THREE.Object3D {
     );
 
     mesh.name = item.desc;
-    this.add(mesh);
-
     mesh.__$interactive = true;
+
+    // mesh.addEventListener("click", (e) => {
+    //   console.log("click", e);
+    // });
+
+    this.add(mesh);
 
     this.roads.push(path);
     return mesh;
