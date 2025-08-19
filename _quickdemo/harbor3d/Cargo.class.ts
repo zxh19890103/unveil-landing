@@ -3,6 +3,7 @@ import * as THREE from "three";
 export const CargoSpec: THREE.Vector3Tuple = [0.05, 0.05, 0.1];
 
 export class Cargo extends THREE.Mesh {
+  readonly __$interactive = true;
   readonly size: THREE.Vector3;
 
   constructor(color: THREE.ColorRepresentation) {

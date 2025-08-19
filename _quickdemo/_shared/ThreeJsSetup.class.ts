@@ -58,7 +58,7 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
     containerElement: HTMLElement,
     fov: number = 75,
     near: number = 0.1,
-    far: number = 8000
+    far: number = 150
   ) {
     super();
 

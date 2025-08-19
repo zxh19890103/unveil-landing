@@ -19,8 +19,6 @@ const threejsContainer = document.querySelector(
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
 
-// createSelector(threeJs.camera, threeJs.scene, threejsContainer)
-
 threeJs.addCSS2DRenderer();
 
 const { scene: world, camera } = threeJs;
@@ -107,7 +105,7 @@ const map = new KmlGisMap("./dalianharbor.kml", {
   center: "38.92186, 121.62554",
   scale: 300,
   onCenter: (center) => {
-    camera.position.set(center.x, 5, center.y);
+    camera.position.set(center.x, 10, center.y);
     threeJs.controls["target"].copy(center);
   },
   onReady: () => {},
@@ -129,7 +127,7 @@ const Labels: React.ReactPortal[] = [];
 
       const xA = new THREE.Vector2(to.x - origin.x, to.z - origin.z);
       this.position.copy(origin);
-      this.rotation.y = -xA.angle();
+      this.rotation.y = -xA.angle() + Math.PI;
     }
 
     create(spec: THREE.Vector3Tuple, each: (pt: THREE.Vector3) => Cargo) {
@@ -279,6 +277,10 @@ threeJs.startAnimation();
 const Crs = new THREE.AxesHelper(1);
 // Crs.position.y = 15;
 map.add(Crs);
+
+{
+  // createSelector(threeJs.camera, threeJs.scene, threejsContainer);
+}
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
   React.createElement(Panel, { children: Labels })

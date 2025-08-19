@@ -27,6 +27,7 @@ const half_PI = Math.PI / 2;
 const loader = new GLTFLoader();
 
 export class ModelObj extends THREE.Object3D {
+  readonly __$interactive = true;
   private lod: THREE.LOD = new THREE.LOD();
   private atom: THREE.Object3D;
 
