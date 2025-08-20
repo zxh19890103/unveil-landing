@@ -11,7 +11,7 @@ const Sidebar = (props: React.PropsWithChildren<{}>) => {
        cyber-scroll 
        overflow-auto
       p-4 
-      bg-white/50 
+    bg-slate-600/50 
       backdrop-blur-sm 
       shadow-xl 
       border 

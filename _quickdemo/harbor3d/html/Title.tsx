@@ -32,7 +32,7 @@ const Header = () => {
             xmlns="http://www.w3.org/2000/svg"
           >
             {/* 背景光暈效果 */}
-            <g opacity="0.1">
+            <g opacity="0.32">
               <circle cx="50" cy="50" r="45" fill="#3B82F6" />
               <circle cx="50" cy="50" r="35" fill="#BFDBFE" />
             </g>

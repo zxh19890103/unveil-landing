@@ -64,7 +64,6 @@ export const createInteractive = (
           fire(nextTarget, "mousein");
         }
 
-        console.log("changed");
         domElement.style.cursor = "pointer";
       }
 

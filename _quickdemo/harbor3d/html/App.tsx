@@ -7,10 +7,7 @@ import Controls from "./Controls.js";
 const App = (props: React.PropsWithChildren<{}>) => {
   return (
     <>
-      <div
-        style={LayoutHeaderStyle}
-        className="overflow-hidden fixed top-0.5 left-0"
-      >
+      <div className="Side Title overflow-hidden fixed top-0.5 left-0">
         <Title />
       </div>
       <div className="Side Left overflow-hidden h-screen fixed top-0 left-0 w-fit">
@@ -25,7 +22,7 @@ const App = (props: React.PropsWithChildren<{}>) => {
       </div>
       <div
         style={LayoutFootStyle}
-        className=" overflow-hidden fixed bottom-0.5 left-0"
+        className=" overflow-hidden fixed bottom-1 left-0"
       >
         <Controls
           onClick={(which) => {
@@ -36,12 +33,6 @@ const App = (props: React.PropsWithChildren<{}>) => {
       {props.children}
     </>
   );
-};
-
-const LayoutHeaderStyle: React.CSSProperties = {
-  width: 450,
-  left: "50vw",
-  transform: "translate(-50%, 0)",
 };
 
 const LayoutFootStyle: React.CSSProperties = {

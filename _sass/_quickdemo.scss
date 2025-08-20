@@ -8,6 +8,7 @@
   transition: opacity 0.3s linear, transform 0.3s ease-in-out;
 
   aside {
+    max-width: 450px;
     width: 30vw;
   }
 
@@ -15,18 +16,30 @@
     top: 50vh;
     transform: translate(0, -50%);
   }
+
   &.Right {
+  }
+
+  &.Title {
+    width: 450px;
+    left: 50vw;
+    transform: translate(-50%, 0);
   }
 }
 
 .Simple {
   .Side {
-    opacity: 0;
     &.Left {
+      opacity: 0;
       transform: translate(-100%, -50%);
     }
     &.Right {
+      opacity: 0;
       transform: translate(100%, 0);
+    }
+    &.Title {
+      left: 0;
+      transform: translate(0%, 0);
     }
   }
 }
