@@ -1,4 +1,6 @@
-export const Pick = () => {
+import Sidebar from "./Side.js";
+
+export const PickPanel = () => {
   const selectedObject = {
     type: "船隻",
     name: "MV. Global Explorer",
@@ -9,10 +11,7 @@ export const Pick = () => {
   };
 
   return (
-    <div className="flex-1 p-4 bg-gray-50/90 rounded-lg border border-gray-100 overflow-y-auto">
-      <h2 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 border-gray-300">
-        交互物件詳情
-      </h2>
+    <Sidebar.Card title="交互物件詳情" icon="./icons/info.svg">
       {selectedObject ? (
         <div className="space-y-3">
           {Object.entries(selectedObject).map(([key, value]) => (
@@ -32,6 +31,6 @@ export const Pick = () => {
       ) : (
         <p className="text-center text-gray-500">請在場景中選擇一個物件</p>
       )}
-    </div>
+    </Sidebar.Card>
   );
 };

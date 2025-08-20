@@ -120,6 +120,14 @@ export const createInteractive = (
   return {};
 };
 
+export const follow = (obj: THREE.Object3D, camera: THREE.Camera) => {
+  const pos = new THREE.Vector3();
+  obj.getWorldPosition(pos);
+  camera.position.set(0, 3, 0);
+  camera.lookAt(pos);
+  obj.add(camera);
+};
+
 /***
  * @todo considering animation
  */

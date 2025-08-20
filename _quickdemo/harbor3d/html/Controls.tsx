@@ -21,11 +21,9 @@ const Footer = ({ onClick }) => {
   return (
     <footer
       className="
-      p-2 
+      p-1
       bg-white/60 
       backdrop-blur-sm 
-     overflow-hidden
-      rounded-lg 
       shadow-xl 
       border 
       border-gray-200 

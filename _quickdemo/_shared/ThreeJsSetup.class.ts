@@ -36,6 +36,8 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
 
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
+  public activeCamera: THREE.PerspectiveCamera;
+
   private webGLRenderers: Map<string, THREE.WebGLRenderer>;
   private animatedWebGLRenderers: Set<THREE.WebGLRenderer>;
   private css2DRenderer: CSS2DRenderer | null;
@@ -70,7 +72,10 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
       near,
       far
     );
+
     this.camera.position.z = 5; // Initial camera position
+
+    this.activeCamera = this.camera;
 
     this.webGLRenderers = new Map<string, THREE.WebGLRenderer>();
     this.animatedWebGLRenderers = new Set<THREE.WebGLRenderer>();
@@ -333,12 +338,12 @@ export class ThreeJsSetup extends THREE.EventDispatcher<{
 
     // Render ONLY the animated WebGL renderers
     this.animatedWebGLRenderers.forEach((renderer) => {
-      renderer.render(this.scene, this.camera);
+      renderer.render(this.scene, this.activeCamera);
     });
 
     // Render CSS2DRenderer if present
     if (this.css2DRenderer) {
-      this.css2DRenderer.render(this.scene, this.camera);
+      this.css2DRenderer.render(this.scene, this.activeCamera);
     }
 
     this.controls?.update(delta);

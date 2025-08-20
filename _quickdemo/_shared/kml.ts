@@ -180,15 +180,13 @@ export class KmlGisMap extends THREE.Object3D {
     };
 
     const roadGeometry = new THREE.ExtrudeGeometry(roadShape, extrudeSettings);
+    const material = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.8,
+      color: 0x012a34,
+    });
 
-    const mesh = new THREE.Mesh(
-      roadGeometry,
-      new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0.8,
-        color: 0x012a34,
-      })
-    );
+    const mesh = new THREE.Mesh(roadGeometry, material);
 
     mesh.name = item.desc;
     mesh.__$interactive = true;

@@ -8,9 +8,7 @@ const Header = () => {
       className="
       w-full 
       p-1
-      bg-white/50 
-     overflow-hidden
-       rounded-lg
+      bg-white/50
       backdrop-blur-sm 
       shadow-md 
       flex 

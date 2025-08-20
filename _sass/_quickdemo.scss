@@ -5,7 +5,7 @@
 }
 
 .Side {
-  transition: opacity 0.3s linear, transform 0.3s ease-in-out;
+  transition: left 0.3s linear, opacity 0.3s linear, transform 0.3s ease-in-out;
 
   aside {
     max-width: 450px;
@@ -38,7 +38,7 @@
       transform: translate(100%, 0);
     }
     &.Title {
-      left: 0;
+      left: 0.125rem;
       transform: translate(0%, 0);
     }
   }
