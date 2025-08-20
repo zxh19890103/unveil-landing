@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { setPopupObject } from "./tooltip.js";
 
 export const createInteractive = (
   camera: THREE.Camera,
@@ -54,15 +55,18 @@ export const createInteractive = (
     } else {
       // mutation
       if (nextTarget === null) {
-        fire(currentTarget, "mouseout");
+        fire(currentTarget, "mouseOut");
+        setPopupObject(null);
         domElement.style.cursor = "default";
       } else {
         if (currentTarget === null) {
-          fire(nextTarget, "mousein");
+          fire(nextTarget, "mouseIn");
         } else {
-          fire(currentTarget, "mouseout");
-          fire(nextTarget, "mousein");
+          fire(currentTarget, "mouseOut");
+          fire(nextTarget, "mouseIn");
         }
+
+        setPopupObject(nextTarget);
 
         domElement.style.cursor = "pointer";
       }
@@ -120,14 +124,31 @@ export const createInteractive = (
   return {};
 };
 
-export const follow = (obj: THREE.Object3D, camera: THREE.Camera) => {
-  const pos = new THREE.Vector3();
-  obj.getWorldPosition(pos);
-  camera.position.set(0, 3, 0);
-  camera.lookAt(pos);
-  obj.add(camera);
-};
+export const createFollowing = (context: WithActiveCamera) => {
+  const currentCamera = context.camera;
 
-/***
- * @todo considering animation
- */
+  const camera = new THREE.PerspectiveCamera(
+    currentCamera.fov,
+    currentCamera.aspect,
+    currentCamera.near,
+    currentCamera.far
+  );
+
+  const pos = new THREE.Vector3();
+  const lookat = new THREE.Vector3();
+
+  return {
+    follow: (target: THREE.Object3D) => {
+      camera.position.set(0, 3, 0);
+      camera.lookAt(lookat);
+      target.add(camera);
+
+      context.activeCamera = camera;
+      context.controls.enabled = false;
+    },
+    unfollow: () => {
+      context.controls.enabled = true;
+      context.activeCamera = currentCamera;
+    },
+  };
+};

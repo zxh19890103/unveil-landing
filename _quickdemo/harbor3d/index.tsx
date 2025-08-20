@@ -1,14 +1,16 @@
-import { dateFormat, ModelObj, ThreeJsSetup } from "@/_shared/index.js";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import * as THREE from "three";
+
+import "@/_shared/_three-ext.v.js";
+import { ModelObj, ThreeJsSetup } from "@/_shared/index.js";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
-import { Label } from "@/_shared/Label.class.js";
 import { KmlGisMap } from "@/_shared/kml.js";
 import { Cargo, CargoSpec } from "./Cargo.class.js";
 import { createInteractive } from "@/_shared/interactive.js";
 import App from "./html/App.js";
+import { Tooltips } from "@/_shared/tooltip.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -113,8 +115,6 @@ const map = new KmlGisMap("./dalianharbor.kml", {
 
 world.add(map);
 
-const Labels: React.ReactPortal[] = [];
-
 // cargo
 {
   class StockYard extends THREE.Object3D {
@@ -198,18 +198,17 @@ const Labels: React.ReactPortal[] = [];
     truck.userData.action = "運輸中";
     truck.userData.driver = "張星海";
 
-    const label = new Label(
-      ({ obj, driver, action, distance, licenseNo, cargos }) => {
-        return (
-          <div className=" bg-slate-200/70 text-xs p-1 rounded">
-            {licenseNo} / {driver} / {action}...
-          </div>
-        );
-      }
-    );
+    truck.tooltip(({ obj, driver, action, licenseNo }) => {
+      return (
+        <div className=" bg-slate-200/70 text-xs p-1 rounded">
+          {licenseNo} / {driver} / {action}...
+        </div>
+      );
+    });
 
-    Labels.push(label.portal);
-    label.$for(truck);
+    setTimeout(() => {
+      truck.userData.driver = "singhi";
+    }, 5000);
 
     map.add(truck);
 
@@ -245,6 +244,10 @@ const Labels: React.ReactPortal[] = [];
     offset: [0, -1.5, 0],
     rotation: [0, 1, 0],
     scaleFactor: 0.1,
+  });
+
+  ship.popup(() => {
+    return <div>hello</div>;
   });
 
   map.onReady(() => {
@@ -283,7 +286,7 @@ map.add(Crs);
 }
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(
-  React.createElement(App, { children: Labels })
+  React.createElement(App)
 );
 
 export {};

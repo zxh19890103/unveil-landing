@@ -1,3 +1,4 @@
+import type React from "react";
 import * as THREE from "three";
 
 declare module "three" {
@@ -7,12 +8,24 @@ declare module "three" {
      */
     __$interactive: boolean;
     __$hoverStyle: InteractiveStyle;
+
+    __$forUserData: Record<string, any>;
+    __$tooltipUpdate: VoidFunction;
+    __$popupUpdate: VoidFunction;
+
+    tooltip(def: Tooltip): void;
+    popup(def: Tooltip): void;
   }
 
   interface Object3DEventMap extends InteractiveEventMap {}
 }
 
 declare global {
+  type Tooltip<O extends THREE.Object3D> = (props: {
+    obj: O;
+    [k: string]: any;
+  }) => React.ReactNode;
+
   type InteractiveStyle = {
     color?: THREE.ColorRepresentation;
     opacity?: number;
@@ -26,10 +39,16 @@ declare global {
   interface InteractiveEventMap {
     click: InteractiveEventMapPayload;
     select: InteractiveEventMapPayload;
-    mousein: InteractiveEventMapPayload;
-    mouseout: InteractiveEventMapPayload;
+    mouseIn: InteractiveEventMapPayload;
+    mouseOut: InteractiveEventMapPayload;
     mousemove: InteractiveEventMapPayload;
   }
 
   type InteractiveEventType = keyof InteractiveEventMap;
+
+  interface WithActiveCamera {
+    controls: THREE.Controls;
+    camera: THREE.PerspectiveCamera;
+    activeCamera: THREE.PerspectiveCamera;
+  }
 }

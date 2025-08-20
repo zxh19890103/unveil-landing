@@ -2,6 +2,10 @@ import * as THREE from "three";
 import React, { useEffect, useReducer, useState } from "react";
 import ReactDOM from "react-dom";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import {
+  checkIfUserDataProxyIsNoNeed,
+  createUserDataProxy,
+} from "./userData.js";
 
 const $h = React.createElement;
 
@@ -24,32 +28,18 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
   public portal: React.ReactPortal = null;
 
   private _$for: F;
-  private _$forUserData: Record<string, any>;
-  private _htmlRender: VoidFunction;
-
-  private renderRate = 500;
-  private lastRenderAt = 0;
 
   constructor(_html: HtmlConstruct<F>) {
     const container = document.createElement("div");
     super(container);
     this.container = container;
 
-    const uneffect = () => {
-      this._htmlRender = null;
-    };
-
-    const effect = () => uneffect;
-
     this.portal = ReactDOM.createPortal(
       $h(() => {
         const [_, forceUpdate] = useReducer(ticker, 0);
-        this._htmlRender = forceUpdate;
-        useEffect(effect, emptyDeps);
-        this.lastRenderAt = performance.now();
-
         if (this._$for) {
-          return $h(_html, { obj: this._$for, ...this._$forUserData });
+          this._$for.__$tooltipUpdate = forceUpdate;
+          return $h(_html, { obj: this._$for, ...this._$for.__$forUserData });
         } else {
           return null;
         }
@@ -62,12 +52,11 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
     if (!this._$for) return;
     const $for = this._$for;
     this._$for = null;
-    this._htmlRender?.();
+    $for.__$tooltipUpdate?.();
 
+    $for.__$tooltipUpdate = null;
     $for.remove(this);
-    $for.userData = this._$forUserData;
-
-    this._$forUserData = null;
+    checkIfUserDataProxyIsNoNeed($for);
   }
 
   updatePlace(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
@@ -86,30 +75,9 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
 
   $for(obj: F, placement: Placement = "top") {
     this._$for = obj;
-    this._htmlRender?.();
     obj.add(this);
-
     this.container.classList.add(`placement-${placement}`);
-
-    const userData = obj.userData;
-
-    this._$forUserData = userData;
-
-    obj.userData = new Proxy(userData, {
-      get: (target, p, receiver) => {
-        return target[p as string];
-      },
-      set: (target, p, newValue, receiver) => {
-        target[p as string] = newValue;
-
-        const now = performance.now();
-        if (now - this.lastRenderAt > this.renderRate) {
-          this._htmlRender?.();
-        } else {
-        }
-        return true;
-      },
-    });
+    createUserDataProxy(obj);
   }
 }
 

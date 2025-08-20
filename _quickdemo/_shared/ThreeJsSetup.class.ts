@@ -29,9 +29,12 @@ interface WebGLRendererOptions {
 /**
  * A class to set up and manage a Three.js scene, camera, and multiple renderers.
  */
-export class ThreeJsSetup extends THREE.EventDispatcher<{
-  viewportResize: any;
-}> {
+export class ThreeJsSetup
+  extends THREE.EventDispatcher<{
+    viewportResize: any;
+  }>
+  implements WithActiveCamera
+{
   private stats: Stats = new Stats();
 
   public scene: THREE.Scene;

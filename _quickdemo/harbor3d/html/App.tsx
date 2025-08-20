@@ -5,8 +5,9 @@ import { PickPanel } from "./Pick.js";
 import { StatsPanel } from "./Stats.js";
 import Controls from "./Controls.js";
 import { ObjectsPanel } from "./Objects.js";
+import { Popup, Tooltips } from "@/_shared/tooltip.js";
 
-const App = (props: React.PropsWithChildren<{}>) => {
+const App = () => {
   return (
     <>
       <div className="Side Title overflow-hidden rounded-lg fixed top-0.5 left-0">
@@ -33,7 +34,8 @@ const App = (props: React.PropsWithChildren<{}>) => {
           }}
         />
       </div>
-      {props.children}
+      <Tooltips />
+      <Popup />
     </>
   );
 };
