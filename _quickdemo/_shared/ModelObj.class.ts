@@ -50,19 +50,13 @@ export class ModelObj extends THREE.Object3D {
         url,
         distance: 0,
       },
-      {
-        type: "label",
-        size: 40,
-        url: label,
-        color,
-        distance: 1000000,
-      },
-      {
-        type: "point",
-        size: 1,
-        color,
-        distance: 300000000,
-      },
+      // {
+      //   type: "label",
+      //   size: 1,
+      //   url: label,
+      //   color,
+      //   distance: 10,
+      // },
     ]);
 
     this.add(this.lod);
@@ -104,17 +98,10 @@ export class ModelObj extends THREE.Object3D {
           this.lod.addLevel(wrapper, distance);
           break;
         }
-        case "label": {
-          this.lod.addLevel(new ImageObj(url, size, size), distance);
-          break;
-        }
+        case "label":
         case "point": {
-          const sphereGeo = new THREE.SphereGeometry(size);
-          const sphere = new THREE.Mesh(
-            sphereGeo,
-            new THREE.MeshPhongMaterial({ color })
-          );
-          this.lod.addLevel(sphere, distance);
+          const img = new ImageObj(url, 36, 36);
+          this.lod.addLevel(img, distance);
           break;
         }
       }

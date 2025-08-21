@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import ReactDOM from "react-dom";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import {
@@ -20,8 +20,6 @@ type HtmlConstruct<O extends THREE.Object3D> = (
 const ticker = () => {
   return performance.now();
 };
-
-const emptyDeps = [];
 
 export class Label<F extends THREE.Object3D> extends CSS2DObject {
   private readonly container: HTMLDivElement;

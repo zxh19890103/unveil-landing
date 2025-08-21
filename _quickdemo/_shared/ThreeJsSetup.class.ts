@@ -92,6 +92,7 @@ export class ThreeJsSetup
     // Add a default WebGLRenderer, make it animated by default
     this.addWebGLRenderer("default", this.mainContainerElement, {
       animated: true,
+      antialias: true,
       zIndex: 100,
     });
 

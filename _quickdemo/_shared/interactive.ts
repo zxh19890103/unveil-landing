@@ -56,7 +56,6 @@ export const createInteractive = (
       // mutation
       if (nextTarget === null) {
         fire(currentTarget, "mouseOut");
-        setPopupObject(null);
         domElement.style.cursor = "default";
       } else {
         if (currentTarget === null) {
@@ -66,12 +65,10 @@ export const createInteractive = (
           fire(nextTarget, "mouseIn");
         }
 
-        setPopupObject(nextTarget);
-
         domElement.style.cursor = "pointer";
       }
 
-      currentTarget = nextTarget;
+      setCurrentTarget(nextTarget);
     }
   };
 
@@ -84,7 +81,8 @@ export const createInteractive = (
 
   const leave = () => {
     isDown = false;
-    currentTarget = null;
+    setCurrentTarget(null);
+    domElement.style.cursor = "default";
 
     domElement.removeEventListener("pointermove", move);
     domElement.removeEventListener("pointerleave", leave);
@@ -119,6 +117,10 @@ export const createInteractive = (
 
   let currentTarget: THREE.Object3D = null;
   let isDown = false;
+  const setCurrentTarget = (target: THREE.Object3D) => {
+    currentTarget = target;
+    setPopupObject(target);
+  };
 
   domElement.addEventListener("pointerenter", enter);
   return {};

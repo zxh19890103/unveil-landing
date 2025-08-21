@@ -46,9 +46,9 @@ export const Popup = memo(() => {
     <div
       hidden={!obj}
       ref={divRef}
-      className="-translate-y-full rounded-lg fixed bg-slate-800/50 text-white p-3 size-fit"
+      className="Popup -translate-y-full rounded -translate-x-1/2 fixed text-sm p-3 size-fit"
     >
-      popup:
+      <div>popup: {obj?.id}</div>
       {obj && obj["$popup"] ? <PopupFor obj={obj} /> : null}
     </div>
   );

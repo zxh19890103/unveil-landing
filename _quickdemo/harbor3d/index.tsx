@@ -10,7 +10,7 @@ import { KmlGisMap } from "@/_shared/kml.js";
 import { Cargo, CargoSpec } from "./Cargo.class.js";
 import { createInteractive } from "@/_shared/interactive.js";
 import App from "./html/App.js";
-import { Tooltips } from "@/_shared/tooltip.js";
+import { StockYard } from "./Stockyard.class.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -117,42 +117,6 @@ world.add(map);
 
 // cargo
 {
-  class StockYard extends THREE.Object3D {
-    constructor(
-      readonly origin: THREE.Vector3,
-      readonly to: THREE.Vector3,
-      readonly dimensions: THREE.Vector3Tuple
-    ) {
-      super();
-
-      const xA = new THREE.Vector2(to.x - origin.x, to.z - origin.z);
-      this.position.copy(origin);
-      this.rotation.y = -xA.angle() + Math.PI;
-    }
-
-    create(spec: THREE.Vector3Tuple, each: (pt: THREE.Vector3) => Cargo) {
-      const [nx, nz, ny] = this.dimensions;
-      const [ux, uy, uz] = spec;
-
-      this.position.add({ x: ux / 2, y: uy / 2, z: uz / 2 });
-      const gap = ux * 0.1;
-
-      for (let ix = 0; ix < nx; ix++) {
-        for (let iy = 0; iy < ny; iy++) {
-          for (let iz = 0; iz < nz; iz++) {
-            const pt = new THREE.Vector3(
-              ix * (ux + gap),
-              iy * (uy + gap),
-              iz * (uz + gap)
-            );
-            const cargo = each(pt);
-            this.add(cargo);
-          }
-        }
-      }
-    }
-  }
-
   map.onReady(() => {
     map.stockyards.forEach((stockYard) => {
       const dimensions = stockYard.marker
@@ -168,7 +132,7 @@ world.add(map);
       world.add(stockYard2);
 
       stockYard2.create(CargoSpec, (pt) => {
-        const cargo = new Cargo(Math.floor(Math.random() * 0xffffff));
+        const cargo = new Cargo(0xffffff);
         cargo.position.copy(pt);
         return cargo;
       });
@@ -178,7 +142,7 @@ world.add(map);
 
 {
   for (let i = 0; i < 3; i++) {
-    const truck = new ModelObj("./generic_truck/scene.gltf", "ship", 0xffffff, {
+    const truck = new ModelObj("./generic_truck/scene.gltf", "/quickdemo/harbor3d/icons/truck.svg", 0xffffff, {
       offset: [0, 0, 0],
       rotation: [0, -1, 0],
       scaleFactor: 0.001,
@@ -240,7 +204,7 @@ world.add(map);
 }
 
 {
-  const ship = new ModelObj("./cargo_ship/scene.gltf", "ship", 0xffffff, {
+  const ship = new ModelObj("./cargo_ship/scene.gltf", "/quickdemo/harbor3d/icons/ship.svg", 0xffffff, {
     offset: [0, -1.5, 0],
     rotation: [0, 1, 0],
     scaleFactor: 0.1,

@@ -155,6 +155,7 @@ export class KmlGisMap extends THREE.Object3D {
 
     line.computeLineDistances();
     line.name = item.desc;
+    line.__$interactive = true;
     this.add(line);
   }
 
@@ -190,10 +191,6 @@ export class KmlGisMap extends THREE.Object3D {
 
     mesh.name = item.desc;
     mesh.__$interactive = true;
-
-    // mesh.addEventListener("click", (e) => {
-    //   console.log("click", e);
-    // });
 
     this.add(mesh);
 

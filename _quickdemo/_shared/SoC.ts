@@ -24,6 +24,7 @@ camera.position.set(5, 5, 5); // Set initial camera position
 // 3. Renderer Setup
 const renderer = new THREE.WebGLRenderer({ antialias: true }); // Enable antialiasing for smoother edges
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
 // 4. Lights
