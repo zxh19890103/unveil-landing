@@ -9,6 +9,14 @@ type KmlGisOptions = {
   onReady?: () => void;
 };
 
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(
+  "/quickdemo/harbor3d/low_road/textures/Material.002_baseColor.jpeg"
+);
+texture.minFilter = THREE.LinearFilter;
+texture.wrapS = THREE.ClampToEdgeWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+
 export class KmlGisMap extends THREE.Object3D {
   readonly roads: THREE.CatmullRomCurve3[] = [];
   readonly waterways: THREE.CatmullRomCurve3[] = [];
@@ -164,27 +172,61 @@ export class KmlGisMap extends THREE.Object3D {
       item.points,
       false,
       "centripetal",
-      0.5
+      0.0
     );
 
-    const width = 0.06;
+    const width = 0.12;
     const roadShape = new THREE.Shape();
     roadShape.moveTo(0, -width / 2);
     roadShape.lineTo(0, width / 2);
 
     // 3. Create the geometry.
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
-      steps: 50, // Number of segments for a smooth path
+      steps: 300, // Number of segments for a smooth path
       extrudePath: path,
       depth: 0,
-      bevelEnabled: true,
+      bevelEnabled: false,
+      bevelSegments: 12,
+      bevelSize: 0.1,
+      bevelThickness: 0.7,
+      bevelOffset: 0,
+      UVGenerator: {
+        generateSideWallUV: (
+          geometry,
+          vertices,
+          indexA,
+          indexB,
+          indexC,
+          indexD
+        ) => {
+          // const s = 0.2;
+          return Array(4)
+            .fill(0)
+            .map((_, i) => {
+              if (i === 0) {
+                return new THREE.Vector2(0, 0);
+              } else if (i === 1) {
+                return new THREE.Vector2(1, 0);
+              } else if (i === 2) {
+                return new THREE.Vector2(1, 1);
+              } else if (i === 3) {
+                return new THREE.Vector2(0, 1);
+              }
+            });
+        },
+        generateTopUV: (geometry, vertices, indexA, indexB, indexC) => {
+          return null;
+        },
+      },
     };
 
     const roadGeometry = new THREE.ExtrudeGeometry(roadShape, extrudeSettings);
     const material = new THREE.MeshBasicMaterial({
-      transparent: true,
+      transparent: false,
       opacity: 0.8,
-      color: 0x012a34,
+      color: 0x777777,
+      depthTest: false,
+      map: texture,
     });
 
     const mesh = new THREE.Mesh(roadGeometry, material);

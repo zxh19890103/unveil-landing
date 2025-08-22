@@ -1,5 +1,5 @@
 ---
 ---
 
-@use "./fonts/font" as fonts;
-@use "site" as site;
+@import "./fonts/font";
+@import "site";

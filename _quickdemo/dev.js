@@ -4,27 +4,18 @@ import ts from "typescript";
 import fs from "node:fs";
 import chokidar from "chokidar";
 import { Transform } from "node:stream";
+import config from "./_config";
 
 const PORT = 3003;
 const allowedOrigin = "*";
 
 const IMPORTMAP = {
-  imports: Object.keys({
-    three: "/assets/jslibs/three/three.module.js",
-    "three/addons/": "https://threejs.org/examples/jsm/",
-    react: "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
-    "react/jsx-runtime":
-      "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
-    "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/+esm",
-    "react-dom/client":
-      "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm",
-    gsap: "https://cdn.skypack.dev/gsap",
-  }),
+  imports: Object.keys(config.importmaps.imports),
 };
 
 const ROOT_DIR = path.resolve("./");
 const TSCONFIG_PATH = path.resolve("./tsconfig.json");
-const WATCHED_FOLDERS = ["samrt-rc", "military", "_shared", "harbor3d"];
+const WATCHED_FOLDERS = config.projects;
 
 // Load tsconfig.json compiler options
 function loadTsConfig(tsconfigPath) {

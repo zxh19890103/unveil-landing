@@ -12,7 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <link rel="shortcut icon" type="image/x-icon" href="./{{page.ico | default: 'favicon.ico'}}?t={{site.time | date: '%s'}}" />
   <link rel="stylesheet" href="/assets/tailwind.css?t={{site.time | date: '%s'}}" />
-  <link rel="stylesheet" href="/assets/style.css" />
+  <link rel="stylesheet" href="/assets/style.css?t={{site.time | date: '%s'}}" />
   <!-- // -->
   {%- feed_meta -%}
   <!-- // -->
@@ -32,49 +32,6 @@
       }
     }
   </script>
-  <style>
-    .App {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 999;
-    }
-
-    .Background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-size: cover;
-      background-color: #23395a;
-    }
-
-    #threejs-container {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      /* Essential for positioning CSS2DRenderer */
-    }
-
-    /* Style for CSS2D labels (optional) */
-    #threejs-container .label {
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 5px;
-      border-radius: 3px;
-      font-family: sans-serif;
-      font-size: 12px;
-      pointer-events: auto;
-      /* Allow interaction with labels if needed */
-    }
-
-    #threejs-container canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  </style>
 </head>
 
 <body>
@@ -89,7 +46,7 @@
   <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/{{ page.mainjs | default: 'index'}}.js"></script>
   <script src="{{site.quickdemoJsHost}}events-client"></script>
   {% else %}
-  <script type="module" src="./index.js"></script>
+  <script type="module" src="./index.js?t={{site.time | date: '%s'}}"></script>
   {% endif %}
 </body>
 
