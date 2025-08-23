@@ -3,7 +3,11 @@ import config from "./_config.js";
 
 esbuild
   .build({
-    entryPoints: ["./harbor3d/index.tsx", "./military/index.ts", "./smart-rc/index.ts"],
+    entryPoints: [
+      "./harbor3d/index.tsx",
+      "./military/index.ts",
+      "./smart-rc/index.ts",
+    ],
     // outfile: "./dist/out.js",
     outdir: "../_site/quickdemo",
     format: "esm",
@@ -19,6 +23,7 @@ esbuild
     write: true,
     minify: true,
     // minifyIdentifiers: true,
+    minifyWhitespace: true,
     allowOverwrite: false,
     // target: ""
   })

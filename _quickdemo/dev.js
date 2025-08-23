@@ -4,7 +4,7 @@ import ts from "typescript";
 import fs from "node:fs";
 import chokidar from "chokidar";
 import { Transform } from "node:stream";
-import config from "./_config";
+import config from "./_config.js";
 
 const PORT = 3003;
 const allowedOrigin = "*";
@@ -285,6 +285,6 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`TS server running at http://localhost:${PORT}`);
 });

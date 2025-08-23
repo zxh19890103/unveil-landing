@@ -25,6 +25,12 @@
     left: 50vw;
     transform: translate(-50%, 0);
   }
+
+  &.Controls {
+    width: 56px * 5;
+    left: 50vw;
+    transform: translate(-50%, 0);
+  }
 }
 
 .Simple {

@@ -4,7 +4,7 @@ import { setPopupObject } from "./tooltip.js";
 export const createInteractive = (
   camera: THREE.Camera,
   world: THREE.Scene,
-  domElement: HTMLDivElement
+  docElement: HTMLDivElement
 ) => {
   const coords = new THREE.Vector2();
   const caster = new THREE.Raycaster();
@@ -13,6 +13,11 @@ export const createInteractive = (
 
   const sorter = (a: THREE.Intersection, b: THREE.Intersection) =>
     a.distance - b.distance;
+
+  const onCurrentTargetSet = (target: THREE.Object3D) => {
+    currentTarget = target;
+    setPopupObject(target);
+  };
 
   const findTarget = (hit: THREE.Object3D, instanceId: number) => {
     let target = hit;
@@ -56,7 +61,7 @@ export const createInteractive = (
       // mutation
       if (nextTarget === null) {
         fire(currentTarget, "mouseOut");
-        domElement.style.cursor = "default";
+        docElement.style.cursor = "default";
       } else {
         if (currentTarget === null) {
           fire(nextTarget, "mouseIn");
@@ -65,34 +70,35 @@ export const createInteractive = (
           fire(nextTarget, "mouseIn");
         }
 
-        domElement.style.cursor = "pointer";
+        docElement.style.cursor = "pointer";
       }
 
-      setCurrentTarget(nextTarget);
+      onCurrentTargetSet(nextTarget);
     }
   };
 
   const enter = () => {
-    domElement.addEventListener("pointermove", move);
-    domElement.addEventListener("pointerleave", leave);
-    domElement.addEventListener("pointerdown", down);
-    domElement.addEventListener("pointerup", up);
+    docElement.addEventListener("pointermove", move);
+    docElement.addEventListener("pointerleave", leave);
+    docElement.addEventListener("pointerdown", down);
+    docElement.addEventListener("pointerup", up);
   };
 
   const leave = () => {
     isDown = false;
-    setCurrentTarget(null);
-    domElement.style.cursor = "default";
+    ennabled = false;
+    docElement.style.cursor = "default";
+    onCurrentTargetSet(null);
 
-    domElement.removeEventListener("pointermove", move);
-    domElement.removeEventListener("pointerleave", leave);
-    domElement.removeEventListener("pointerdown", down);
-    domElement.removeEventListener("pointerup", up);
+    docElement.removeEventListener("pointermove", move);
+    docElement.removeEventListener("pointerleave", leave);
+    docElement.removeEventListener("pointerdown", down);
+    docElement.removeEventListener("pointerup", up);
   };
 
   const move = (e: PointerEvent) => {
-    const w = domElement.clientWidth;
-    const h = domElement.clientHeight;
+    const w = docElement.clientWidth;
+    const h = docElement.clientHeight;
 
     const x = 2 * (e.pageX / w) - 1;
     const y = 1 - 2 * (e.pageY / h);
@@ -115,15 +121,26 @@ export const createInteractive = (
     }
   };
 
-  let currentTarget: THREE.Object3D = null;
-  let isDown = false;
-  const setCurrentTarget = (target: THREE.Object3D) => {
-    currentTarget = target;
-    setPopupObject(target);
+  const enable = () => {
+    enter();
+    docElement.addEventListener("pointerenter", enter);
+    ennabled = true;
   };
 
-  domElement.addEventListener("pointerenter", enter);
-  return {};
+  const disable = () => {
+    leave();
+    docElement.removeEventListener("pointerenter", enter);
+    ennabled = false;
+  };
+
+  let currentTarget: THREE.Object3D = null;
+  let isDown = false;
+  let ennabled = false;
+
+  return {
+    enable,
+    disable,
+  };
 };
 
 export const createFollowing = (context: WithActiveCamera) => {

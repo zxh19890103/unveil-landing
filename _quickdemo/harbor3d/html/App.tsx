@@ -24,10 +24,7 @@ const App = () => {
           <PickPanel />
         </Sidebar>
       </div>
-      <div
-        style={LayoutFootStyle}
-        className="Side Controls overflow-hidden rounded-lg fixed bottom-1 left-0"
-      >
+      <div className="Side Controls overflow-hidden rounded-lg fixed bottom-1 left-0">
         <Controls
           onClick={(which) => {
             document.documentElement.classList.toggle("Simple");
@@ -38,12 +35,6 @@ const App = () => {
       <Popup />
     </>
   );
-};
-
-const LayoutFootStyle: React.CSSProperties = {
-  width: 120,
-  left: "50vw",
-  transform: "translate(-50%, 0)",
 };
 
 export default App;

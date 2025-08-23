@@ -2,21 +2,8 @@
 
 import React, { useState } from "react";
 
-// 假設這是一個圖標佔位符，你應替換為實際的 SVG 或組件
-const IconPlaceholder = ({ name }) => (
-  <div className="w-5 h-5 bg-gray-600 rounded-sm"></div>
-);
-
 const Footer = ({ onClick }) => {
   const [activeMode, setActiveMode] = useState("monitor"); // 預設模式為 'monitor'
-
-  // 定義所有模式及其顯示名稱
-  const modes = [
-    { id: "monitor", name: "監控" },
-    { id: "interact", name: "交互" },
-    { id: "rotate", name: "旋轉" },
-    // 你可以根據需要添加更多模式
-  ];
 
   return (
     <footer
@@ -34,17 +21,27 @@ const Footer = ({ onClick }) => {
       z-20
     "
     >
-      <button
-        className="  transition-all  duration-200 hover:scale-90 "
-        onClick={onClick}
-      >
-        <img src="./icons/screen.svg" className=" w-9" />
-      </button>
-      <button className=" transition-all duration-200 hover:scale-90">
-        <img src="./icons/mouse.svg" className=" w-9" />
-      </button>
+      <Button iconUrl="panels-hidden.svg" onClick={onClick} />
+      <Button iconUrl="panels-visible.svg" onClick={onClick} />
+      <Button iconUrl="interact.svg" onClick={null} />
+      <Button iconUrl="fullscreen.svg" onClick={null} />
+      <Button iconUrl="fullscreen-exit.svg" onClick={null} />
+      <Button iconUrl="camera.svg" onClick={null} />
     </footer>
   );
 };
+
+const Button = ({ onClick, iconUrl }) => {
+  return (
+    <button
+      className=" transition-all  duration-200 hover:scale-90 "
+      onClick={onClick}
+    >
+      <img src={"/quickdemo/@icons/" + iconUrl} className="w-9" />
+    </button>
+  );
+};
+
+const Toggle = () => {};
 
 export default Footer;
