@@ -25,11 +25,7 @@ const App = () => {
         </Sidebar>
       </div>
       <div className="Side Controls overflow-hidden rounded-lg fixed bottom-1 left-0">
-        <Controls
-          onClick={(which) => {
-            document.documentElement.classList.toggle("Simple");
-          }}
-        />
+        <Controls />
       </div>
       <Tooltips />
       <Popup />

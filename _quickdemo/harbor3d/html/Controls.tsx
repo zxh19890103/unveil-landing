@@ -1,9 +1,52 @@
 // src/components/Footer.jsx
 
-import React, { useState } from "react";
+import { createState } from "@/_shared/state.js";
 
-const Footer = ({ onClick }) => {
-  const [activeMode, setActiveMode] = useState("monitor"); // 預設模式為 'monitor'
+const state = createState({
+  fullscreen: false,
+  interactive: false,
+  panels: true,
+});
+
+state.effect("fullscreen", (val) => {
+  if (val) {
+    const element = document.documentElement as any;
+
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      // Safari and older Chrome
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      // IE11
+      element.msRequestFullscreen();
+    }
+  } else {
+    const doc = document as any;
+
+    if (doc.fullscreenElement) {
+      // If we're in fullscreen mode, exit it
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        doc.msExitFullscreen();
+      }
+    }
+  }
+});
+
+state.effect("panels", (val) => {
+  if (val) {
+    document.documentElement.classList.remove("Simple");
+  } else {
+    document.documentElement.classList.add("Simple");
+  }
+});
+
+const Footer = ({}) => {
+  state.use();
 
   return (
     <footer
@@ -21,11 +64,27 @@ const Footer = ({ onClick }) => {
       z-20
     "
     >
-      <Button iconUrl="panels-hidden.svg" onClick={onClick} />
-      <Button iconUrl="panels-visible.svg" onClick={onClick} />
-      <Button iconUrl="interact.svg" onClick={null} />
-      <Button iconUrl="fullscreen.svg" onClick={null} />
-      <Button iconUrl="fullscreen-exit.svg" onClick={null} />
+      <Button
+        iconUrl={state.panels ? "panels-hidden.svg" : "panels-visible.svg"}
+        onClick={() => {
+          state.panels = !state.panels;
+        }}
+      />
+
+      <Button
+        iconUrl="interact.svg"
+        onClick={() => {
+          state.interactive = !state.interactive;
+        }}
+      />
+
+      <Button
+        iconUrl={state.fullscreen ? "fullscreen-exit.svg" : "fullscreen.svg"}
+        onClick={() => {
+          state.fullscreen = !state.fullscreen;
+        }}
+      />
+
       <Button iconUrl="camera.svg" onClick={null} />
     </footer>
   );
@@ -41,7 +100,5 @@ const Button = ({ onClick, iconUrl }) => {
     </button>
   );
 };
-
-const Toggle = () => {};
 
 export default Footer;

@@ -32,7 +32,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Directional light for shadows
-directionalLight.position.set(5, 10, 7.5).normalize();
+directionalLight.position.set(5, 80, 7.5).normalize();
 scene.add(directionalLight);
 
 // 6. OrbitControls Setup

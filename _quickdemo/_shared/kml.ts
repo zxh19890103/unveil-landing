@@ -13,9 +13,19 @@ const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load(
   "/quickdemo/harbor3d/low_road/textures/Material.002_baseColor.jpeg"
 );
+
+const texture2 = textureLoader.load(
+  "/quickdemo/harbor3d/texture-old-concrete-wall-background.jpg"
+);
+
 texture.minFilter = THREE.LinearFilter;
 texture.wrapS = THREE.ClampToEdgeWrapping;
 texture.wrapT = THREE.RepeatWrapping;
+
+texture2.minFilter = THREE.LinearFilter;
+texture2.magFilter = THREE.LinearFilter;
+texture2.wrapS = THREE.MirroredRepeatWrapping;
+texture2.wrapT = THREE.MirroredRepeatWrapping;
 
 export class KmlGisMap extends THREE.Object3D {
   readonly roads: THREE.CatmullRomCurve3[] = [];
@@ -66,9 +76,10 @@ export class KmlGisMap extends THREE.Object3D {
 
           const id = nameTag.textContent.trim();
           const name = id.split("_")[0] as KmlParsedResName;
-          const desc = extendedDataTag.firstElementChild.textContent.trim();
-          const marker =
-            extendedDataTag.lastElementChild.textContent.trim() as KmlParsedResMarker;
+          const [descTag, typeTag, elevationTag] = extendedDataTag.children;
+          const desc = descTag.textContent.trim();
+          const marker = typeTag.textContent.trim() as KmlParsedResMarker;
+          const elevation = +elevationTag.textContent.trim();
 
           result.push({
             type,
@@ -76,6 +87,7 @@ export class KmlGisMap extends THREE.Object3D {
             name,
             desc,
             marker,
+            elevation,
             points: parse(coordinates),
           });
         }
@@ -88,9 +100,13 @@ export class KmlGisMap extends THREE.Object3D {
             case "Polygon": {
               switch (item.name) {
                 case "land": {
-                  const land = this.createLand(item, 0xded1d0);
-                  land.rotation.x = Math.PI / 2;
+                  const land = this.createLand(item);
+                  // land.rotation.x = Math.PI / 2;
                   land.position.y = -0.01;
+                  break;
+                }
+                case "hill": {
+                  this.createHill(item);
                   break;
                 }
               }
@@ -240,8 +256,8 @@ export class KmlGisMap extends THREE.Object3D {
     return mesh;
   }
 
-  createLand(item: KmlParsedRes, color: THREE.ColorRepresentation) {
-    const geo = new THREE.ShapeGeometry(
+  createLand(item: KmlParsedRes, color: THREE.ColorRepresentation = 0xdeae9d) {
+    const geometry = new THREE.ShapeGeometry(
       new THREE.Shape(
         item.points.map((vec) => {
           return new THREE.Vector2(vec.x, vec.z);
@@ -249,17 +265,53 @@ export class KmlGisMap extends THREE.Object3D {
       )
     );
 
+    const mat = new THREE.ShaderMaterial({
+      precision: "mediump",
+      uniforms: {
+        map: { value: texture2 },
+        quantizationLevel: { value: 64.0 },
+      },
+      blendColor: 0xed1013,
+      vertexShader: `
+      varying vec2 vPos;
+
+      void main() {
+        vec4 pos = modelMatrix * vec4(position.xyz, 1.0);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+        vPos = pos.xz;
+      }
+      `,
+      fragmentShader: `
+      uniform sampler2D map;
+      uniform float quantizationLevel;
+      varying vec2 vPos;
+      
+      void main() {
+        vec2 uv = mod(vPos, 5.0) / 5.0;
+        vec4 texel = texture2D(map, uv * 2.0);
+        vec4 quantizedColor = floor(texel * quantizationLevel) / quantizationLevel;
+        gl_FragColor = vec4(quantizedColor.rgb * 1.5, 1.0);
+      }
+      `,
+      side: THREE.DoubleSide,
+    });
+
     const mesh = new THREE.Mesh(
-      geo,
-      new THREE.MeshBasicMaterial({
-        transparent: false,
-        opacity: 0.5,
-        side: THREE.DoubleSide,
-        color: color,
-      })
+      geometry,
+      mat
+      // new THREE.MeshBasicMaterial({
+      //   transparent: false,
+      //   opacity: 0.5,
+      //   side: THREE.DoubleSide,
+      //   color: color,
+      //   wireframe: false,
+      //   // map: texture2,
+      // })
     );
 
     mesh.name = item.desc;
+    mesh.rotation.x = Math.PI / 2;
+
     this.add(mesh);
 
     return mesh;
@@ -280,6 +332,78 @@ export class KmlGisMap extends THREE.Object3D {
     return label;
   }
 
+  createHill(item: KmlParsedRes) {
+    const curve = new THREE.CatmullRomCurve3(
+      item.points,
+      false,
+      "catmullrom",
+      0.5
+    );
+
+    const points = curve.getSpacedPoints(600);
+    const top = new THREE.Vector3();
+    points.unshift(points[0]);
+
+    const indices: number[] = [];
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setFromPoints(points);
+    geometry.computeVertexNormals();
+
+    geometry.computeBoundingBox();
+    geometry.boundingBox.getCenter(top);
+
+    geometry.attributes.position.setXYZ(
+      0,
+      top.x,
+      item.elevation * 0.006,
+      top.z
+    );
+    // geometry.attributes.position.needsUpdate = true;
+    // top.y = item.elevation * 0.006;
+
+    const colors = new Float32Array(points.length * 3);
+    const color = new THREE.Color(0x12fe01);
+
+    colors[0] = color.r;
+    colors[1] = color.g;
+    colors[2] = color.b;
+
+    color.setHex(0xdeae9d);
+
+    for (let i = 1, len = points.length - 1; i < len; i++) {
+      const index0 = 0;
+      const index1 = i;
+      const index2 = i + 1;
+
+      colors[3 * index1] = color.r;
+      colors[3 * index1 + 1] = color.g;
+      colors[3 * index1 + 2] = color.b;
+
+      indices.push(index0, index1, index2);
+    }
+
+    geometry.setIndex(indices);
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+    const hill = new THREE.Mesh(
+      geometry,
+      new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        vertexColors: true,
+      })
+    );
+
+    this.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(curve.getSpacedPoints(300)),
+        new THREE.LineBasicMaterial({ color: 0x12fe01 })
+      )
+    );
+
+    this.add(hill);
+  }
+
   readonly center = new THREE.Vector3();
   readonly readyFns: VoidFunction[] = [];
 
@@ -295,6 +419,7 @@ type KmlParsedResName =
   | "landmark"
   | "road"
   | "land"
+  | "hill"
   | "stockyard"
   | "center";
 
@@ -303,6 +428,7 @@ type KmlParsedResMarker = "park" | "station" | "hotel";
 
 type KmlParsedRes = {
   type: KmlParsedResType;
+  elevation: number;
   marker: KmlParsedResMarker;
   id: string;
   desc: string;

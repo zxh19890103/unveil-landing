@@ -94,13 +94,16 @@
     </StyleMap>
     <Placemark>
       <name>land_01</name>
-      <description><![CDATA[description: 大連港地圖<br>type: ]]></description>
+      <description><![CDATA[description: 大連港地圖<br>type: <br>elevation: ]]></description>
       <styleUrl>#poly-000000-1200-77</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>大連港地圖</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -170,7 +173,7 @@
               121.6708521,38.9315229,0
               121.6714958,38.9333923,0
               121.6696934,38.9339932,0
-              121.6667752,38.929186,0
+              121.6668074,38.9291025,0
               121.663299,38.9303544,0
               121.6658739,38.9352951,0
               121.6643719,38.9358626,0
@@ -207,7 +210,7 @@
     </Placemark>
     <Placemark>
       <name>road_01</name>
-      <description><![CDATA[description: 疏港路<br>type: ]]></description>
+      <description><![CDATA[description: 疏港路<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -216,12 +219,15 @@
         <Data name="type">
           <value/>
         </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
       </ExtendedData>
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
           121.6607027,38.9367472,0
-          121.6574888,38.9309153,0
+          121.6575103,38.9309821,0
           121.6531899,38.9325448,0
           121.6498284,38.9305147,0
           121.6476778,38.931189,0
@@ -237,7 +243,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_01</name>
-      <description><![CDATA[description: 大連俄羅斯風情街<br>type: park]]></description>
+      <description><![CDATA[description: 大連俄羅斯風情街<br>type: park<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -245,6 +251,9 @@
         </Data>
         <Data name="type">
           <value>park</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <Point>
@@ -255,7 +264,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_03</name>
-      <description><![CDATA[description: 香格里拉酒店<br>type: hotel]]></description>
+      <description><![CDATA[description: 香格里拉酒店<br>type: hotel<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -263,6 +272,9 @@
         </Data>
         <Data name="type">
           <value>hotel</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <Point>
@@ -273,13 +285,16 @@
     </Placemark>
     <Placemark>
       <name>ship_01</name>
-      <description><![CDATA[description: 船舶停留的位置<br>type: ]]></description>
+      <description><![CDATA[description: 船舶停留的位置<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>船舶停留的位置</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -293,13 +308,16 @@
     </Placemark>
     <Placemark>
       <name>shipline_01</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value/>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -316,13 +334,16 @@
     </Placemark>
     <Placemark>
       <name>shipline_02</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value/>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -342,13 +363,16 @@
     </Placemark>
     <Placemark>
       <name>shipline_03</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value/>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -364,7 +388,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_02</name>
-      <description><![CDATA[description: 大連火車站<br>type: station]]></description>
+      <description><![CDATA[description: 大連火車站<br>type: station<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -372,6 +396,9 @@
         </Data>
         <Data name="type">
           <value>station</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <Point>
@@ -382,13 +409,16 @@
     </Placemark>
     <Placemark>
       <name>center</name>
-      <description><![CDATA[description: 中心<br>type: ]]></description>
+      <description><![CDATA[description: 中心<br>type: <br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>中心</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -400,13 +430,16 @@
     </Placemark>
     <Placemark>
       <name>road_02</name>
-      <description><![CDATA[description: 人民路<br>type: ]]></description>
+      <description><![CDATA[description: 人民路<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>人民路</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -433,6 +466,7 @@
           121.6623181,38.9296745,0
           121.6621035,38.9299249,0
           121.6615456,38.929975,0
+          121.6589492,38.9307095,0
           121.6578549,38.9310433,0
           121.6591424,38.9334469,0
           121.6609448,38.9366516,0
@@ -441,13 +475,16 @@
     </Placemark>
     <Placemark>
       <name>road_03</name>
-      <description><![CDATA[description: 港隆路<br>type: ]]></description>
+      <description><![CDATA[description: 港隆路<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>港隆路</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -473,7 +510,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_04</name>
-      <description><![CDATA[description: 海之韻公園<br>type: park]]></description>
+      <description><![CDATA[description: 海之韻公園<br>type: park<br>elevation: 138]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -481,6 +518,9 @@
         </Data>
         <Data name="type">
           <value>park</value>
+        </Data>
+        <Data name="elevation">
+          <value>138.0</value>
         </Data>
       </ExtendedData>
       <Point>
@@ -491,13 +531,16 @@
     </Placemark>
     <Placemark>
       <name>ship_02</name>
-      <description><![CDATA[description: <br>type: ]]></description>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value/>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -511,13 +554,16 @@
     </Placemark>
     <Placemark>
       <name>road_04</name>
-      <description><![CDATA[description: 通往碼頭<br>type: ]]></description>
+      <description><![CDATA[description: 通往碼頭<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>通往碼頭</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -533,7 +579,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_05</name>
-      <description><![CDATA[description: 海軍廣場<br>type: park]]></description>
+      <description><![CDATA[description: 海軍廣場<br>type: park<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -541,6 +587,9 @@
         </Data>
         <Data name="type">
           <value>park</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <Point>
@@ -551,13 +600,16 @@
     </Placemark>
     <Placemark>
       <name>road_05</name>
-      <description><![CDATA[description: 港浦路<br>type: ]]></description>
+      <description><![CDATA[description: 港浦路<br>type: <br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
           <value>港浦路</value>
         </Data>
         <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
           <value/>
         </Data>
       </ExtendedData>
@@ -601,7 +653,7 @@
     </Placemark>
     <Placemark>
       <name>stockyard_01</name>
-      <description><![CDATA[description: 堆場 1<br>type: 2x6x3]]></description>
+      <description><![CDATA[description: 堆場 1<br>type: 2x6x3<br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -609,6 +661,9 @@
         </Data>
         <Data name="type">
           <value>2x6x3</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <LineString>
@@ -621,7 +676,7 @@
     </Placemark>
     <Placemark>
       <name>stockyard_02</name>
-      <description><![CDATA[description: 堆場2<br>type: 3x7x5]]></description>
+      <description><![CDATA[description: 堆場2<br>type: 3x7x5<br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -629,6 +684,9 @@
         </Data>
         <Data name="type">
           <value>3x7x5</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <LineString>
@@ -641,7 +699,7 @@
     </Placemark>
     <Placemark>
       <name>stockyard_03</name>
-      <description><![CDATA[description: 堆場3<br>type: 2x8x9]]></description>
+      <description><![CDATA[description: 堆場3<br>type: 2x8x9<br>elevation: ]]></description>
       <styleUrl>#line-000000-1200</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -649,6 +707,9 @@
         </Data>
         <Data name="type">
           <value>2x8x9</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <LineString>
@@ -661,7 +722,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_06</name>
-      <description><![CDATA[description: 大連觀光塔<br>type: park]]></description>
+      <description><![CDATA[description: 大連觀光塔<br>type: park<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -669,6 +730,9 @@
         </Data>
         <Data name="type">
           <value>park</value>
+        </Data>
+        <Data name="elevation">
+          <value/>
         </Data>
       </ExtendedData>
       <Point>
@@ -679,7 +743,7 @@
     </Placemark>
     <Placemark>
       <name>landmark_07</name>
-      <description><![CDATA[description: 人民廣場<br>type: park]]></description>
+      <description><![CDATA[description: 人民廣場<br>type: park<br>elevation: ]]></description>
       <styleUrl>#icon-1899-0288D1</styleUrl>
       <ExtendedData>
         <Data name="description">
@@ -688,12 +752,53 @@
         <Data name="type">
           <value>park</value>
         </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
       </ExtendedData>
       <Point>
         <coordinates>
           121.6146308,38.9033629,0
         </coordinates>
       </Point>
+    </Placemark>
+    <Placemark>
+      <name>hill_01</name>
+      <description><![CDATA[description: 海之韵公园-山<br>type: park<br>elevation: 138]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value>海之韵公园-山</value>
+        </Data>
+        <Data name="type">
+          <value>park</value>
+        </Data>
+        <Data name="elevation">
+          <value>138.0</value>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.703446,38.9067298,0
+              121.7004419,38.9067966,0
+              121.6982103,38.9056611,0
+              121.6966654,38.9039913,0
+              121.696837,38.9015867,0
+              121.7001844,38.8999836,0
+              121.7025877,38.8985808,0
+              121.7066217,38.898514,0
+              121.7087675,38.9004512,0
+              121.7101837,38.9035237,0
+              121.7091966,38.9048596,0
+              121.7068792,38.9057279,0
+              121.703446,38.9067298,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
     </Placemark>
   </Document>
 </kml>

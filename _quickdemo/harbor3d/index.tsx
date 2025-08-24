@@ -142,11 +142,16 @@ world.add(map);
 
 {
   for (let i = 0; i < 3; i++) {
-    const truck = new ModelObj("./generic_truck/scene.gltf", "/quickdemo/harbor3d/icons/truck.svg", 0xffffff, {
-      offset: [0, 0, 0],
-      rotation: [0, -1, 0],
-      scaleFactor: 0.001,
-    });
+    const truck = new ModelObj(
+      "./generic_truck/scene.gltf",
+      "/quickdemo/harbor3d/icons/truck.svg",
+      0xffffff,
+      {
+        offset: [0, 0, 0],
+        rotation: [0, -1, 0],
+        scaleFactor: 0.001,
+      }
+    );
 
     truck.traverse((child) => {
       if (Object.hasOwn(child, "isMesh")) {
@@ -204,11 +209,16 @@ world.add(map);
 }
 
 {
-  const ship = new ModelObj("./cargo_ship/scene.gltf", "/quickdemo/harbor3d/icons/ship.svg", 0xffffff, {
-    offset: [0, -1.5, 0],
-    rotation: [0, 1, 0],
-    scaleFactor: 0.1,
-  });
+  const ship = new ModelObj(
+    "./cargo_ship/scene.gltf",
+    "/quickdemo/harbor3d/icons/ship.svg",
+    0xffffff,
+    {
+      offset: [0, -1.5, 0],
+      rotation: [0, 1, 0],
+      scaleFactor: 0.1,
+    }
+  );
 
   ship.popup(() => {
     return <div>hello</div>;
@@ -242,7 +252,6 @@ world.add(map);
 threeJs.startAnimation();
 
 const Crs = new THREE.AxesHelper(1);
-// Crs.position.y = 15;
 map.add(Crs);
 
 {
