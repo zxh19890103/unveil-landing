@@ -29,6 +29,7 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
 
   constructor(_html: HtmlConstruct<F>) {
     const container = document.createElement("div");
+    container.className = "";
     super(container);
     this.container = container;
 

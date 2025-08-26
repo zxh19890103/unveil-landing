@@ -8,9 +8,16 @@ import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
 import { KmlGisMap } from "@/_shared/kml.js";
 import { Cargo, CargoSpec } from "./Cargo.class.js";
-import { createInteractive } from "@/_shared/interactive.js";
+import {
+  createFollowing,
+  createInteractive,
+  createSelector,
+} from "@/_shared/interactive.js";
 import App from "./html/App.js";
 import { StockYard } from "./Stockyard.class.js";
+import { Truck } from "./Truck.class.js";
+import { Ship } from "./Ship.class.js";
+import { appState } from "./state.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -39,8 +46,9 @@ threeJs.onAnimate(renderRendererTiles);
 
 //#region lights
 {
-  const dirLight = new THREE.DirectionalLight("white", 1.2);
-  const ambLight = new THREE.AmbientLight("white", 0.8);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
+
   world.add(dirLight, ambLight);
   staticWorld.add(dirLight.clone(), ambLight.clone());
 }
@@ -129,6 +137,8 @@ world.add(map);
         dimensions
       );
 
+      appState.objects.push(stockYard2);
+
       world.add(stockYard2);
 
       stockYard2.create(CargoSpec, (pt) => {
@@ -141,84 +151,42 @@ world.add(map);
 }
 
 {
-  for (let i = 0; i < 3; i++) {
-    const truck = new ModelObj(
-      "./generic_truck/scene.gltf",
-      "/quickdemo/harbor3d/icons/truck.svg",
-      0xffffff,
-      {
-        offset: [0, 0, 0],
-        rotation: [0, -1, 0],
-        scaleFactor: 0.001,
-      }
-    );
+  type TruckUserData = { driver: string };
+  const truck = new Truck<TruckUserData>();
 
-    truck.traverse((child) => {
-      if (Object.hasOwn(child, "isMesh")) {
-        if (child["material"]) {
-          child["material"].depthWrite = true;
-        }
-      }
-    });
+  for (let i = 0; i < 10; i++) {
+    const truckCopy = truck.clone();
+    appState.objects.push(truckCopy);
 
-    truck.userData.licenseNo = "川A91001";
-    truck.userData.cargos = [1, 1, 1, 1];
-    truck.userData.distance = 9;
-    truck.userData.action = "運輸中";
-    truck.userData.driver = "張星海";
-
-    truck.tooltip(({ obj, driver, action, licenseNo }) => {
-      return (
-        <div className=" bg-slate-200/70 text-xs p-1 rounded">
-          {licenseNo} / {driver} / {action}...
-        </div>
-      );
-    });
-
-    setTimeout(() => {
-      truck.userData.driver = "singhi";
-    }, 5000);
-
-    map.add(truck);
+    map.add(truckCopy);
 
     map.onReady(() => {
       const pos = new THREE.Vector3();
       const dir = new THREE.Vector3();
       let u = 0;
+      let speed = Math.random() * 0.001;
 
-      const road = map.roads[i];
+      const road = map.roads[i % 3];
 
       threeJs.onAnimate((delta) => {
         if (u >= 1) return;
 
         road.getPointAt(u, pos);
 
-        truck.position.copy(pos);
+        truckCopy.position.copy(pos);
 
         road.getTangentAt(u, dir);
         pos.add(dir);
-        truck.lookAt(pos);
+        truckCopy.lookAt(pos);
 
-        u += 0.0001;
-
-        truck.userData.distance = 100 * Math.random();
-        // label.updatePlace(camera, threeJs.getWebGLRenderer("default"));
+        u += speed;
       });
     });
   }
 }
 
 {
-  const ship = new ModelObj(
-    "./cargo_ship/scene.gltf",
-    "/quickdemo/harbor3d/icons/ship.svg",
-    0xffffff,
-    {
-      offset: [0, -1.5, 0],
-      rotation: [0, 1, 0],
-      scaleFactor: 0.1,
-    }
-  );
+  const ship = new Ship();
 
   ship.popup(() => {
     return <div>hello</div>;
@@ -247,6 +215,12 @@ world.add(map);
   });
 
   world.add(ship);
+
+  appState.objects.push(ship);
+
+  setTimeout(() => {
+    appState.objects.push(ship);
+  }, 4000);
 }
 
 threeJs.startAnimation();
@@ -255,7 +229,34 @@ const Crs = new THREE.AxesHelper(1);
 map.add(Crs);
 
 {
-  createInteractive(threeJs.camera, threeJs.scene, threejsContainer);
+  const interactive = createInteractive(threeJs, threejsContainer);
+
+  appState.effect("/interactive", (val) => {
+    val ? interactive.enable() : interactive.disable();
+  });
+}
+
+{
+  const follower = createFollowing(threeJs);
+
+  appState.effect("/following", (obj) => {
+    if (obj) {
+      follower.follow(obj);
+    } else {
+      follower.unfollow();
+    }
+  });
+}
+
+{
+  const selector = createSelector(threeJs);
+  appState.effect("/focus", (obj) => {
+    if (obj) {
+      selector.select(obj);
+    } else {
+      selector.unselect();
+    }
+  });
 }
 
 ReactDOM.createRoot(document.querySelector(".App"), {}).render(

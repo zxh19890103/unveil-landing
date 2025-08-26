@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { ImageObj } from "./ImageObj.class.js";
 import type { LngLat } from "./geo-mercator.js";
 
 type LODLevel = {
@@ -50,13 +49,13 @@ export class ModelObj extends THREE.Object3D {
         url,
         distance: 0,
       },
-      // {
-      //   type: "label",
-      //   size: 1,
-      //   url: label,
-      //   color,
-      //   distance: 10,
-      // },
+      {
+        type: "label",
+        size: 0.1,
+        url: label,
+        color,
+        distance: 12,
+      },
     ]);
 
     this.add(this.lod);
@@ -100,8 +99,18 @@ export class ModelObj extends THREE.Object3D {
         }
         case "label":
         case "point": {
-          const img = new ImageObj(url, 36, 36);
-          this.lod.addLevel(img, distance);
+          const circleGeometry = new THREE.CircleGeometry(size);
+          const circle = new THREE.Mesh(
+            circleGeometry,
+            new THREE.MeshBasicMaterial({
+              color: color,
+              side: THREE.DoubleSide,
+              transparent: true,
+              opacity: 0.78,
+            })
+          );
+          circle.rotation.x = Math.PI / 2;
+          this.lod.addLevel(circle, distance);
           break;
         }
       }

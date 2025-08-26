@@ -1,14 +1,7 @@
 // src/components/Footer.jsx
+import { appState } from "../state.js";
 
-import { createState } from "@/_shared/state.js";
-
-const state = createState({
-  fullscreen: false,
-  interactive: false,
-  panels: true,
-});
-
-state.effect("fullscreen", (val) => {
+appState.effect("/fullscreen", (val) => {
   if (val) {
     const element = document.documentElement as any;
 
@@ -37,7 +30,7 @@ state.effect("fullscreen", (val) => {
   }
 });
 
-state.effect("panels", (val) => {
+appState.effect("/panels", (val) => {
   if (val) {
     document.documentElement.classList.remove("Simple");
   } else {
@@ -46,7 +39,7 @@ state.effect("panels", (val) => {
 });
 
 const Footer = ({}) => {
-  state.use();
+  appState.use();
 
   return (
     <footer
@@ -65,27 +58,42 @@ const Footer = ({}) => {
     "
     >
       <Button
-        iconUrl={state.panels ? "panels-hidden.svg" : "panels-visible.svg"}
+        iconUrl={appState.panels ? "panels-hidden.svg" : "panels-visible.svg"}
         onClick={() => {
-          state.panels = !state.panels;
+          appState.panels = !appState.panels;
         }}
       />
 
       <Button
-        iconUrl="interact.svg"
+        iconUrl={
+          appState.interactive ? "interact.svg" : "interact-disabled.svg"
+        }
         onClick={() => {
-          state.interactive = !state.interactive;
+          appState.interactive = !appState.interactive;
         }}
       />
 
       <Button
-        iconUrl={state.fullscreen ? "fullscreen-exit.svg" : "fullscreen.svg"}
+        iconUrl={appState.fullscreen ? "fullscreen-exit.svg" : "fullscreen.svg"}
         onClick={() => {
-          state.fullscreen = !state.fullscreen;
+          appState.fullscreen = !appState.fullscreen;
         }}
       />
 
-      <Button iconUrl="camera.svg" onClick={null} />
+      {appState.focus && (
+        <Button
+          iconUrl="camera.svg"
+          onClick={() => {
+            if (appState.focus) {
+              if (appState.following) {
+                appState.following = null;
+              } else {
+                appState.following = appState.focus;
+              }
+            }
+          }}
+        />
+      )}
     </footer>
   );
 };

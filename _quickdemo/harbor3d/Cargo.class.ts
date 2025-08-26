@@ -10,6 +10,7 @@ texture.minFilter = THREE.LinearFilter;
 texture.magFilter = THREE.LinearFilter;
 
 export class Cargo extends THREE.Mesh {
+  readonly $$type = "cargo";
   readonly __$interactive = true;
   readonly size: THREE.Vector3;
 

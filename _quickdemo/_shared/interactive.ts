@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { setPopupObject } from "./tooltip.js";
+import gsap from "gsap";
 
 export const createInteractive = (
-  camera: THREE.Camera,
-  world: THREE.Scene,
+  context: WithActiveCamera,
   docElement: HTMLDivElement
 ) => {
   const coords = new THREE.Vector2();
@@ -43,7 +43,7 @@ export const createInteractive = (
   };
 
   const cast = () => {
-    const intersections = caster.intersectObject(world, true);
+    const intersections = caster.intersectObject(context.scene, true);
     intersections.sort(sorter);
     const intersection = intersections[0];
 
@@ -86,7 +86,6 @@ export const createInteractive = (
 
   const leave = () => {
     isDown = false;
-    ennabled = false;
     docElement.style.cursor = "default";
     onCurrentTargetSet(null);
 
@@ -103,7 +102,7 @@ export const createInteractive = (
     const x = 2 * (e.pageX / w) - 1;
     const y = 1 - 2 * (e.pageY / h);
     coords.set(x, y);
-    caster.setFromCamera(coords, camera);
+    caster.setFromCamera(coords, context.activeCamera);
     cast();
   };
 
@@ -124,18 +123,15 @@ export const createInteractive = (
   const enable = () => {
     enter();
     docElement.addEventListener("pointerenter", enter);
-    ennabled = true;
   };
 
   const disable = () => {
     leave();
     docElement.removeEventListener("pointerenter", enter);
-    ennabled = false;
   };
 
   let currentTarget: THREE.Object3D = null;
   let isDown = false;
-  let ennabled = false;
 
   return {
     enable,
@@ -153,21 +149,84 @@ export const createFollowing = (context: WithActiveCamera) => {
     currentCamera.far
   );
 
-  const pos = new THREE.Vector3();
   const lookat = new THREE.Vector3();
+
+  let _target: THREE.Object3D;
 
   return {
     follow: (target: THREE.Object3D) => {
-      camera.position.set(0, 3, 0);
+      context.activeCamera = camera;
+      context.controls.enabled = false;
+
+      // don't add one object to two objects as child.
+      if (_target) {
+        _target.remove(camera);
+      }
+
+      camera.up.set(0, 0, 1);
+      camera.position.set(0, 10, 0);
       camera.lookAt(lookat);
       target.add(camera);
 
-      context.activeCamera = camera;
-      context.controls.enabled = false;
+      _target = target;
     },
     unfollow: () => {
       context.controls.enabled = true;
       context.activeCamera = currentCamera;
+
+      _target.remove(camera);
+      _target = null;
+    },
+  };
+};
+
+export const createSelector = (context: WithActiveCamera) => {
+  let current: THREE.Object3D;
+
+  const hightlight = new THREE.Mesh(
+    new THREE.CircleGeometry(1.4),
+    new THREE.MeshBasicMaterial({
+      color: 0xdf2a32,
+      transparent: true,
+      opacity: 0.65,
+    })
+  );
+
+  hightlight.rotation.x = -Math.PI / 2;
+
+  const timeline = gsap.timeline({});
+
+  timeline.add(
+    gsap.to(hightlight.scale, {
+      x: 0.1,
+      y: 0.1,
+      repeat: -1,
+      repeatDelay: 0,
+      delay: 0,
+      duration: 1.2,
+      yoyo: true,
+      ease: "power1.inOut",
+    }),
+    0
+  );
+
+  return {
+    select: (target: THREE.Object3D) => {
+      if (current) {
+        current.remove(hightlight);
+      }
+
+      current = target;
+      current.add(hightlight);
+
+      timeline.play();
+    },
+    unselect: () => {
+      if (!current) return;
+
+      timeline.pause();
+      current.remove(hightlight);
+      current = null;
     },
   };
 };

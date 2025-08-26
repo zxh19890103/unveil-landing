@@ -2,6 +2,8 @@ import * as THREE from "three";
 import type { Cargo } from "./Cargo.class.js";
 
 export class StockYard extends THREE.Object3D {
+  readonly $$type = "stockyard";
+
   constructor(
     readonly origin: THREE.Vector3,
     readonly to: THREE.Vector3,

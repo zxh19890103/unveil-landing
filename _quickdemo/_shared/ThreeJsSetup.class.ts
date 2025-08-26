@@ -293,8 +293,13 @@ export class ThreeJsSetup
       return;
     }
 
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
+    this.activeCamera.aspect = width / height;
+    this.activeCamera.updateProjectionMatrix();
+
+    if (this.camera !== this.activeCamera) {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+    }
 
     // Resize ALL WebGL renderers
     this.webGLRenderers.forEach((renderer) => {

@@ -3,6 +3,7 @@ import * as THREE from "three";
 
 declare module "three" {
   interface Object3D {
+    readonly $$type: string;
     /**
      * Whether this object can be cast by Ray caster.
      */
@@ -48,6 +49,7 @@ declare global {
 
   interface WithActiveCamera {
     controls: THREE.Controls;
+    scene: THREE.Scene;
     camera: THREE.PerspectiveCamera;
     activeCamera: THREE.PerspectiveCamera;
   }

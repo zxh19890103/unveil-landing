@@ -18,6 +18,8 @@ const texture2 = textureLoader.load(
   "/quickdemo/harbor3d/texture-old-concrete-wall-background.jpg"
 );
 
+const grassLand = textureLoader.load("/quickdemo/harbor3d/7546-v1.jpg");
+
 texture.minFilter = THREE.LinearFilter;
 texture.wrapS = THREE.ClampToEdgeWrapping;
 texture.wrapT = THREE.RepeatWrapping;
@@ -26,6 +28,11 @@ texture2.minFilter = THREE.LinearFilter;
 texture2.magFilter = THREE.LinearFilter;
 texture2.wrapS = THREE.MirroredRepeatWrapping;
 texture2.wrapT = THREE.MirroredRepeatWrapping;
+
+grassLand.minFilter = THREE.LinearFilter;
+grassLand.magFilter = THREE.LinearFilter;
+grassLand.wrapS = THREE.MirroredRepeatWrapping;
+grassLand.wrapT = THREE.MirroredRepeatWrapping;
 
 export class KmlGisMap extends THREE.Object3D {
   readonly roads: THREE.CatmullRomCurve3[] = [];
@@ -268,10 +275,10 @@ export class KmlGisMap extends THREE.Object3D {
     const mat = new THREE.ShaderMaterial({
       precision: "mediump",
       uniforms: {
-        map: { value: texture2 },
+        map: { value: grassLand },
         quantizationLevel: { value: 64.0 },
       },
-      blendColor: 0xed1013,
+      lights: false,
       vertexShader: `
       varying vec2 vPos;
 
@@ -287,27 +294,16 @@ export class KmlGisMap extends THREE.Object3D {
       varying vec2 vPos;
       
       void main() {
-        vec2 uv = mod(vPos, 5.0) / 5.0;
-        vec4 texel = texture2D(map, uv * 2.0);
-        vec4 quantizedColor = floor(texel * quantizationLevel) / quantizationLevel;
-        gl_FragColor = vec4(quantizedColor.rgb * 1.5, 1.0);
+        vec2 uv = mod(vPos, 2.0) / 2.0;
+        vec4 texel = texture2D(map, uv * 1.0);
+        vec4 quantizedColor = texel * 1.0;
+        gl_FragColor = vec4(quantizedColor.rgb, 1.0);
       }
       `,
       side: THREE.DoubleSide,
     });
 
-    const mesh = new THREE.Mesh(
-      geometry,
-      mat
-      // new THREE.MeshBasicMaterial({
-      //   transparent: false,
-      //   opacity: 0.5,
-      //   side: THREE.DoubleSide,
-      //   color: color,
-      //   wireframe: false,
-      //   // map: texture2,
-      // })
-    );
+    const mesh = new THREE.Mesh(geometry, mat);
 
     mesh.name = item.desc;
     mesh.rotation.x = Math.PI / 2;
@@ -325,7 +321,7 @@ export class KmlGisMap extends THREE.Object3D {
       ? `/quickdemo/harbor3d/marker-${type}.svg`
       : "/quickdemo/harbor3d/marker.svg";
     div.innerHTML = `
-      <div style="font-size: 0.86em; float: left; line-height: 24px;">${text}</div>
+      <div style="font-size: 0.86em; float: left; line-height: 24px; color: white">${text}</div>
       <img src="${markerIcon}" style="width: 24px; height: auto; vertical-align: middle" />
     `;
     this.add(label);
@@ -356,49 +352,57 @@ export class KmlGisMap extends THREE.Object3D {
     geometry.attributes.position.setXYZ(
       0,
       top.x,
-      item.elevation * 0.006,
+      item.elevation * 0.004,
       top.z
     );
-    // geometry.attributes.position.needsUpdate = true;
-    // top.y = item.elevation * 0.006;
-
-    const colors = new Float32Array(points.length * 3);
-    const color = new THREE.Color(0x12fe01);
-
-    colors[0] = color.r;
-    colors[1] = color.g;
-    colors[2] = color.b;
-
-    color.setHex(0xdeae9d);
 
     for (let i = 1, len = points.length - 1; i < len; i++) {
       const index0 = 0;
       const index1 = i;
       const index2 = i + 1;
 
-      colors[3 * index1] = color.r;
-      colors[3 * index1 + 1] = color.g;
-      colors[3 * index1 + 2] = color.b;
-
       indices.push(index0, index1, index2);
     }
 
     geometry.setIndex(indices);
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const hill = new THREE.Mesh(
       geometry,
-      new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        vertexColors: true,
-      })
-    );
+      new THREE.ShaderMaterial({
+        precision: "mediump",
+        glslVersion: "300 es",
+        uniforms: {
+          map: { value: grassLand },
+          peak: { value: top },
+        },
+        vertexShader: `
+        uniform vec3 peak;
+        varying vec3 vPos;
+        varying vec2 vUv;
 
-    this.add(
-      new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(curve.getSpacedPoints(300)),
-        new THREE.LineBasicMaterial({ color: 0x12fe01 })
-      )
+        
+        void main() {
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+          vec4 wpos = modelMatrix * vec4(position.xyz, 1.0);
+          vec4 wpeak = modelMatrix * vec4(peak, 1.0);
+          
+          vPos = wpos.xyz;
+          vUv = abs(normalize(vPos - wpeak.xyz).xz);
+        }
+        `,
+        fragmentShader: `
+        uniform sampler2D map;
+        varying vec3 vPos;
+        varying vec2 vUv;
+        out vec4 FragColor; 
+        
+        void main() {
+          vec4 texel = texture2D(map, vUv);
+          vec4 quantizedColor = texel * max(length(vUv), 0.1);
+          FragColor = vec4(quantizedColor.rgb, 1.0);
+        }
+        `,
+      })
     );
 
     this.add(hill);
