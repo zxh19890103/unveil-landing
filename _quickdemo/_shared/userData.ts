@@ -25,6 +25,8 @@ export const createUserDataProxy = (
       if (now - lastRenderAt > rate) {
         obj.__$popupUpdate?.();
         obj.__$tooltipUpdate?.();
+        obj.__$infoUpdate?.();
+
         lastRenderAt = now;
       } else {
       }
@@ -34,7 +36,11 @@ export const createUserDataProxy = (
 };
 
 export const checkIfUserDataProxyIsNoNeed = (obj: THREE.Object3D) => {
-  if (obj.__$popupUpdate === null && obj.__$tooltipUpdate === null) {
+  if (
+    obj.__$popupUpdate === null &&
+    obj.__$tooltipUpdate === null &&
+    obj.__$infoUpdate === null
+  ) {
     obj.userData = obj.__$forUserData;
   }
 };

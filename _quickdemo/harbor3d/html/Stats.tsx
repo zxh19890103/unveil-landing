@@ -7,8 +7,8 @@ export const StatsPanel = () => {
   return (
     <Sidebar.Card title="數據統計" icon="./icons/stats.svg">
       <div className="grid grid-cols-2 gap-4">
-        <Item title="船只" total={appState.stats.ships} />
-        <Item title="卡車" total={appState.stats.trucks} />
+        <Item title="船隻" total={appState.stats.ships} />
+        <Item title="貨車" total={appState.stats.trucks} />
         <Item title="堆場" total={appState.stats.stockyards} />
         <Item title="集裝箱" total={appState.stats.cargos} />
       </div>

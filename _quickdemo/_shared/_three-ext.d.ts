@@ -13,19 +13,25 @@ declare module "three" {
     __$forUserData: Record<string, any>;
     __$tooltipUpdate: VoidFunction;
     __$popupUpdate: VoidFunction;
+    __$infoUpdate: VoidFunction;
 
-    tooltip(def: Tooltip): void;
-    popup(def: Tooltip): void;
+    tooltip<O extends Object3D>(def: Tooltip<O>): void;
+    popup<O extends Object3D>(def: Tooltip<O>): void;
+    info<O extends Object3D>(def: Tooltip<O>): void;
   }
 
   interface Object3DEventMap extends InteractiveEventMap {}
 }
 
 declare global {
-  type Tooltip<O extends THREE.Object3D> = (props: {
+  type TooltipProps<O extends THREE.Object3D> = {
     obj: O;
-    [k: string]: any;
-  }) => React.ReactNode;
+    data: O["userData"];
+  } & O["userData"];
+
+  type Tooltip<O extends THREE.Object3D> = (
+    props: TooltipProps<O>
+  ) => React.ReactNode;
 
   type InteractiveStyle = {
     color?: THREE.ColorRepresentation;

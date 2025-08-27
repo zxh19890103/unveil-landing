@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { geoMercator, type LngLat } from "./geo-mercator.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import React from "react";
 
 type KmlGisOptions = {
   center: string;
@@ -257,9 +258,13 @@ export class KmlGisMap extends THREE.Object3D {
     mesh.name = item.desc;
     mesh.__$interactive = true;
 
-    this.add(mesh);
+    mesh.popup(() => {
+      return item.desc;
+    });
 
+    this.add(mesh);
     this.roads.push(path);
+
     return mesh;
   }
 

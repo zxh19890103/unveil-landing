@@ -2,6 +2,12 @@ import * as THREE from "three";
 import { setPopupObject } from "./tooltip.js";
 import gsap from "gsap";
 
+type CreateInteractiveEmitterEventMap = {
+  click: {
+    obj: THREE.Object3D;
+  };
+};
+
 export const createInteractive = (
   context: WithActiveCamera,
   docElement: HTMLDivElement
@@ -114,6 +120,7 @@ export const createInteractive = (
     if (isDown) {
       if (currentTarget) {
         fire(currentTarget, "click");
+        emitter.dispatchEvent({ type: "click", obj: currentTarget });
       }
 
       isDown = false;
@@ -133,9 +140,14 @@ export const createInteractive = (
   let currentTarget: THREE.Object3D = null;
   let isDown = false;
 
+  const emitter = new THREE.EventDispatcher<CreateInteractiveEmitterEventMap>();
+
   return {
     enable,
     disable,
+    onClick(fn: (e: CreateInteractiveEmitterEventMap["click"]) => void) {
+      emitter.addEventListener("click", fn);
+    },
   };
 };
 
@@ -188,7 +200,7 @@ export const createSelector = (context: WithActiveCamera) => {
     new THREE.MeshBasicMaterial({
       color: 0xdf2a32,
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.35,
     })
   );
 

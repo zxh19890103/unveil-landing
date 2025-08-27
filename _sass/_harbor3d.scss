@@ -52,9 +52,7 @@
 }
 
 .Popup {
-  background-color: rgb(71 85 105 / 0.7);
-  border: 1px solid rgb(229 231 235 / 0.8);
-  color: #fff;
+  color: #000;
 
   &::after {
     content: "";
@@ -62,7 +60,7 @@
     pointer-events: none;
     width: 3px;
     height: 6px;
-    background-color: rgb(229 231 235 / 0.8);
+    background-color: rgb(229 231 235);
     position: absolute;
     bottom: -3px;
     left: 50%;

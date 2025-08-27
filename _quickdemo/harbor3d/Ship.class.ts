@@ -1,7 +1,14 @@
 import { ModelObj } from "@/_shared/ModelObj.class.js";
 
 export class Ship extends ModelObj {
-  readonly $$type = 'ship';
+  readonly $$type = "ship";
+
+  readonly userData = {
+    imo_number: "IMO9876543",
+    vessel_name: "Ever Given",
+    status: "離港中",
+    eta: "2025-08-27T10:00:00Z",
+  };
 
   constructor() {
     super(

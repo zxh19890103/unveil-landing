@@ -80,20 +80,7 @@ const Footer = ({}) => {
         }}
       />
 
-      {appState.focus && (
-        <Button
-          iconUrl="camera.svg"
-          onClick={() => {
-            if (appState.focus) {
-              if (appState.following) {
-                appState.following = null;
-              } else {
-                appState.following = appState.focus;
-              }
-            }
-          }}
-        />
-      )}
+      <Button iconUrl="camera.svg" onClick={() => {}} />
     </footer>
   );
 };

@@ -1,8 +1,15 @@
 import { ModelObj } from "@/_shared/ModelObj.class.js";
 
-export class Truck<UD extends Record<string, any> = {}> extends ModelObj {
-  readonly $$type = 'truck';
-  readonly userData: UD;
+export class Truck extends ModelObj {
+  readonly $$type = "truck";
+
+  readonly userData = {
+    license_plate: "AA-1234",
+    driver: "John",
+    status: "運輸中",
+    speed_kmh: 15,
+    carrying_container_id: "CTN-5678",
+  };
 
   constructor() {
     super(

@@ -11,6 +11,7 @@ const labels: Label<THREE.Object3D>[] = [];
 
 let labelsSizeChange: VoidFunction;
 export let setPopupObject: (obj: THREE.Object3D) => void;
+export let setInfoObject: (obj: THREE.Object3D) => void;
 
 export const labelsReducer = () => {
   return [...labels];
@@ -46,10 +47,26 @@ export const Popup = memo(() => {
     <div
       hidden={!obj}
       ref={divRef}
-      className="Popup -translate-y-full rounded -translate-x-1/2 fixed text-sm p-3 size-fit"
+      className="Popup -translate-y-full rounded -translate-x-1/2 fixed text-sm p-2 bg-slate-100 size-fit"
     >
-      <div>popup: {obj?.id}</div>
       {obj && obj["$popup"] ? <PopupFor obj={obj} /> : null}
+    </div>
+  );
+});
+
+export const Info = memo(() => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [obj, setObj] = useState<THREE.Object3D>(null);
+
+  setInfoObject = setObj;
+
+  return (
+    <div
+      hidden={!obj}
+      ref={divRef}
+      className="Info text-sm p-2 bg-slate-100 size-fit"
+    >
+      {obj && obj["$info"] ? <InfoFor obj={obj} /> : null}
     </div>
   );
 });
@@ -74,17 +91,36 @@ const PopupFor = memo((props: { obj: THREE.Object3D }) => {
     };
   }, emptyDeps);
 
-  const popup = React.createElement(obj["$popup"], {
+  return React.createElement(obj["$popup"], {
     obj: obj,
+    data: obj.userData,
     ...obj.userData,
   });
+});
 
-  return (
-    <div>
-      <h3>#id = {obj.id}</h3>
-      <div>{popup}</div>
-    </div>
-  );
+export const InfoFor = memo((props: { obj: THREE.Object3D }) => {
+  const { obj } = props;
+
+  const [_, forceUpdate] = useReducer(ticker, 0);
+  obj.__$infoUpdate = forceUpdate;
+
+  useEffect(() => {
+    createUserDataProxy(obj);
+    return () => {
+      obj.__$infoUpdate = null;
+      checkIfUserDataProxyIsNoNeed(obj);
+    };
+  }, emptyDeps);
+
+  if (Object.hasOwn(obj, "$info")) {
+    return React.createElement(obj["$info"], {
+      obj: obj,
+      data: obj.userData,
+      ...obj.userData,
+    });
+  } else {
+    return <div className="text-gray-600 text-center">未配置詳情信息</div>;
+  }
 });
 
 export const createTooltip = <O extends THREE.Object3D>(
@@ -103,4 +139,12 @@ export const createPopup = <O extends THREE.Object3D>(
 ) => {
   obj["$popup"] = popup;
   obj.__$popupUpdate = null;
+};
+
+export const createInfo = <O extends THREE.Object3D>(
+  obj: O,
+  info: Tooltip<O>
+) => {
+  obj["$info"] = info;
+  obj.__$infoUpdate = null;
 };

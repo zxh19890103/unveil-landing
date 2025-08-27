@@ -3,7 +3,12 @@ import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 
 import "@/_shared/_three-ext.v.js";
-import { ModelObj, ThreeJsSetup } from "@/_shared/index.js";
+import {
+  dayjs,
+  ModelObj,
+  ThreeJsSetup,
+  toDescriptions,
+} from "@/_shared/index.js";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
 import { KmlGisMap } from "@/_shared/kml.js";
@@ -18,6 +23,7 @@ import { StockYard } from "./Stockyard.class.js";
 import { Truck } from "./Truck.class.js";
 import { Ship } from "./Ship.class.js";
 import { appState } from "./state.js";
+import Descriptions from "./html/Descriptions.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -38,8 +44,12 @@ const rendererTiles = threeJs.addWebGLRenderer("static", threejsContainer, {
   zIndex: 1,
 });
 
+world.addEventListener("click", (e) => {
+  console.log("clicked", e);
+});
+
 const renderRendererTiles = () => {
-  rendererTiles.render(staticWorld, camera);
+  rendererTiles.render(staticWorld, threeJs.activeCamera);
 };
 
 threeJs.onAnimate(renderRendererTiles);
@@ -137,12 +147,47 @@ world.add(map);
         dimensions
       );
 
+      stockYard2.popup<StockYard>(({ obj, data }) => {
+        const cagros = obj.children.length;
+
+        return (
+          <Descriptions
+            items={[
+              { value: data.yard_code, label: "編碼" },
+              { value: `${cagros}/${data.capacity}`, label: "容量" },
+              { value: data.status, label: "狀態" },
+            ]}
+            compact
+            labelWidth="5rem"
+          />
+        );
+      });
+
       appState.objects.push(stockYard2);
 
       world.add(stockYard2);
 
+      const cargoPopup: Tooltip<Cargo> = ({ data, obj }) => {
+        return (
+          <Descriptions
+            items={[
+              { value: data.container_id, label: "集裝箱的唯一識別號" },
+              { value: data.iso_code, label: "國際標準代碼" },
+              { value: data.gross_weight_kg, label: "集裝箱總重量" },
+              { value: data.tare_weight_kg, label: "集裝箱自重" },
+              { value: data.cargo_description, label: "簡要的貨物描述" },
+              { value: data.status, label: "狀態" },
+            ]}
+            compact
+            labelWidth="7rem"
+          />
+        );
+      };
+
       stockYard2.create(CargoSpec, (pt) => {
         const cargo = new Cargo(0xffffff);
+        cargo.popup(cargoPopup);
+        cargo.info(cargoPopup);
         cargo.position.copy(pt);
         return cargo;
       });
@@ -151,11 +196,40 @@ world.add(map);
 }
 
 {
-  type TruckUserData = { driver: string };
-  const truck = new Truck<TruckUserData>();
+  const truck = new Truck();
 
   for (let i = 0; i < 10; i++) {
     const truckCopy = truck.clone();
+
+    truckCopy.popup<Truck>(({ data }) => {
+      return (
+        <Descriptions
+          compact
+          labelWidth="5rem"
+          items={[
+            { value: data.license_plate, label: "車牌" },
+            { value: data.driver, label: "司機" },
+            { value: data.status, label: "狀態" },
+            { value: data.speed_kmh, label: "時速" },
+          ]}
+        />
+      );
+    });
+
+    truckCopy.info<Truck>(({ data }) => {
+      return (
+        <Descriptions
+          labelWidth="5rem"
+          items={[
+            { value: data.license_plate, label: "車牌" },
+            { value: data.driver, label: "司機" },
+            { value: data.status, label: "狀態" },
+            { value: data.speed_kmh, label: "時速" },
+          ]}
+        />
+      );
+    });
+
     appState.objects.push(truckCopy);
 
     map.add(truckCopy);
@@ -164,7 +238,7 @@ world.add(map);
       const pos = new THREE.Vector3();
       const dir = new THREE.Vector3();
       let u = 0;
-      let speed = Math.random() * 0.001;
+      let speed = Math.random() * 0.0003;
 
       const road = map.roads[i % 3];
 
@@ -188,8 +262,31 @@ world.add(map);
 {
   const ship = new Ship();
 
-  ship.popup(() => {
-    return <div>hello</div>;
+  ship.info<Ship>(({ data }) => {
+    return (
+      <Descriptions
+        items={[
+          { value: data.vessel_name, label: "名稱" },
+          { value: data.imo_number, label: "国际海事组织编号" },
+          { value: data.status, label: "狀態" },
+          { value: dayjs(data.eta).format(), label: "预计到港时间" },
+        ]}
+      />
+    );
+  });
+
+  ship.popup<Ship>(({ data }) => {
+    return (
+      <Descriptions
+        items={[
+          { value: data.vessel_name, label: "名稱" },
+          { value: data.imo_number, label: "国际海事组织编号" },
+          { value: data.status, label: "狀態" },
+          { value: dayjs(data.eta).format(), label: "预计到港时间" },
+        ]}
+        compact
+      />
+    );
   });
 
   map.onReady(() => {
@@ -217,10 +314,6 @@ world.add(map);
   world.add(ship);
 
   appState.objects.push(ship);
-
-  setTimeout(() => {
-    appState.objects.push(ship);
-  }, 4000);
 }
 
 threeJs.startAnimation();
@@ -230,6 +323,10 @@ map.add(Crs);
 
 {
   const interactive = createInteractive(threeJs, threejsContainer);
+
+  interactive.onClick((e) => {
+    appState.focus = e.obj;
+  });
 
   appState.effect("/interactive", (val) => {
     val ? interactive.enable() : interactive.disable();

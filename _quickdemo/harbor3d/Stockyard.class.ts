@@ -3,6 +3,11 @@ import type { Cargo } from "./Cargo.class.js";
 
 export class StockYard extends THREE.Object3D {
   readonly $$type = "stockyard";
+  readonly userData = {
+    yard_code: "Yard-A",
+    status: "擁擠",
+    capacity: 3000,
+  };
 
   constructor(
     readonly origin: THREE.Vector3,

@@ -11,8 +11,9 @@ const $h = React.createElement;
 
 type HtmlConstructProps<O extends THREE.Object3D> = {
   obj: O;
-  [k: string]: any;
-};
+  data: O["userData"];
+} & O["userData"];
+
 type HtmlConstruct<O extends THREE.Object3D> = (
   props: HtmlConstructProps<O>
 ) => React.ReactNode;
@@ -37,8 +38,13 @@ export class Label<F extends THREE.Object3D> extends CSS2DObject {
       $h(() => {
         const [_, forceUpdate] = useReducer(ticker, 0);
         if (this._$for) {
-          this._$for.__$tooltipUpdate = forceUpdate;
-          return $h(_html, { obj: this._$for, ...this._$for.__$forUserData });
+          const $for = this._$for;
+          $for.__$tooltipUpdate = forceUpdate;
+          return $h(_html, {
+            data: $for.__$forUserData,
+            obj: $for,
+            ...$for.__$forUserData,
+          });
         } else {
           return null;
         }
