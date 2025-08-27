@@ -2,6 +2,7 @@ import { createState } from "@/_shared/state.js";
 import type { Object3D } from "three";
 
 type State = {
+  loading: boolean;
   fullscreen: boolean;
   interactive: boolean;
   panels: boolean;
@@ -21,6 +22,7 @@ type Computed = {
 
 export const appState = createState<State, Computed>(
   {
+    loading: true,
     fullscreen: false,
     interactive: false,
     panels: true,

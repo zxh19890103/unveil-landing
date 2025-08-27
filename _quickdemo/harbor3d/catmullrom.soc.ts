@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { whenReady } from "@/_shared/SoCFramework.js";
+import { textLoader } from "@/_shared/loader.js";
 
 whenReady((world, camera, renderer, controls) => {
   const points = [
@@ -216,8 +217,7 @@ whenReady((world, camera, renderer, controls) => {
     },
   };
 
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load(
+  const texture = textLoader.load(
     "/quickdemo/harbor3d/road/textures/Material.003_baseColor.png"
   );
 

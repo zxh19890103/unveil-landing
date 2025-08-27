@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import type { LngLat } from "./geo-mercator.js";
+import { gltfLoader } from './loader.js';
 
 type LODLevel = {
   type: "model" | "label" | "point";
@@ -23,7 +23,6 @@ type ModelInitializationParams = {
 type TraverseCallback = (obj: THREE.Object3D) => void;
 
 const half_PI = Math.PI / 2;
-const loader = new GLTFLoader();
 
 export class ModelObj extends THREE.Object3D {
   readonly __$interactive = true;
@@ -65,7 +64,7 @@ export class ModelObj extends THREE.Object3D {
     for (const { type, url, distance, size, color } of levels) {
       switch (type) {
         case "model": {
-          const gltf = await loader.loadAsync(url);
+          const gltf = await gltfLoader.loadAsync(url);
           const scene = gltf.scene;
 
           this.atom = scene;

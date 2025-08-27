@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { geoMercator } from "@/_shared/geo-mercator.js";
 import { whenReady } from "@/_shared/SoCFramework.js";
+import { textLoader } from "@/_shared/loader.js";
 
 const shapeLatlngStr = `
               121.6358332,38.9381659,0
@@ -161,7 +162,7 @@ whenReady((world, camera, renderer, controls) => {
     geometry.setIndex(indices);
     geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
 
-    const tex = textureLoader.load("/quickdemo/harbor3d/hills.jpg");
+    const tex = textLoader.load("/quickdemo/harbor3d/hills.jpg");
     tex.magFilter = THREE.NearestFilter;
     tex.minFilter = THREE.NearestFilter;
 
@@ -176,7 +177,6 @@ whenReady((world, camera, renderer, controls) => {
     );
   };
 
-  const textureLoader = new THREE.TextureLoader();
   const hill = createHill(centerLatlng, 138, shape);
 
   world.add(hill);

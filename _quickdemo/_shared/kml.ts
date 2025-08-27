@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { geoMercator, type LngLat } from "./geo-mercator.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
-import React from "react";
+import { textLoader } from './loader.js';
 
 type KmlGisOptions = {
   center: string;
@@ -10,16 +10,15 @@ type KmlGisOptions = {
   onReady?: () => void;
 };
 
-const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load(
+const texture = textLoader.load(
   "/quickdemo/harbor3d/low_road/textures/Material.002_baseColor.jpeg"
 );
 
-const texture2 = textureLoader.load(
+const texture2 = textLoader.load(
   "/quickdemo/harbor3d/texture-old-concrete-wall-background.jpg"
 );
 
-const grassLand = textureLoader.load("/quickdemo/harbor3d/7546-v1.jpg");
+const grassLand = textLoader.load("/quickdemo/harbor3d/7546-v1.jpg");
 
 texture.minFilter = THREE.LinearFilter;
 texture.wrapS = THREE.ClampToEdgeWrapping;

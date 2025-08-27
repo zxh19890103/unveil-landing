@@ -3,12 +3,7 @@ import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 
 import "@/_shared/_three-ext.v.js";
-import {
-  dayjs,
-  ModelObj,
-  ThreeJsSetup,
-  toDescriptions,
-} from "@/_shared/index.js";
+import { dayjs, ThreeJsSetup } from "@/_shared/index.js";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
 import { KmlGisMap } from "@/_shared/kml.js";
@@ -24,6 +19,7 @@ import { Truck } from "./Truck.class.js";
 import { Ship } from "./Ship.class.js";
 import { appState } from "./state.js";
 import Descriptions from "./html/Descriptions.js";
+import { textLoader } from "@/_shared/loader.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -94,7 +90,7 @@ threeJs.onAnimate(renderRendererTiles);
   const water = new Water(waterGeometry, {
     textureWidth: 1000,
     textureHeight: 1000,
-    waterNormals: new THREE.TextureLoader().load(
+    waterNormals: textLoader.load(
       "./waternormals.jpg", // 法线贴图
       (texture) => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;

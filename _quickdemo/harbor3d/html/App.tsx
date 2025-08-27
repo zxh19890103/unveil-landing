@@ -6,6 +6,9 @@ import { StatsPanel } from "./Stats.js";
 import Controls from "./Controls.js";
 import { ObjectsPanel } from "./Objects.js";
 import { Popup, Tooltips } from "@/_shared/tooltip.js";
+import { onLoading, onLoadingDelete } from "@/_shared/loader.js";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { appState } from "../state.js";
 
 const App = () => {
   return (
@@ -29,7 +32,34 @@ const App = () => {
       </div>
       <Tooltips />
       <Popup />
+      <Loading />
     </>
+  );
+};
+
+const Loading = () => {
+  const [state, setState] = useState({ loaded: 0, total: 0 });
+
+  useEffect(() => {
+    const fn = (loaded, total) => {
+      setState({ loaded, total });
+    };
+    onLoading(fn);
+    return () => {
+      onLoadingDelete(fn);
+    };
+  }, []);
+
+  if (state.total === 0 || state.loaded === state.total) {
+    return null;
+  }
+
+  const percentage = state.loaded / state.total;
+
+  return (
+    <div className=" rounded-full top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 p-2 text-xl fixed bg-yellow-400/60">
+      {(100 * percentage).toFixed(0)}%
+    </div>
   );
 };
 

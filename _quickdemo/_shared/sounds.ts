@@ -1,6 +1,6 @@
 import * as THREE from "three";
+import { audioLoader } from "./loader.js";
 
-const audioLoader = new THREE.AudioLoader(new THREE.LoadingManager());
 export const audioLis = new THREE.AudioListener();
 
 export const bomb = createSound(
