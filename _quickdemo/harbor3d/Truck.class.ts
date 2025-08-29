@@ -11,17 +11,14 @@ export class Truck extends ModelObj {
     carrying_container_id: "CTN-5678",
   };
 
-  constructor() {
-    super(
-      "./generic_truck/scene.gltf",
-      "/quickdemo/harbor3d/icons/truck.svg",
-      0xeaa301,
-      {
-        offset: [0, 0, 0],
-        rotation: [0, -1, 0],
-        scaleFactor: 0.001,
-      }
-    );
+  constructor(label: string = "truck") {
+    super("./generic_truck/scene.gltf", label, 0x123212, {
+      offset: [0, 0, 0],
+      rotation: [0, -1, 0],
+      scaleFactor: 0.001,
+      scaleFactorToSee: 0.004,
+      visibleDistance: 20,
+    });
 
     this.traverse((child) => {
       if (Object.hasOwn(child, "isMesh")) {

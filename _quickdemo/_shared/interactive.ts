@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { setPopupObject } from "./tooltip.js";
 import gsap from "gsap";
+import type { Persipective } from "@/harbor3d/state.js";
 
 type CreateInteractiveEmitterEventMap = {
   click: {
@@ -152,6 +153,53 @@ export const createInteractive = (
 };
 
 export const createFollowing = (context: WithActiveCamera) => {
+  const persipective = (p: Persipective) => {
+    if (!_target) return;
+
+    switch (p) {
+      case "top": {
+        _target.remove(camera);
+        camera.up.set(0, 0, 1);
+        camera.position.set(0, 1, 0).setLength(lookAtDist);
+        camera.lookAt(lookat);
+        _target.add(camera);
+        break;
+      }
+      case "back": {
+        _target.remove(camera);
+        camera.up.set(0, 1, 0);
+        camera.position.set(0, 1, -1).setLength(lookAtDist);
+        camera.lookAt(lookat);
+        _target.add(camera);
+        break;
+      }
+      case "front": {
+        _target.remove(camera);
+        camera.up.set(0, 1, 0);
+        camera.position.set(0, 1, 1).setLength(lookAtDist);
+        camera.lookAt(lookat);
+        _target.add(camera);
+        break;
+      }
+      case "left": {
+        _target.remove(camera);
+        camera.up.set(0, 1, 0);
+        camera.position.set(1, 1, 0).setLength(lookAtDist);
+        camera.lookAt(lookat);
+        _target.add(camera);
+        break;
+      }
+      case "right": {
+        _target.remove(camera);
+        camera.up.set(0, 1, 0);
+        camera.position.set(-1, 1, 0).setLength(lookAtDist);
+        camera.lookAt(lookat);
+        _target.add(camera);
+        break;
+      }
+    }
+  };
+
   const currentCamera = context.camera;
 
   const camera = new THREE.PerspectiveCamera(
@@ -161,7 +209,10 @@ export const createFollowing = (context: WithActiveCamera) => {
     currentCamera.far
   );
 
+  const mearure = new THREE.Box3();
+  const size = new THREE.Vector3();
   const lookat = new THREE.Vector3();
+  const lookAtDist = 2;
 
   let _target: THREE.Object3D;
 
@@ -175,12 +226,12 @@ export const createFollowing = (context: WithActiveCamera) => {
         _target.remove(camera);
       }
 
-      camera.up.set(0, 0, 1);
-      camera.position.set(0, 10, 0);
-      camera.lookAt(lookat);
-      target.add(camera);
-
       _target = target;
+
+      mearure.setFromObject(target);
+      mearure.getSize(size);
+
+      persipective("top");
     },
     unfollow: () => {
       context.controls.enabled = true;
@@ -189,6 +240,7 @@ export const createFollowing = (context: WithActiveCamera) => {
       _target.remove(camera);
       _target = null;
     },
+    persipective: persipective,
   };
 };
 

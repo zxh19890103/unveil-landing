@@ -1,4 +1,3 @@
-import type React from "react";
 import Title from "./Title.js";
 import Sidebar from "./Side.js";
 import { PickPanel } from "./Pick.js";
@@ -7,8 +6,8 @@ import Controls from "./Controls.js";
 import { ObjectsPanel } from "./Objects.js";
 import { Popup, Tooltips } from "@/_shared/tooltip.js";
 import { onLoading, onLoadingDelete } from "@/_shared/loader.js";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { appState } from "../state.js";
+import { useEffect, useState } from "react";
+import LoadingIndicator from "./LoadingIndicator.js";
 
 const App = () => {
   return (
@@ -27,7 +26,7 @@ const App = () => {
           <PickPanel />
         </Sidebar>
       </div>
-      <div className="Side Controls overflow-hidden rounded-lg fixed bottom-1 left-0">
+      <div className="Side Controls overflow-visible fixed bottom-1 left-0">
         <Controls />
       </div>
       <Tooltips />
@@ -57,8 +56,8 @@ const Loading = () => {
   const percentage = state.loaded / state.total;
 
   return (
-    <div className=" rounded-full top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 p-2 text-xl fixed bg-yellow-400/60">
-      {(100 * percentage).toFixed(0)}%
+    <div className="fixed top-0 left-0 bg-black/35 w-screen h-screen flex  items-center justify-center">
+      <LoadingIndicator progress={100 * percentage} />
     </div>
   );
 };

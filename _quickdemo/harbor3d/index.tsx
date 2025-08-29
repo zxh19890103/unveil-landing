@@ -332,6 +332,10 @@ map.add(Crs);
 {
   const follower = createFollowing(threeJs);
 
+  appState.effect("/persipective", (val) => {
+    follower.persipective(val);
+  });
+
   appState.effect("/following", (obj) => {
     if (obj) {
       follower.follow(obj);

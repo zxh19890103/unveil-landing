@@ -1,5 +1,7 @@
 // src/components/Footer.jsx
+import type React from "react";
 import { appState } from "../state.js";
+import { Popup } from "./Popup.js";
 
 appState.effect("/fullscreen", (val) => {
   if (val) {
@@ -46,6 +48,7 @@ const Footer = ({}) => {
       className="
       p-1
       bg-white/60 
+       rounded-lg
       backdrop-blur-sm 
       shadow-xl 
       border 
@@ -80,18 +83,51 @@ const Footer = ({}) => {
         }}
       />
 
-      <Button iconUrl="camera.svg" onClick={() => {}} />
+      <Button iconUrl="camera.svg" onClick={() => {}}>
+        <Popup>
+          <PersipectiveOptions />
+        </Popup>
+      </Button>
     </footer>
   );
 };
 
-const Button = ({ onClick, iconUrl }) => {
+const PersipectiveOptions = () => {
+  appState.use("/persipective");
+
+  const onItemClick = (e: React.MouseEvent<HTMLUListElement>) => {
+    e.stopPropagation();
+    const li = e.target as HTMLLIElement;
+    if (li.tagName === "LI") {
+      appState.persipective = li.getAttribute("itemid") as any;
+    }
+  };
+
   return (
-    <button
-      className=" transition-all  duration-200 hover:scale-90 "
-      onClick={onClick}
-    >
-      <img src={"/quickdemo/@icons/" + iconUrl} className="w-9" />
+    <div>
+      <ul className=" w-24" onClick={onItemClick}>
+        <li itemID="top">正上</li>
+        <li itemID="left">左側</li>
+        <li itemID="right">右側</li>
+        <li itemID="back">後方</li>
+        <li itemID="front">前方</li>
+      </ul>
+    </div>
+  );
+};
+
+const Button = ({
+  onClick,
+  iconUrl,
+  children,
+}: React.PropsWithChildren<{ onClick: () => void; iconUrl: string }>) => {
+  return (
+    <button className=" relative" onClick={onClick}>
+      <img
+        src={"/quickdemo/@icons/" + iconUrl}
+        className="w-9 transition-all duration-200 hover:scale-90 "
+      />
+      {children}
     </button>
   );
 };

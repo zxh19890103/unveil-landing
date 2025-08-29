@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { geoMercator, type LngLat } from "./geo-mercator.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
-import { textLoader } from './loader.js';
+import { textLoader } from "./loader.js";
 
 type KmlGisOptions = {
   center: string;
@@ -108,12 +108,16 @@ export class KmlGisMap extends THREE.Object3D {
               switch (item.name) {
                 case "land": {
                   const land = this.createLand(item);
-                  // land.rotation.x = Math.PI / 2;
                   land.position.y = -0.01;
                   break;
                 }
                 case "hill": {
                   this.createHill(item);
+                  break;
+                }
+                case "dock": {
+                  const dock = this.createDock(item);
+                  dock.position.y = -0.008;
                   break;
                 }
               }
@@ -126,7 +130,8 @@ export class KmlGisMap extends THREE.Object3D {
                   break;
                 }
                 case "road": {
-                  this.createRoad(item);
+                  const road = this.createRoad(item);
+                  road.position.y = 0;
                   break;
                 }
                 case "ship": {
@@ -248,7 +253,7 @@ export class KmlGisMap extends THREE.Object3D {
       transparent: false,
       opacity: 0.8,
       color: 0x777777,
-      depthTest: false,
+      depthTest: true,
       map: texture,
     });
 
@@ -412,6 +417,31 @@ export class KmlGisMap extends THREE.Object3D {
     this.add(hill);
   }
 
+  createDock(item: KmlParsedRes) {
+    const geometry = new THREE.ShapeGeometry(
+      new THREE.Shape(
+        item.points.map((vec) => {
+          return new THREE.Vector2(vec.x, vec.z);
+        })
+      )
+    );
+
+    const mesh = new THREE.Mesh(
+      geometry,
+      new THREE.MeshBasicMaterial({
+        color: 0x343434,
+        side: THREE.DoubleSide,
+      })
+    );
+
+    mesh.name = item.desc;
+    mesh.rotation.x = Math.PI / 2;
+
+    this.add(mesh);
+
+    return mesh;
+  }
+
   readonly center = new THREE.Vector3();
   readonly readyFns: VoidFunction[] = [];
 
@@ -427,6 +457,7 @@ type KmlParsedResName =
   | "landmark"
   | "road"
   | "land"
+  | "dock"
   | "hill"
   | "stockyard"
   | "center";

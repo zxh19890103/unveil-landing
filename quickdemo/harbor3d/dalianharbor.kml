@@ -169,8 +169,10 @@
               121.677504,38.933359,0
               121.6755299,38.9330585,0
               121.6739849,38.932925,0
-              121.6720537,38.93179,0
-              121.6708521,38.9315229,0
+              121.6721395,38.9319068,0
+              121.6710023,38.9321572,0
+              121.6711257,38.9324242,0
+              121.6710345,38.9326579,0
               121.6714958,38.9333923,0
               121.6696934,38.9339932,0
               121.6668074,38.9291025,0
@@ -324,11 +326,19 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
+          121.6586171,38.9352329,0
+          121.6596256,38.9371356,0
+          121.6598864,38.9375007,0
           121.6609864,38.9371912,0
-          121.6764139,38.9482784,0
+          121.6752176,38.9475191,0
+          121.6767814,38.9481824,0
           121.6786455,38.9477443,0
           121.7029356,38.9283168,0
           121.7210459,38.9195693,0
+          121.7288114,38.9063199,0
+          121.730528,38.904984,0
+          121.7316438,38.9029802,0
+          121.7316165,38.8697877,0
         </coordinates>
       </LineString>
     </Placemark>
@@ -350,14 +360,23 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          121.6615824,38.9367639,0
+          121.6586171,38.9352329,0
+          121.6598455,38.9373214,0
+          121.6608534,38.9371845,0
+          121.6618506,38.9375484,0
+          121.6641989,38.9384699,0
+          121.6670838,38.939525,0
+          121.6699472,38.9403964,0
           121.6725103,38.9407003,0
-          121.6766301,38.9407003,0
+          121.6746131,38.9407921,0
+          121.6760615,38.9408046,0
+          121.6778103,38.9407253,0
           121.7267553,38.9386976,0
           121.7323342,38.9368282,0
           121.7354242,38.9340909,0
           121.7366258,38.9290166,0
           121.7378274,38.9151939,0
+          121.7412295,38.8689968,0
         </coordinates>
       </LineString>
     </Placemark>
@@ -379,10 +398,15 @@
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          121.6615824,38.9367639,0
+          121.6586171,38.9352329,0
+          121.659418,38.9372277,0
+          121.6600188,38.9376282,0
+          121.6609864,38.9371912,0
+          121.6619257,38.9373481,0
           121.7265482,38.9360423,0
           121.7330713,38.916144,0
           121.7330713,38.8942362,0
+          121.7330528,38.8694224,0
         </coordinates>
       </LineString>
     </Placemark>
@@ -795,6 +819,96 @@
               121.7091966,38.9048596,0
               121.7068792,38.9057279,0
               121.703446,38.9067298,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>dock_01</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.6524024,38.9337626,0
+              121.6547589,38.9331587,0
+              121.657205,38.9381659,0
+              121.6554455,38.9388335,0
+              121.6524024,38.9337626,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>dock_02</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.6575913,38.9322239,0
+              121.6589646,38.93179,0
+              121.6615824,38.9367639,0
+              121.6600804,38.9372313,0
+              121.6575913,38.9322239,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>dock_03</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.6614966,38.9308552,0
+              121.663299,38.9303544,0
+              121.6658739,38.9352951,0
+              121.6643719,38.9358626,0
+              121.6614966,38.9308552,0
             </coordinates>
           </LinearRing>
         </outerBoundaryIs>

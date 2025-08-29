@@ -10,16 +10,13 @@ export class Ship extends ModelObj {
     eta: "2025-08-27T10:00:00Z",
   };
 
-  constructor() {
-    super(
-      "./cargo_ship/scene.gltf",
-      "/quickdemo/harbor3d/icons/ship.svg",
-      0x0d1e93,
-      {
-        offset: [0, -1.5, 0],
-        rotation: [0, 1, 0],
-        scaleFactor: 0.1,
-      }
-    );
+  constructor(label: string = "vessel") {
+    super("./cargo_ship/scene.gltf", label, 0x0d1e93, {
+      offset: [0, -1.5, 0],
+      rotation: [0, 1, 0],
+      scaleFactor: 0.1,
+      scaleFactorToSee: 0.1,
+      visibleDistance: 20,
+    });
   }
 }

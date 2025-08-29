@@ -1,11 +1,14 @@
 import { createState } from "@/_shared/state.js";
 import type { Object3D } from "three";
 
+export type Persipective = "top" | "left" | "right" | "back" | "front";
+
 type State = {
   loading: boolean;
   fullscreen: boolean;
   interactive: boolean;
   panels: boolean;
+  persipective: Persipective;
   objects: Object3D[];
   focus: Object3D;
   following: Object3D;
@@ -22,6 +25,7 @@ type Computed = {
 
 export const appState = createState<State, Computed>(
   {
+    persipective: "top",
     loading: true,
     fullscreen: false,
     interactive: false,

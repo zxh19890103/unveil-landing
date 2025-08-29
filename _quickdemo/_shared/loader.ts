@@ -4,7 +4,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const loaderManager = new THREE.LoadingManager(
   (...args) => {},
   (url, loaded, total) => {
-    console.log(url, loaded, total);
     for (const fn of progressFns) fn(loaded, total);
   },
   () => {}
