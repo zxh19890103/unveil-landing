@@ -1,0 +1,11 @@
+Model Information:
+* title:	Guangzhou CTF Finance Centre
+* source:	https://sketchfab.com/3d-models/guangzhou-ctf-finance-centre-7b2d05b74aa64d1f9f7b4f56171536f7
+* author:	NanoRay (https://sketchfab.com/NanoRay)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Guangzhou CTF Finance Centre" (https://sketchfab.com/3d-models/guangzhou-ctf-finance-centre-7b2d05b74aa64d1f9f7b4f56171536f7) by NanoRay (https://sketchfab.com/NanoRay) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

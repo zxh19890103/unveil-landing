@@ -11,6 +11,7 @@ texture.magFilter = THREE.LinearFilter;
 
 export class Cargo extends THREE.Mesh {
   readonly __$interactive = true;
+  readonly __$hoverStyle: InteractiveStyle = "outlined";
   readonly $$type = "cargo";
 
   readonly userData = {
@@ -27,15 +28,55 @@ export class Cargo extends THREE.Mesh {
   constructor(color: THREE.ColorRepresentation) {
     const geometry = new THREE.BoxGeometry(...CargoSpec);
 
-    super(geometry, new THREE.MeshPhongMaterial({ color, map: texture }));
-
-    // this.size = new THREE.Vector3(5, 5, 15);
-    // const wrap = new THREE.EdgesGeometry(geometry);
-    // this.add(
-    //   new THREE.LineSegments(
-    //     wrap,
-    //     new THREE.LineBasicMaterial({ color: 0x000 })
-    //   )
-    // );
+    super(
+      geometry,
+      new THREE.MeshPhongMaterial({
+        color: cargo_container_colors[Math.floor(Math.random() * 9)].hex,
+        map: texture,
+        // emissive: cargo_container_colors[Math.floor(Math.random() * 9)].hex,
+        // emissive: '#ffffff',
+        // emissiveIntensity: 1,
+        // emissiveMap: texture,
+      })
+    );
   }
 }
+
+const cargo_container_colors = [
+  {
+    name: "Safety Orange",
+    hex: "#FF7F00",
+  },
+  {
+    name: "Marine Blue",
+    hex: "#005A9C",
+  },
+  {
+    name: "Bright Red",
+    hex: "#E30000",
+  },
+  {
+    name: "Signal Green",
+    hex: "#39A339",
+  },
+  {
+    name: "Traffic Yellow",
+    hex: "#FFD700",
+  },
+  {
+    name: "Teal",
+    hex: "#008080",
+  },
+  {
+    name: "Royal Purple",
+    hex: "#7851A9",
+  },
+  {
+    name: "Charcoal Gray",
+    hex: "#36454F",
+  },
+  {
+    name: "Lime Green",
+    hex: "#32CD32",
+  },
+];

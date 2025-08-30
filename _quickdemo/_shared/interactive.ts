@@ -44,10 +44,41 @@ export const createInteractive = (
     obj.dispatchEvent({ type: event, payload });
   };
 
-  const hover = (obj: THREE.Object3D) => {
-    if (obj.__$hoverStyle) {
+  const hoverData = new WeakMap<THREE.Object3D, any>();
+  const meaure = new THREE.Box3();
+  const meaureSize = new THREE.Vector3();
+
+  const hover2 = (obj: THREE.Object3D, mousein: boolean) => {
+    if (obj.__$hoverStyle === undefined) return;
+
+    if (mousein) {
+      if (obj.__$hoverStyle === "outlined") {
+        meaure.setFromObject(obj);
+        meaure.getSize(meaureSize);
+
+        const outlined = new THREE.Mesh(
+          new THREE.BoxGeometry(meaureSize.x, meaureSize.y, meaureSize.z),
+          new THREE.MeshBasicMaterial({
+            color: 0x23ef90,
+            wireframe: true,
+            depthTest: false,
+          })
+        );
+
+        obj.add(outlined);
+        hoverData.set(obj, outlined);
+      } else {
+      }
+    } else {
+      if (obj.__$hoverStyle === "outlined") {
+        if (hoverData.has(obj)) {
+          obj.remove(hoverData.get(obj));
+        }
+      } else {
+      }
     }
   };
+  const hover = (...args) => {};
 
   const cast = () => {
     const intersections = caster.intersectObject(context.scene, true);
@@ -68,13 +99,18 @@ export const createInteractive = (
       // mutation
       if (nextTarget === null) {
         fire(currentTarget, "mouseOut");
+        hover(currentTarget, false);
+
         docElement.style.cursor = "default";
       } else {
         if (currentTarget === null) {
           fire(nextTarget, "mouseIn");
+          hover(nextTarget, true);
         } else {
           fire(currentTarget, "mouseOut");
+          hover(currentTarget, false);
           fire(nextTarget, "mouseIn");
+          hover(nextTarget, true);
         }
 
         docElement.style.cursor = "pointer";
@@ -103,6 +139,8 @@ export const createInteractive = (
   };
 
   const move = (e: PointerEvent) => {
+    // smartLoop.start();
+
     const w = docElement.clientWidth;
     const h = docElement.clientHeight;
 
@@ -110,6 +148,7 @@ export const createInteractive = (
     const y = 1 - 2 * (e.pageY / h);
     coords.set(x, y);
     caster.setFromCamera(coords, context.activeCamera);
+
     cast();
   };
 
@@ -248,14 +287,16 @@ export const createSelector = (context: WithActiveCamera) => {
   let current: THREE.Object3D;
 
   const hightlight = new THREE.Mesh(
-    new THREE.CircleGeometry(1.4),
+    new THREE.CircleGeometry(1.1),
     new THREE.MeshBasicMaterial({
       color: 0xdf2a32,
       transparent: true,
       opacity: 0.35,
+      depthTest: false,
     })
   );
 
+  hightlight.raycast = () => {};
   hightlight.rotation.x = -Math.PI / 2;
 
   const timeline = gsap.timeline({});

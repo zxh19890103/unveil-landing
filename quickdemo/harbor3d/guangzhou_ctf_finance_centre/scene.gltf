@@ -1,0 +1,300 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 6385,
+      "max": [
+        15.104000091552734,
+        -0.0,
+        13.097999572753906
+      ],
+      "min": [
+        -25.832000732421875,
+        -302.0002136230469,
+        -23.117000579833984
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 76620,
+      "componentType": 5126,
+      "count": 6385,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 16611,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 153240,
+      "componentType": 5126,
+      "count": 1548,
+      "max": [
+        15.104000091552734,
+        -34.99800109863281,
+        13.097999572753906
+      ],
+      "min": [
+        -25.832000732421875,
+        -243.0030059814453,
+        -23.117000579833984
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 171816,
+      "componentType": 5126,
+      "count": 1548,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 66444,
+      "componentType": 5125,
+      "count": 3954,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 190392,
+      "componentType": 5126,
+      "count": 5997,
+      "max": [
+        15.104000091552734,
+        -0.0,
+        13.07859992980957
+      ],
+      "min": [
+        -25.520000457763672,
+        -301.85931396484375,
+        -23.117000579833984
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 262356,
+      "componentType": 5126,
+      "count": 5997,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 82260,
+      "componentType": 5125,
+      "count": 12345,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "NanoRay (https://sketchfab.com/NanoRay)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/guangzhou-ctf-finance-centre-7b2d05b74aa64d1f9f7b4f56171536f7",
+      "title": "Guangzhou CTF Finance Centre"
+    },
+    "generator": "Sketchfab-13.58.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 131640,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 334320,
+      "byteOffset": 131640,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 465960,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "color_10267831",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.611765,
+          0.67451,
+          0.717647,
+          1.0
+        ],
+        "metallicFactor": 0.9369763205828779,
+        "roughnessFactor": 0.1991279069767442
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "color_11647683",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.6941179999999998,
+          0.7294120000000003,
+          0.7647059999999999,
+          1.0
+        ],
+        "metallicFactor": 0.6206395348837209,
+        "roughnessFactor": 0.32122093023255816
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "color_9082789",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.541176,
+          0.592157,
+          0.647059,
+          1.0
+        ],
+        "metallicFactor": 0.5276162790697675,
+        "roughnessFactor": 0.8502906976744187
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0
+          },
+          "indices": 2,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 4,
+            "POSITION": 3
+          },
+          "indices": 5,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_2",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 7,
+            "POSITION": 6
+          },
+          "indices": 8,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        -4.440892098500626e-16,
+        0.0,
+        0.0,
+        4.440892098500626e-16,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2,
+        3,
+        4
+      ],
+      "name": "tinker.obj.cleaner.materialmerger.gles"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_2"
+    },
+    {
+      "mesh": 1,
+      "name": "Object_3"
+    },
+    {
+      "mesh": 2,
+      "name": "Object_4"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

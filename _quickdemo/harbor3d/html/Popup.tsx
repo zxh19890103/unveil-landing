@@ -27,10 +27,11 @@ export const Popup = ({ children }) => {
   return (
     <div
       ref={eleRef}
-      className=" rounded  -translate-y-full top-0 left-0 absolute bg-stone-700 text-white w-fit max-w-96 p-2"
+      className="Popup2 bg-slate-600/75 text-white rounded-lg  -translate-y-full top-0 left-1/2 absolute w-fit max-w-96 p-2"
       hidden={!open}
     >
       {open && <div>{children}</div>}
+      <div className="Caret bg-slate-600/75" />
     </div>
   );
 };

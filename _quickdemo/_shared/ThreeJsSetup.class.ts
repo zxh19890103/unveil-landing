@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { MapControls } from "three/addons/controls/MapControls.js";
 import Stats from "three/addons/libs/stats.module.js";
 
 /**
@@ -31,7 +30,8 @@ interface WebGLRendererOptions {
  */
 export class ThreeJsSetup
   extends THREE.EventDispatcher<{
-    viewportResize: any;
+    viewportResize: {};
+    birdEye: { angle: number; inside: boolean };
   }>
   implements WithActiveCamera
 {
@@ -113,6 +113,36 @@ export class ThreeJsSetup
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.update();
+
+    const yAxi = new THREE.Vector3(0, 1, 0);
+    const birdEyeAngleThrehold = 60;
+    let birdEyeAngle = -1;
+
+    controls.addEventListener("end", () => {
+      const dir = new THREE.Vector3()
+        .subVectors(this.activeCamera.position, controls.target)
+        .normalize();
+
+      const angle = (dir.angleTo(yAxi) * 180) / Math.PI;
+
+      if (birdEyeAngle === -1) {
+        birdEyeAngle = angle;
+      } else {
+        const diff = angle - birdEyeAngle;
+        if (birdEyeAngle < birdEyeAngleThrehold && diff > 0) {
+          if (angle > birdEyeAngleThrehold) {
+            birdEyeAngle = angle;
+            this.dispatchEvent({ type: "birdEye", angle, inside: false });
+          }
+        } else if (birdEyeAngle > birdEyeAngleThrehold && diff < 0) {
+          if (angle < birdEyeAngleThrehold) {
+            birdEyeAngle = angle;
+            this.dispatchEvent({ type: "birdEye", angle, inside: true });
+          }
+        }
+      }
+    });
+
     // controls.autoRotate = true;
     this.controls = controls;
   }

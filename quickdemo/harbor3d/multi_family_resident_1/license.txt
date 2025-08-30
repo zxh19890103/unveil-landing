@@ -1,0 +1,11 @@
+Model Information:
+* title:	Multi Family Resident 1
+* source:	https://sketchfab.com/3d-models/multi-family-resident-1-69f0e2ee6d544b589c452e736adcdffb
+* author:	hnanw (https://sketchfab.com/hnanw)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Multi Family Resident 1" (https://sketchfab.com/3d-models/multi-family-resident-1-69f0e2ee6d544b589c452e736adcdffb) by hnanw (https://sketchfab.com/hnanw) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

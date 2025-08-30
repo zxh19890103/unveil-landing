@@ -20,6 +20,8 @@ import { Ship } from "./Ship.class.js";
 import { appState } from "./state.js";
 import Descriptions from "./html/Descriptions.js";
 import { textLoader } from "@/_shared/loader.js";
+import { Tree } from "./Tree.class.js";
+import { Building } from "./Building.class.js";
 
 // const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -312,7 +314,30 @@ world.add(map);
   appState.objects.push(ship);
 }
 
+{
+  map.onReady(() => {
+    map.trees.forEach((item) => {
+      const tree = new Tree();
+      tree.position.copy(item.points[0]);
+      world.add(tree);
+    });
+
+    const building = new Building();
+    building.position.z = -1;
+    world.add(building);
+  });
+}
+
 threeJs.startAnimation();
+
+threejsContainer.classList.add("BirdEye");
+threeJs.addEventListener("birdEye", (e) => {
+  if (e.inside) {
+    threejsContainer.classList.add("BirdEye");
+  } else {
+    threejsContainer.classList.remove("BirdEye");
+  }
+});
 
 const Crs = new THREE.AxesHelper(1);
 map.add(Crs);

@@ -33,11 +33,12 @@ declare global {
     props: TooltipProps<O>
   ) => React.ReactNode;
 
-  type InteractiveStyle = {
-    color?: THREE.ColorRepresentation;
-    opacity?: number;
-    scale?: number;
-  };
+  type InteractiveStyle =
+    | {
+        color?: THREE.ColorRepresentation;
+        opacity?: number;
+      }
+    | "outlined";
 
   type InteractiveEventMapPayload = {
     payload: any;

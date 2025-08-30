@@ -1,4 +1,3 @@
-
 .placement {
   &-top {
     margin-top: -20px;
@@ -9,7 +8,8 @@
   transition: left 0.3s linear, opacity 0.3s linear, transform 0.3s ease-in-out;
 
   aside {
-    max-width: 450px;
+    min-width: 300px;
+    max-width: 550px;
     width: 30vw;
   }
 
@@ -58,12 +58,49 @@
     content: "";
     display: block;
     pointer-events: none;
-    width: 3px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
     background-color: rgb(229 231 235);
     position: absolute;
-    bottom: -3px;
+    bottom: 0px;
     left: 50%;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, 100%);
+    clip-path: polygon(0% 0%, 100% 0, 50% 100%);
+  }
+}
+
+.Popup2 {
+  // position: fixed;
+  // default top/left
+  border-bottom-left-radius: 0;
+
+  .Caret {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+    transform: translate(0, 100%);
+  }
+}
+
+.Opts {
+  li {
+    border-radius: 0.2em;
+
+    &:hover {
+      color: #000;
+      background-color: azure;
+    }
+  }
+}
+
+.Marker {
+  display: none;
+}
+.BirdEye {
+  .Marker {
+    display: block;
   }
 }

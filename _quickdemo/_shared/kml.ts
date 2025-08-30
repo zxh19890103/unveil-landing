@@ -19,6 +19,7 @@ const texture2 = textLoader.load(
 );
 
 const grassLand = textLoader.load("/quickdemo/harbor3d/7546-v1.jpg");
+const cityLand = textLoader.load("/quickdemo/harbor3d/cityland.jpg");
 
 texture.minFilter = THREE.LinearFilter;
 texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -39,6 +40,7 @@ export class KmlGisMap extends THREE.Object3D {
   readonly waterways: THREE.CatmullRomCurve3[] = [];
   readonly shipplaces: KmlParsedRes[] = [];
   readonly stockyards: KmlParsedRes[] = [];
+  readonly trees: KmlParsedRes[] = [];
 
   constructor(url: string, readonly options: KmlGisOptions) {
     super();
@@ -151,6 +153,9 @@ export class KmlGisMap extends THREE.Object3D {
                 this.localToWorld(this.center);
                 this.onCenter();
                 this.options.onCenter?.(this.center);
+              } else if (item.name === "tree") {
+                this.createTree(item);
+                this.trees.push(item);
               } else {
                 const marker = this.createMarker(item.desc, item.marker);
                 marker.position.copy(item.points[0]);
@@ -203,7 +208,7 @@ export class KmlGisMap extends THREE.Object3D {
       0.0
     );
 
-    const width = 0.12;
+    const width = 0.22;
     const roadShape = new THREE.Shape();
     roadShape.moveTo(0, -width / 2);
     roadShape.lineTo(0, width / 2);
@@ -284,7 +289,7 @@ export class KmlGisMap extends THREE.Object3D {
     const mat = new THREE.ShaderMaterial({
       precision: "mediump",
       uniforms: {
-        map: { value: grassLand },
+        map: { value: cityLand },
         quantizationLevel: { value: 64.0 },
       },
       lights: false,
@@ -305,7 +310,7 @@ export class KmlGisMap extends THREE.Object3D {
       void main() {
         vec2 uv = mod(vPos, 2.0) / 2.0;
         vec4 texel = texture2D(map, uv * 1.0);
-        vec4 quantizedColor = texel * 1.0;
+        vec4 quantizedColor = texel * 0.9;
         gl_FragColor = vec4(quantizedColor.rgb, 1.0);
       }
       `,
@@ -324,6 +329,7 @@ export class KmlGisMap extends THREE.Object3D {
 
   createMarker(text: string, type: KmlParsedResMarker = null) {
     const div = document.createElement("div");
+    div.className = "Marker";
     div.style.cssText = `font-size: 0.9rem;`;
     const label = new CSS2DObject(div);
     const markerIcon = type
@@ -336,6 +342,8 @@ export class KmlGisMap extends THREE.Object3D {
     this.add(label);
     return label;
   }
+
+  createTree(item: KmlParsedRes) {}
 
   createHill(item: KmlParsedRes) {
     const curve = new THREE.CatmullRomCurve3(
@@ -358,12 +366,7 @@ export class KmlGisMap extends THREE.Object3D {
     geometry.computeBoundingBox();
     geometry.boundingBox.getCenter(top);
 
-    geometry.attributes.position.setXYZ(
-      0,
-      top.x,
-      item.elevation * 0.004,
-      top.z
-    );
+    geometry.attributes.position.setXYZ(0, top.x, item.elevation * 0.01, top.z);
 
     for (let i = 1, len = points.length - 1; i < len; i++) {
       const index0 = 0;
@@ -382,6 +385,7 @@ export class KmlGisMap extends THREE.Object3D {
         glslVersion: "300 es",
         uniforms: {
           map: { value: grassLand },
+          cityLand: { value: cityLand },
           peak: { value: top },
         },
         vertexShader: `
@@ -401,13 +405,15 @@ export class KmlGisMap extends THREE.Object3D {
         `,
         fragmentShader: `
         uniform sampler2D map;
+        uniform sampler2D cityLand;
         varying vec3 vPos;
         varying vec2 vUv;
         out vec4 FragColor; 
         
         void main() {
           vec4 texel = texture2D(map, vUv);
-          vec4 quantizedColor = texel * max(length(vUv), 0.1);
+          vec4 texel2 = texture2D(cityLand, vUv);
+          vec4 quantizedColor = mix(texel, texel2, length(vUv));
           FragColor = vec4(quantizedColor.rgb, 1.0);
         }
         `,
@@ -460,7 +466,8 @@ type KmlParsedResName =
   | "dock"
   | "hill"
   | "stockyard"
-  | "center";
+  | "center"
+  | "tree";
 
 type KmlParsedResType = "Polygon" | "LineString" | "Point";
 type KmlParsedResMarker = "park" | "station" | "hotel";

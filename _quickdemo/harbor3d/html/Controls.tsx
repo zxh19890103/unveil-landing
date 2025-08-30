@@ -105,7 +105,7 @@ const PersipectiveOptions = () => {
 
   return (
     <div>
-      <ul className=" w-24" onClick={onItemClick}>
+      <ul className=" Opts w-24" onClick={onItemClick}>
         <li itemID="top">正上</li>
         <li itemID="left">左側</li>
         <li itemID="right">右側</li>

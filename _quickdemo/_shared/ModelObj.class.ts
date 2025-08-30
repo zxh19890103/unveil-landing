@@ -2,6 +2,7 @@ import * as THREE from "three";
 import type { LngLat } from "./geo-mercator.js";
 import { gltfLoader } from "./loader.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import type { GLTF } from "three/addons/loaders/GLTFLoader.js";
 
 type LODLevel = {
   type: "model" | "label" | "point";
@@ -38,6 +39,8 @@ const half_PI = Math.PI / 2;
 
 export class ModelObj extends THREE.Object3D {
   readonly __$interactive = true;
+  readonly __$hoverStyle: InteractiveStyle = "outlined";
+
   private lod: THREE.LOD = new THREE.LOD();
   private atom: THREE.Object3D;
 
@@ -71,10 +74,7 @@ export class ModelObj extends THREE.Object3D {
 
     if (adjustParams.offset) {
       wrapper.position.set(...adjustParams.offset);
-      wrapper2.position.copy(wrapper.position);
-
       wrapper.position.multiplyScalar(scaleFactor);
-      wrapper2.position.multiplyScalar(scaleFactorToSee);
     }
 
     this.loadShape();
@@ -123,13 +123,17 @@ export class ModelObj extends THREE.Object3D {
     }
   }
 
+  gltfTransform(gltf: GLTF): THREE.Object3D {
+    return gltf.scene;
+  }
+
   async loadLODs(levels: LODLevel[]) {
-    for (const { type, url, distance, size, color } of levels) {
+    for (const { type, url, distance } of levels) {
       switch (type) {
         case "model": {
           const gltf = await gltfLoader.loadAsync(url);
 
-          const scene = gltf.scene;
+          const scene = this.gltfTransform(gltf);
 
           this.atom = scene;
           this.wrapper.add(scene);

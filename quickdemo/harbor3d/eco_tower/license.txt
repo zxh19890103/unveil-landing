@@ -1,0 +1,11 @@
+Model Information:
+* title:	Eco Tower
+* source:	https://sketchfab.com/3d-models/eco-tower-becbfdd193214550b5be2211089cb9f2
+* author:	NanoRay (https://sketchfab.com/NanoRay)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Eco Tower" (https://sketchfab.com/3d-models/eco-tower-becbfdd193214550b5be2211089cb9f2) by NanoRay (https://sketchfab.com/NanoRay) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

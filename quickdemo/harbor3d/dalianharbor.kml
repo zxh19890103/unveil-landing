@@ -2,6 +2,40 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>dalianharbor</name>
+    <Style id="icon-1887-097138-normal">
+      <IconStyle>
+        <color>ff387109</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1887-097138-highlight">
+      <IconStyle>
+        <color>ff387109</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1887-097138">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1887-097138-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1887-097138-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
     <Style id="icon-1899-0288D1-normal">
       <IconStyle>
         <color>ffd18802</color>
@@ -809,15 +843,33 @@
               121.703446,38.9067298,0
               121.7004419,38.9067966,0
               121.6982103,38.9056611,0
-              121.6966654,38.9039913,0
-              121.696837,38.9015867,0
-              121.7001844,38.8999836,0
-              121.7025877,38.8985808,0
-              121.7066217,38.898514,0
+              121.698897,38.9043921,0
+              121.6969658,38.9033568,0
+              121.6960645,38.9029894,0
+              121.6943479,38.9029894,0
+              121.6918588,38.9025218,0
+              121.6922022,38.9004511,0
+              121.6950198,38.8974233,0
+              121.6979233,38.8966665,0
+              121.6996104,38.8948857,0
+              121.7007531,38.8914578,0
+              121.7020084,38.8894119,0
+              121.7036928,38.8878337,0
+              121.7062355,38.8879257,0
+              121.7072011,38.8884098,0
+              121.7087997,38.8877166,0
+              121.7101999,38.8871695,0
+              121.712445,38.8917729,0
+              121.7139108,38.8928054,0
+              121.7148154,38.8939897,0
+              121.7160402,38.8956507,0
+              121.7173392,38.8979508,0
+              121.7207352,38.903977,0
+              121.7136598,38.9035237,0
               121.7087675,38.9004512,0
               121.7101837,38.9035237,0
               121.7091966,38.9048596,0
-              121.7068792,38.9057279,0
+              121.7066217,38.9063958,0
               121.703446,38.9067298,0
             </coordinates>
           </LinearRing>
@@ -913,6 +965,353 @@
           </LinearRing>
         </outerBoundaryIs>
       </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>hill_02</name>
+      <description><![CDATA[description: <br>type: <br>elevation: 340]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value>340.0</value>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.6305721,38.9129419,0
+              121.6314304,38.9123074,0
+              121.6312158,38.9107046,0
+              121.6320741,38.9106712,0
+              121.6322458,38.9092686,0
+              121.6326749,38.9092018,0
+              121.6328037,38.9086341,0
+              121.6331899,38.9082,0
+              121.6343486,38.907866,0
+              121.6355932,38.9079662,0
+              121.6364086,38.9074987,0
+              121.6373098,38.9075321,0
+              121.6381681,38.9079996,0
+              121.6377818,38.9083336,0
+              121.6364944,38.9083336,0
+              121.6361511,38.9095024,0
+              121.6357219,38.9097027,0
+              121.6362369,38.9104374,0
+              121.6362798,38.9110051,0
+              121.636666,38.9106712,0
+              121.6370523,38.9109383,0
+              121.6368377,38.9114058,0
+              121.638726,38.9123074,0
+              121.6373527,38.9148452,0
+              121.6364086,38.9149454,0
+              121.6349923,38.9145781,0
+              121.6332757,38.9142442,0
+              121.6323316,38.914144,0
+              121.6316449,38.9138435,0
+              121.6305721,38.9129419,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>hill_03</name>
+      <description><![CDATA[description: <br>type: <br>elevation: 320]]></description>
+      <styleUrl>#poly-000000-1200-77</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value>320.0</value>
+        </Data>
+      </ExtendedData>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              121.6268896,38.8937704,0
+              121.6271901,38.8934698,0
+              121.6271471,38.8929687,0
+              121.6271471,38.8922005,0
+              121.627705,38.8921337,0
+              121.6286063,38.8927683,0
+              121.6290354,38.8935032,0
+              121.6295075,38.8945386,0
+              121.6297221,38.8956742,0
+              121.63028,38.8960082,0
+              121.6305804,38.895741,0
+              121.6301941,38.8943048,0
+              121.6294217,38.8930021,0
+              121.6297221,38.8925345,0
+              121.63028,38.8928351,0
+              121.631267,38.8927683,0
+              121.6316532,38.893904,0
+              121.6327261,38.894405,0
+              121.6338848,38.8948726,0
+              121.6340994,38.8944384,0
+              121.6333269,38.893904,0
+              121.6333699,38.8934363,0
+              121.6325116,38.8919333,0
+              121.6320824,38.891666,0
+              121.6318249,38.8909646,0
+              121.6325974,38.8905303,0
+              121.6332411,38.8905303,0
+              121.6339278,38.8902297,0
+              121.6347432,38.8896285,0
+              121.6355156,38.8903299,0
+              121.6362881,38.8918331,0
+              121.6362881,38.8932025,0
+              121.6365885,38.8934363,0
+              121.6372752,38.8925345,0
+              121.6365456,38.8902631,0
+              121.6352259,38.8891357,0
+              121.6355156,38.88876,0
+              121.6367173,38.8890606,0
+              121.6369104,38.8888685,0
+              121.6367602,38.8885261,0
+              121.6369855,38.8883424,0
+              121.6371464,38.8883591,0
+              121.6374683,38.8888101,0
+              121.6377043,38.8887266,0
+              121.6381764,38.8879917,0
+              121.6387343,38.8878497,0
+              121.6392493,38.8876242,0
+              121.6408371,38.8873236,0
+              121.6415667,38.8870564,0
+              121.6418671,38.8873486,0
+              121.6418242,38.8877912,0
+              121.6414379,38.8883591,0
+              121.6405367,38.8880919,0
+              121.6401505,38.88876,0
+              121.6394209,38.8893612,0
+              121.6392063,38.8895951,0
+              121.6394638,38.8901629,0
+              121.6398501,38.8904969,0
+              121.6406226,38.8902631,0
+              121.6418242,38.8904635,0
+              121.6432404,38.8904301,0
+              121.6438412,38.8907308,0
+              121.6434979,38.8916994,0
+              121.6425108,38.8918999,0
+              121.6420817,38.8922673,0
+              121.6419958,38.8926681,0
+              121.6432833,38.8928685,0
+              121.6437983,38.8932025,0
+              121.6437983,38.8936702,0
+              121.6444849,38.8941712,0
+              121.644442,38.8945386,0
+              121.6436695,38.894739,0
+              121.6422104,38.8947056,0
+              121.6415238,38.897077,0
+              121.6430258,38.8977784,0
+              121.6440129,38.8981124,0
+              121.6433691,38.8986134,0
+              121.6424679,38.8987136,0
+              121.6416954,38.8979454,0
+              121.6412234,38.897912,0
+              121.6410517,38.898413,0
+              121.6397642,38.8983462,0
+              121.6381335,38.8981458,0
+              121.6370606,38.898246,0
+              121.6362023,38.8987136,0
+              121.6360306,38.8991144,0
+              121.6365456,38.899248,0
+              121.6373181,38.8993816,0
+              121.6386484,38.8996822,0
+              121.6381335,38.899916,0
+              121.6371893,38.8996822,0
+              121.6356015,38.8993482,0
+              121.6310524,38.8978118,0
+              121.6301083,38.8977116,0
+              121.6292929,38.8966762,0
+              121.6288208,38.8958746,0
+              121.6283059,38.895908,0
+              121.6271901,38.8944718,0
+              121.6268896,38.8937704,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>tree_01</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6424239,38.9163838,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_02</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6496337,38.921459,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_03</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6783012,38.9205241,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_04</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.7011321,38.9111746,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_05</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6666282,38.9062322,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_06</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6252578,38.9213254,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_07</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.652037,38.8946096,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>tree_08</name>
+      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+      <styleUrl>#icon-1887-097138</styleUrl>
+      <ExtendedData>
+        <Data name="description">
+          <value/>
+        </Data>
+        <Data name="type">
+          <value/>
+        </Data>
+        <Data name="elevation">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          121.6570152,38.9274687,0
+        </coordinates>
+      </Point>
     </Placemark>
   </Document>
 </kml>
