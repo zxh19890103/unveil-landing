@@ -32,8 +32,8 @@ export class Tree extends ModelObj {
       rotation: [0, 0, 0],
       offset: [0, 0, 0],
       scaleFactor: 0.3,
-      scaleFactorToSee: 3,
-      visibleDistance: 32,
+      scaleFactorToSee: 0.3,
+      visibleDistance: 64,
       ...trees[key],
     });
   }

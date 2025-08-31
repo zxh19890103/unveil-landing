@@ -21,9 +21,9 @@ import { appState } from "./state.js";
 import Descriptions from "./html/Descriptions.js";
 import { textLoader } from "@/_shared/loader.js";
 import { Tree } from "./Tree.class.js";
-import { Building } from "./Building.class.js";
+import { Building, queryBuildingType } from "./Building.class.js";
 
-// const DEG2RAD = THREE.MathUtils.DEG2RAD;
+const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
 const threejsContainer = document.querySelector(
   "#threejs-container"
@@ -54,9 +54,9 @@ threeJs.onAnimate(renderRendererTiles);
 
 //#region lights
 {
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 2.2);
   const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
-
+  dirLight.position.set(0, 100, 0);
   world.add(dirLight, ambLight);
   staticWorld.add(dirLight.clone(), ambLight.clone());
 }
@@ -322,9 +322,12 @@ world.add(map);
       world.add(tree);
     });
 
-    const building = new Building();
-    building.position.z = -1;
-    world.add(building);
+    map.buildings.forEach((item) => {
+      const building = new Building(queryBuildingType(item.marker));
+      building.position.copy(item.points[0]);
+      building.rotateY(item.lookAt.heading * DEG2RAD);
+      world.add(building);
+    });
   });
 }
 

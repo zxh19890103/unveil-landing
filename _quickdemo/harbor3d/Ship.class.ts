@@ -16,7 +16,7 @@ export class Ship extends ModelObj {
       rotation: [0, 1, 0],
       scaleFactor: 0.1,
       scaleFactorToSee: 0.1,
-      visibleDistance: 20,
+      visibleDistance: 64,
     });
   }
 }

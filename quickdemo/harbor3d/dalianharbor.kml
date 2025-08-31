@@ -1,1317 +1,1370 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>dalianharbor</name>
-    <Style id="icon-1887-097138-normal">
-      <IconStyle>
-        <color>ff387109</color>
-        <scale>1</scale>
-        <Icon>
-          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
-        </Icon>
-      </IconStyle>
-      <LabelStyle>
-        <scale>0</scale>
-      </LabelStyle>
-    </Style>
-    <Style id="icon-1887-097138-highlight">
-      <IconStyle>
-        <color>ff387109</color>
-        <scale>1</scale>
-        <Icon>
-          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
-        </Icon>
-      </IconStyle>
-      <LabelStyle>
-        <scale>1</scale>
-      </LabelStyle>
-    </Style>
-    <StyleMap id="icon-1887-097138">
-      <Pair>
-        <key>normal</key>
-        <styleUrl>#icon-1887-097138-normal</styleUrl>
-      </Pair>
-      <Pair>
-        <key>highlight</key>
-        <styleUrl>#icon-1887-097138-highlight</styleUrl>
-      </Pair>
-    </StyleMap>
-    <Style id="icon-1899-0288D1-normal">
-      <IconStyle>
-        <color>ffd18802</color>
-        <scale>1</scale>
-        <Icon>
-          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
-        </Icon>
-        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
-      </IconStyle>
-      <LabelStyle>
-        <scale>0</scale>
-      </LabelStyle>
-    </Style>
-    <Style id="icon-1899-0288D1-highlight">
-      <IconStyle>
-        <color>ffd18802</color>
-        <scale>1</scale>
-        <Icon>
-          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
-        </Icon>
-        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
-      </IconStyle>
-      <LabelStyle>
-        <scale>1</scale>
-      </LabelStyle>
-    </Style>
-    <StyleMap id="icon-1899-0288D1">
-      <Pair>
-        <key>normal</key>
-        <styleUrl>#icon-1899-0288D1-normal</styleUrl>
-      </Pair>
-      <Pair>
-        <key>highlight</key>
-        <styleUrl>#icon-1899-0288D1-highlight</styleUrl>
-      </Pair>
-    </StyleMap>
-    <Style id="line-000000-1200-normal">
-      <LineStyle>
-        <color>ff000000</color>
-        <width>1.2</width>
-      </LineStyle>
-    </Style>
-    <Style id="line-000000-1200-highlight">
-      <LineStyle>
-        <color>ff000000</color>
-        <width>1.8</width>
-      </LineStyle>
-    </Style>
-    <StyleMap id="line-000000-1200">
-      <Pair>
-        <key>normal</key>
-        <styleUrl>#line-000000-1200-normal</styleUrl>
-      </Pair>
-      <Pair>
-        <key>highlight</key>
-        <styleUrl>#line-000000-1200-highlight</styleUrl>
-      </Pair>
-    </StyleMap>
-    <Style id="poly-000000-1200-77-normal">
-      <LineStyle>
-        <color>ff000000</color>
-        <width>1.2</width>
-      </LineStyle>
-      <PolyStyle>
-        <color>4d000000</color>
-        <fill>1</fill>
-        <outline>1</outline>
-      </PolyStyle>
-    </Style>
-    <Style id="poly-000000-1200-77-highlight">
-      <LineStyle>
-        <color>ff000000</color>
-        <width>1.8</width>
-      </LineStyle>
-      <PolyStyle>
-        <color>4d000000</color>
-        <fill>1</fill>
-        <outline>1</outline>
-      </PolyStyle>
-    </Style>
-    <StyleMap id="poly-000000-1200-77">
-      <Pair>
-        <key>normal</key>
-        <styleUrl>#poly-000000-1200-77-normal</styleUrl>
-      </Pair>
-      <Pair>
-        <key>highlight</key>
-        <styleUrl>#poly-000000-1200-77-highlight</styleUrl>
-      </Pair>
-    </StyleMap>
-    <Placemark>
-      <name>land_01</name>
-      <description><![CDATA[description: 大連港地圖<br>type: <br>elevation: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>大連港地圖</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6358332,38.9381659,0
-              121.6331295,38.9370977,0
-              121.6343312,38.9351616,0
-              121.6327004,38.9351282,0
-              121.6322283,38.9356623,0
-              121.6300825,38.9347777,0
-              121.6309408,38.93295,0
-              121.6292886,38.932491,0
-              121.6273892,38.9354122,0
-              121.6255893,38.9346987,0
-              121.6267934,38.9316484,0
-              121.6244357,38.9308013,0
-              121.6228504,38.9327585,0
-              121.6221634,38.9324831,0
-              121.6234213,38.9303257,0
-              121.6224248,38.9298813,0
-              121.6213579,38.9309402,0
-              121.6210635,38.9303633,0
-              121.6165816,38.9286232,0
-              121.6131295,38.9310894,0
-              121.609911,38.9295701,0
-              121.6005997,38.9181014,0
-              121.5875637,38.9025454,0
-              121.6400938,38.8869862,0
-              121.705399,38.8721417,0
-              121.7096824,38.8769744,0
-              121.7100666,38.8801203,0
-              121.7124046,38.8808914,0
-              121.712511,38.8831324,0
-              121.7108764,38.8868852,0
-              121.7121603,38.8903705,0
-              121.7144743,38.8925197,0
-              121.7163593,38.8951365,0
-              121.7166151,38.8965116,0
-              121.7173654,38.8967483,0
-              121.7179336,38.8978687,0
-              121.718931,38.8977532,0
-              121.7221672,38.904659,0
-              121.7187424,38.906976,0
-              121.7190941,38.9080908,0
-              121.7202182,38.9129457,0
-              121.7208661,38.9153732,0
-              121.720484,38.9176671,0
-              121.7140983,38.9194667,0
-              121.7133087,38.9180959,0
-              121.7096008,38.9192627,0
-              121.7055495,38.9205964,0
-              121.7064763,38.9216629,0
-              121.699575,38.9236621,0
-              121.6838835,38.9283943,0
-              121.6811014,38.9278887,0
-              121.678491,38.9288521,0
-              121.6793064,38.9302877,0
-              121.6779331,38.9322907,0
-              121.677504,38.933359,0
-              121.6755299,38.9330585,0
-              121.6739849,38.932925,0
-              121.6721395,38.9319068,0
-              121.6710023,38.9321572,0
-              121.6711257,38.9324242,0
-              121.6710345,38.9326579,0
-              121.6714958,38.9333923,0
-              121.6696934,38.9339932,0
-              121.6668074,38.9291025,0
-              121.663299,38.9303544,0
-              121.6658739,38.9352951,0
-              121.6643719,38.9358626,0
-              121.6614966,38.9308552,0
-              121.6589646,38.93179,0
-              121.6615824,38.9367639,0
-              121.6600804,38.9372313,0
-              121.6575913,38.9322239,0
-              121.6547589,38.9331587,0
-              121.657205,38.9381659,0
-              121.6554455,38.9388335,0
-              121.6515402,38.9322907,0
-              121.6498665,38.9314895,0
-              121.6476778,38.931189,0
-              121.6469912,38.9325578,0
-              121.646562,38.9331587,0
-              121.647592,38.9335593,0
-              121.6472916,38.9340934,0
-              121.6476778,38.934494,0
-              121.6501669,38.9335593,0
-              121.6505102,38.9341268,0
-              121.6473345,38.9355956,0
-              121.6513686,38.9400352,0
-              121.6502098,38.9407696,0
-              121.6505102,38.9412035,0
-              121.6472058,38.9429392,0
-              121.6425709,38.9397014,0
-              121.6417126,38.9404024,0
-              121.6358332,38.9381659,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>road_01</name>
-      <description><![CDATA[description: 疏港路<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>疏港路</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6607027,38.9367472,0
-          121.6575103,38.9309821,0
-          121.6531899,38.9325448,0
-          121.6498284,38.9305147,0
-          121.6476778,38.931189,0
-          121.6470818,38.9309153,0
-          121.6399579,38.9333189,0
-          121.6380696,38.9335192,0
-          121.6359238,38.9329851,0
-          121.6318039,38.9314495,0
-          121.6194443,38.9269759,0
-          121.6129079,38.9264731,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>landmark_01</name>
-      <description><![CDATA[description: 大連俄羅斯風情街<br>type: park<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>大連俄羅斯風情街</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6363869,38.9288632,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>landmark_03</name>
-      <description><![CDATA[description: 香格里拉酒店<br>type: hotel<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>香格里拉酒店</value>
-        </Data>
-        <Data name="type">
-          <value>hotel</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6527805,38.9259253,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>ship_01</name>
-      <description><![CDATA[description: 船舶停留的位置<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>船舶停留的位置</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6596256,38.9371356,0
-          121.6586171,38.9352329,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>shipline_01</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6586171,38.9352329,0
-          121.6596256,38.9371356,0
-          121.6598864,38.9375007,0
-          121.6609864,38.9371912,0
-          121.6752176,38.9475191,0
-          121.6767814,38.9481824,0
-          121.6786455,38.9477443,0
-          121.7029356,38.9283168,0
-          121.7210459,38.9195693,0
-          121.7288114,38.9063199,0
-          121.730528,38.904984,0
-          121.7316438,38.9029802,0
-          121.7316165,38.8697877,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>shipline_02</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6586171,38.9352329,0
-          121.6598455,38.9373214,0
-          121.6608534,38.9371845,0
-          121.6618506,38.9375484,0
-          121.6641989,38.9384699,0
-          121.6670838,38.939525,0
-          121.6699472,38.9403964,0
-          121.6725103,38.9407003,0
-          121.6746131,38.9407921,0
-          121.6760615,38.9408046,0
-          121.6778103,38.9407253,0
-          121.7267553,38.9386976,0
-          121.7323342,38.9368282,0
-          121.7354242,38.9340909,0
-          121.7366258,38.9290166,0
-          121.7378274,38.9151939,0
-          121.7412295,38.8689968,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>shipline_03</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6586171,38.9352329,0
-          121.659418,38.9372277,0
-          121.6600188,38.9376282,0
-          121.6609864,38.9371912,0
-          121.6619257,38.9373481,0
-          121.7265482,38.9360423,0
-          121.7330713,38.916144,0
-          121.7330713,38.8942362,0
-          121.7330528,38.8694224,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>landmark_02</name>
-      <description><![CDATA[description: 大連火車站<br>type: station<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>大連火車站</value>
-        </Data>
-        <Data name="type">
-          <value>station</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6331253,38.9227869,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>center</name>
-      <description><![CDATA[description: 中心<br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>中心</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6753697,38.9258453,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>road_02</name>
-      <description><![CDATA[description: 人民路<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>人民路</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6183728,38.9125462,0
-          121.6226643,38.9130137,0
-          121.6279,38.9130137,0
-          121.6294449,38.9134812,0
-          121.6316765,38.9175549,0
-          121.6357964,38.9190909,0
-          121.6394013,38.9200925,0
-          121.6429204,38.9210274,0
-          121.644122,38.92056,0
-          121.6448945,38.9214949,0
-          121.6448945,38.9219623,0
-          121.6466111,38.9222962,0
-          121.6509884,38.9237652,0
-          121.655795,38.9251007,0
-          121.658799,38.9262359,0
-          121.6606015,38.92677,0
-          121.6618031,38.929107,0
-          121.6623181,38.9296745,0
-          121.6621035,38.9299249,0
-          121.6615456,38.929975,0
-          121.6589492,38.9307095,0
-          121.6578549,38.9310433,0
-          121.6591424,38.9334469,0
-          121.6609448,38.9366516,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>road_03</name>
-      <description><![CDATA[description: 港隆路<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>港隆路</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.7171108,38.9107785,0
-          121.7136775,38.9109788,0
-          121.7107593,38.9121142,0
-          121.707725,38.9133495,0
-          121.6772551,38.9246352,0
-          121.6729636,38.9245017,0
-          121.6703886,38.9250359,0
-          121.6682429,38.9263713,0
-          121.6658396,38.9282409,0
-          121.6629214,38.9273061,0
-          121.6606015,38.92677,0
-          121.6621035,38.9299249,0
-          121.6635209,38.9325715,0
-          121.6649813,38.935118,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>landmark_04</name>
-      <description><![CDATA[description: 海之韻公園<br>type: park<br>elevation: 138]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>海之韻公園</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value>138.0</value>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.7035193,38.9027968,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>ship_02</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6629364,38.9341017,0
-          121.6639664,38.9358376,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>road_04</name>
-      <description><![CDATA[description: 通往碼頭<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>通往碼頭</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6531899,38.9325448,0
-          121.6543915,38.9348482,0
-          121.6554644,38.9369513,0
-          121.6562798,38.9383533,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>landmark_05</name>
-      <description><![CDATA[description: 海軍廣場<br>type: park<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>海軍廣場</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6688842,38.9187236,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>road_05</name>
-      <description><![CDATA[description: 港浦路<br>type: <br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>港浦路</value>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6649813,38.935118,0
-          121.664023,38.9334361,0
-          121.6628213,38.9311994,0
-          121.6621035,38.9299249,0
-          121.6629501,38.9292631,0
-          121.6647525,38.928729,0
-          121.6658396,38.9282409,0
-          121.6668554,38.928729,0
-          121.6703315,38.9296637,0
-          121.6709323,38.9291296,0
-          121.6716619,38.9285954,0
-          121.6729923,38.9280613,0
-          121.6745372,38.9277942,0
-          121.6756959,38.9277942,0
-          121.6769834,38.9279945,0
-          121.6782708,38.9277942,0
-          121.681747,38.9264921,0
-          121.6849656,38.9255573,0
-          121.6877551,38.9245891,0
-          121.6913262,38.9234169,0
-          121.6936866,38.9226824,0
-          121.6986219,38.9209462,0
-          121.7017976,38.9199111,0
-          121.7047587,38.9190096,0
-          121.7083636,38.9177408,0
-          121.7104236,38.9171064,0
-          121.7141572,38.9156372,0
-          121.7155734,38.9145686,0
-          121.7168609,38.9129324,0
-          121.7173329,38.9110958,0
-          121.71729,38.9097935,0
-          121.7166463,38.9082239,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>stockyard_01</name>
-      <description><![CDATA[description: 堆場 1<br>type: 2x6x3<br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>堆場 1</value>
-        </Data>
-        <Data name="type">
-          <value>2x6x3</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6594448,38.9353894,0
-          121.6597452,38.9352809,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>stockyard_02</name>
-      <description><![CDATA[description: 堆場2<br>type: 3x7x5<br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>堆場2</value>
-        </Data>
-        <Data name="type">
-          <value>3x7x5</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6603138,38.9354153,0
-          121.6606947,38.9352859,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>stockyard_03</name>
-      <description><![CDATA[description: 堆場3<br>type: 2x8x9<br>elevation: ]]></description>
-      <styleUrl>#line-000000-1200</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>堆場3</value>
-        </Data>
-        <Data name="type">
-          <value>2x8x9</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <LineString>
-        <tessellate>1</tessellate>
-        <coordinates>
-          121.6549044,38.9353497,0
-          121.6555267,38.9351327,0
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>landmark_06</name>
-      <description><![CDATA[description: 大連觀光塔<br>type: park<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>大連觀光塔</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6328269,38.9065689,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>landmark_07</name>
-      <description><![CDATA[description: 人民廣場<br>type: park<br>elevation: ]]></description>
-      <styleUrl>#icon-1899-0288D1</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>人民廣場</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6146308,38.9033629,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>hill_01</name>
-      <description><![CDATA[description: 海之韵公园-山<br>type: park<br>elevation: 138]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value>海之韵公园-山</value>
-        </Data>
-        <Data name="type">
-          <value>park</value>
-        </Data>
-        <Data name="elevation">
-          <value>138.0</value>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.703446,38.9067298,0
-              121.7004419,38.9067966,0
-              121.6982103,38.9056611,0
-              121.698897,38.9043921,0
-              121.6969658,38.9033568,0
-              121.6960645,38.9029894,0
-              121.6943479,38.9029894,0
-              121.6918588,38.9025218,0
-              121.6922022,38.9004511,0
-              121.6950198,38.8974233,0
-              121.6979233,38.8966665,0
-              121.6996104,38.8948857,0
-              121.7007531,38.8914578,0
-              121.7020084,38.8894119,0
-              121.7036928,38.8878337,0
-              121.7062355,38.8879257,0
-              121.7072011,38.8884098,0
-              121.7087997,38.8877166,0
-              121.7101999,38.8871695,0
-              121.712445,38.8917729,0
-              121.7139108,38.8928054,0
-              121.7148154,38.8939897,0
-              121.7160402,38.8956507,0
-              121.7173392,38.8979508,0
-              121.7207352,38.903977,0
-              121.7136598,38.9035237,0
-              121.7087675,38.9004512,0
-              121.7101837,38.9035237,0
-              121.7091966,38.9048596,0
-              121.7066217,38.9063958,0
-              121.703446,38.9067298,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>dock_01</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6524024,38.9337626,0
-              121.6547589,38.9331587,0
-              121.657205,38.9381659,0
-              121.6554455,38.9388335,0
-              121.6524024,38.9337626,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>dock_02</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6575913,38.9322239,0
-              121.6589646,38.93179,0
-              121.6615824,38.9367639,0
-              121.6600804,38.9372313,0
-              121.6575913,38.9322239,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>dock_03</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6614966,38.9308552,0
-              121.663299,38.9303544,0
-              121.6658739,38.9352951,0
-              121.6643719,38.9358626,0
-              121.6614966,38.9308552,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>hill_02</name>
-      <description><![CDATA[description: <br>type: <br>elevation: 340]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value>340.0</value>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6305721,38.9129419,0
-              121.6314304,38.9123074,0
-              121.6312158,38.9107046,0
-              121.6320741,38.9106712,0
-              121.6322458,38.9092686,0
-              121.6326749,38.9092018,0
-              121.6328037,38.9086341,0
-              121.6331899,38.9082,0
-              121.6343486,38.907866,0
-              121.6355932,38.9079662,0
-              121.6364086,38.9074987,0
-              121.6373098,38.9075321,0
-              121.6381681,38.9079996,0
-              121.6377818,38.9083336,0
-              121.6364944,38.9083336,0
-              121.6361511,38.9095024,0
-              121.6357219,38.9097027,0
-              121.6362369,38.9104374,0
-              121.6362798,38.9110051,0
-              121.636666,38.9106712,0
-              121.6370523,38.9109383,0
-              121.6368377,38.9114058,0
-              121.638726,38.9123074,0
-              121.6373527,38.9148452,0
-              121.6364086,38.9149454,0
-              121.6349923,38.9145781,0
-              121.6332757,38.9142442,0
-              121.6323316,38.914144,0
-              121.6316449,38.9138435,0
-              121.6305721,38.9129419,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>hill_03</name>
-      <description><![CDATA[description: <br>type: <br>elevation: 320]]></description>
-      <styleUrl>#poly-000000-1200-77</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value>320.0</value>
-        </Data>
-      </ExtendedData>
-      <Polygon>
-        <outerBoundaryIs>
-          <LinearRing>
-            <tessellate>1</tessellate>
-            <coordinates>
-              121.6268896,38.8937704,0
-              121.6271901,38.8934698,0
-              121.6271471,38.8929687,0
-              121.6271471,38.8922005,0
-              121.627705,38.8921337,0
-              121.6286063,38.8927683,0
-              121.6290354,38.8935032,0
-              121.6295075,38.8945386,0
-              121.6297221,38.8956742,0
-              121.63028,38.8960082,0
-              121.6305804,38.895741,0
-              121.6301941,38.8943048,0
-              121.6294217,38.8930021,0
-              121.6297221,38.8925345,0
-              121.63028,38.8928351,0
-              121.631267,38.8927683,0
-              121.6316532,38.893904,0
-              121.6327261,38.894405,0
-              121.6338848,38.8948726,0
-              121.6340994,38.8944384,0
-              121.6333269,38.893904,0
-              121.6333699,38.8934363,0
-              121.6325116,38.8919333,0
-              121.6320824,38.891666,0
-              121.6318249,38.8909646,0
-              121.6325974,38.8905303,0
-              121.6332411,38.8905303,0
-              121.6339278,38.8902297,0
-              121.6347432,38.8896285,0
-              121.6355156,38.8903299,0
-              121.6362881,38.8918331,0
-              121.6362881,38.8932025,0
-              121.6365885,38.8934363,0
-              121.6372752,38.8925345,0
-              121.6365456,38.8902631,0
-              121.6352259,38.8891357,0
-              121.6355156,38.88876,0
-              121.6367173,38.8890606,0
-              121.6369104,38.8888685,0
-              121.6367602,38.8885261,0
-              121.6369855,38.8883424,0
-              121.6371464,38.8883591,0
-              121.6374683,38.8888101,0
-              121.6377043,38.8887266,0
-              121.6381764,38.8879917,0
-              121.6387343,38.8878497,0
-              121.6392493,38.8876242,0
-              121.6408371,38.8873236,0
-              121.6415667,38.8870564,0
-              121.6418671,38.8873486,0
-              121.6418242,38.8877912,0
-              121.6414379,38.8883591,0
-              121.6405367,38.8880919,0
-              121.6401505,38.88876,0
-              121.6394209,38.8893612,0
-              121.6392063,38.8895951,0
-              121.6394638,38.8901629,0
-              121.6398501,38.8904969,0
-              121.6406226,38.8902631,0
-              121.6418242,38.8904635,0
-              121.6432404,38.8904301,0
-              121.6438412,38.8907308,0
-              121.6434979,38.8916994,0
-              121.6425108,38.8918999,0
-              121.6420817,38.8922673,0
-              121.6419958,38.8926681,0
-              121.6432833,38.8928685,0
-              121.6437983,38.8932025,0
-              121.6437983,38.8936702,0
-              121.6444849,38.8941712,0
-              121.644442,38.8945386,0
-              121.6436695,38.894739,0
-              121.6422104,38.8947056,0
-              121.6415238,38.897077,0
-              121.6430258,38.8977784,0
-              121.6440129,38.8981124,0
-              121.6433691,38.8986134,0
-              121.6424679,38.8987136,0
-              121.6416954,38.8979454,0
-              121.6412234,38.897912,0
-              121.6410517,38.898413,0
-              121.6397642,38.8983462,0
-              121.6381335,38.8981458,0
-              121.6370606,38.898246,0
-              121.6362023,38.8987136,0
-              121.6360306,38.8991144,0
-              121.6365456,38.899248,0
-              121.6373181,38.8993816,0
-              121.6386484,38.8996822,0
-              121.6381335,38.899916,0
-              121.6371893,38.8996822,0
-              121.6356015,38.8993482,0
-              121.6310524,38.8978118,0
-              121.6301083,38.8977116,0
-              121.6292929,38.8966762,0
-              121.6288208,38.8958746,0
-              121.6283059,38.895908,0
-              121.6271901,38.8944718,0
-              121.6268896,38.8937704,0
-            </coordinates>
-          </LinearRing>
-        </outerBoundaryIs>
-      </Polygon>
-    </Placemark>
-    <Placemark>
-      <name>tree_01</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6424239,38.9163838,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_02</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6496337,38.921459,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_03</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6783012,38.9205241,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_04</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.7011321,38.9111746,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_05</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6666282,38.9062322,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_06</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6252578,38.9213254,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_07</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.652037,38.8946096,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>tree_08</name>
-      <description><![CDATA[description: <br>type: <br>elevation: ]]></description>
-      <styleUrl>#icon-1887-097138</styleUrl>
-      <ExtendedData>
-        <Data name="description">
-          <value/>
-        </Data>
-        <Data name="type">
-          <value/>
-        </Data>
-        <Data name="elevation">
-          <value/>
-        </Data>
-      </ExtendedData>
-      <Point>
-        <coordinates>
-          121.6570152,38.9274687,0
-        </coordinates>
-      </Point>
-    </Placemark>
-  </Document>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Harbor3D</name>
+	<Schema name="__managed_schema" id="__managed_schema">
+		<SimpleField type="string" name="COL57113BFB001408C9">
+			<displayName>description</displayName>
+		</SimpleField>
+		<SimpleField type="string" name="COL57113BFB00029E4F">
+			<displayName>type</displayName>
+		</SimpleField>
+		<SimpleField type="string" name="COL57113BFB0052EB5D">
+			<displayName>elevation</displayName>
+		</SimpleField>
+	</Schema>
+	<gx:CascadingStyle kml:id="__managed_style_044D2AEDCF3A34867FA7">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=ffa726&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_20AB298E013A3461C906">
+		<Style>
+			<IconStyle>
+				<scale>0.9</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=ffa726&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_53456D9FFA3A338CA30E">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>0.9</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_00303C65EC3A3461C906">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_12CB772D7C3A3461C906</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_20AB298E013A3461C906</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_2C454E8A7B3A338CA30F">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=097138&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_073BDF180B3A338CA30F">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1A0CAD0C4C3A338CA30F</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_2C454E8A7B3A338CA30F</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_0E7012266F3A33B12F18">
+		<styleUrl>https://earth.google.com/balloon_components/base/1.1.0.0/card_template.kml#main</styleUrl>
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=0288d1&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_78B4721FED3A338CA30E">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=0288d1&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_64CBF4BFBA3A338CA30E">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_78B4721FED3A338CA30E</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_8FA0D051E53A338CA30E</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="__managed_style_335F428DDC3A338CA30E">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_43230350693A338CA30E</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_53456D9FFA3A338CA30E</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="__managed_style_0DB486B1883A33B12F17">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_12C6C9A4753A33B12F17</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_0E7012266F3A33B12F18</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_1A0CAD0C4C3A338CA30F">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=097138&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1A1DF0B7833A338CA30E">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>0.6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4d000000</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1B16AE6C353A34867FA4">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=ffa726&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_43230350693A338CA30E">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>0.6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_25DF12E9873A338CA30C">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_12CB772D7C3A3461C906">
+		<Style>
+			<IconStyle>
+				<scale>0.75</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=ffa726&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_8FA0D051E53A338CA30E">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=0288d1&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_25D6BC4F5A3A338CA30E">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>0.9</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4d000000</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_006081B10B3A34867FA4">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1B16AE6C353A34867FA4</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_044D2AEDCF3A34867FA7</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_12C6C9A4753A33B12F17">
+		<styleUrl>https://earth.google.com/balloon_components/base/1.1.0.0/card_template.kml#main</styleUrl>
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=0288d1&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0</scale>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_02B72BC6D63A338CA30E">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1A1DF0B7833A338CA30E</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_25D6BC4F5A3A338CA30E</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_1062412C403A338CA30C">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_08E190BF4A3A338CA30C">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1062412C403A338CA30C</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_25DF12E9873A338CA30C</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Folder id="57113BF672000001">
+		<name>dalianharbor</name>
+		<open>1</open>
+		<styleUrl>#__managed_style_08E190BF4A3A338CA30C</styleUrl>
+		<Placemark id="57113BF673000002">
+			<name>land_01</name>
+			<description><![CDATA[description: 大連港地圖<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">大連港地圖</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6358332,38.9381659,0 121.6331295,38.9370977,0 121.6343312,38.9351616,0 121.6327004,38.9351282,0 121.6322283,38.9356623,0 121.6300825,38.9347777,0 121.6309408,38.93295,0 121.6292886,38.932491,0 121.6273892,38.9354122,0 121.6255893,38.9346987,0 121.6267934,38.9316484,0 121.6244357,38.9308013,0 121.6228504,38.9327585,0 121.6221634,38.9324831,0 121.6234213,38.9303257,0 121.6224248,38.9298813,0 121.6213579,38.9309402,0 121.6210635,38.9303633,0 121.6165816,38.9286232,0 121.6131295,38.9310894,0 121.609911,38.9295701,0 121.5992493235318,38.92911008166439,0 121.5751122649675,38.92853158221457,0 121.5633833341737,38.92823175403997,0 121.563398943407,38.91295384979082,0 121.5630964927696,38.87564770390377,0 121.5914847181641,38.87462695252339,0 121.5963234874395,38.87545177603499,0 121.6042766394104,38.8732471749031,0 121.6090365120705,38.87124809700134,0 121.6153567779493,38.86731380397072,0 121.6199948679027,38.86381281839515,0 121.6238263212107,38.86495424613734,0 121.6286482619966,38.86304125008463,0 121.6338392664172,38.8648350125213,0 121.6356357332196,38.86240461720895,0 121.6433795501784,38.86340935914699,0 121.6487328424857,38.86353644612068,0 121.6540200352585,38.86296936066233,0 121.6605851983837,38.86129703960982,0 121.6622215982936,38.86358921266154,0 121.6666012408596,38.86457196691916,0 121.6725295509467,38.8647168268471,0 121.6770053844113,38.86383933721251,0 121.677610610669,38.86678939451337,0 121.6805733600308,38.86777747541891,0 121.6786677823338,38.87227262821581,0 121.6754904926813,38.87396268337434,0 121.6759007101685,38.87740492271001,0 121.6802694815567,38.87361543994974,0 121.6821152674404,38.87641560342738,0 121.684442057723,38.8766069574127,0 121.6882967271562,38.87407247052705,0 121.6891929184085,38.86736608480911,0 121.695334281575,38.86788404147345,0 121.6969095218933,38.86493476587227,0 121.7023196784527,38.87151847011441,0 121.705399,38.8721417,0 121.7059537197703,38.87334604146487,0 121.7080342,38.8735725,0 121.7083218,38.8751481,0 121.7096824,38.8769744,0 121.7097243,38.8792782,0 121.7100666,38.8801203,0 121.7104459,38.8805073,0 121.7109861,38.8808859,0 121.7115433,38.880881,0 121.7119395,38.8805504,0 121.7122168,38.8807494,0 121.7122003,38.8817112,0 121.7126827,38.8837421,0 121.7122418,38.8846281,0 121.711286,38.8850464,0 121.7108764,38.8868852,0 121.7121603,38.8903705,0 121.7144743,38.8925197,0 121.7163593,38.8951365,0 121.7166151,38.8965116,0 121.7173654,38.8967483,0 121.7179336,38.8978687,0 121.718931,38.8977532,0 121.7194332,38.9002877,0 121.7222745,38.9053102,0 121.7187424,38.906976,0 121.7190941,38.9080908,0 121.7202182,38.9129457,0 121.7208661,38.9153732,0 121.720484,38.9176671,0 121.7140983,38.9194667,0 121.7133087,38.9180959,0 121.7096008,38.9192627,0 121.7055495,38.9205964,0 121.7064763,38.9216629,0 121.699575,38.9236621,0 121.6838835,38.9283943,0 121.6811014,38.9278887,0 121.678491,38.9288521,0 121.6793064,38.9302877,0 121.6779331,38.9322907,0 121.677504,38.933359,0 121.6755299,38.9330585,0 121.6739849,38.932925,0 121.6721395,38.9319068,0 121.6710023,38.9321572,0 121.6711257,38.9324242,0 121.6710345,38.9326579,0 121.6714958,38.9333923,0 121.6696934,38.9339932,0 121.6668074,38.9291025,0 121.663299,38.9303544,0 121.6658739,38.9352951,0 121.6643719,38.9358626,0 121.6614966,38.9308552,0 121.6589646,38.93179,0 121.6615824,38.9367639,0 121.6600804,38.9372313,0 121.6575913,38.9322239,0 121.6547589,38.9331587,0 121.657205,38.9381659,0 121.6554455,38.9388335,0 121.6515402,38.9322907,0 121.6498665,38.9314895,0 121.6476778,38.931189,0 121.6469912,38.9325578,0 121.646562,38.9331587,0 121.647592,38.9335593,0 121.6472916,38.9340934,0 121.6476778,38.934494,0 121.6501669,38.9335593,0 121.6505102,38.9341268,0 121.6473345,38.9355956,0 121.6513686,38.9400352,0 121.6502098,38.9407696,0 121.6505102,38.9412035,0 121.6472058,38.9429392,0 121.6425709,38.9397014,0 121.6417126,38.9404024,0 121.6358332,38.9381659,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF673000003">
+			<name>road_01</name>
+			<description><![CDATA[description: 疏港路<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">疏港路</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6607027,38.9367472,0 121.6575103,38.9309821,0 121.6531899,38.9325448,0 121.6498284,38.9305147,0 121.6476778,38.931189,0 121.6470818,38.9309153,0 121.6399579,38.9333189,0 121.6380696,38.9335192,0 121.6359238,38.9329851,0 121.6318039,38.9314495,0 121.6194443,38.9269759,0 121.5876927623826,38.92646197726129,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000004">
+			<name>landmark_01</name>
+			<description><![CDATA[description: 大連俄羅斯風情街<br>type: park<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">大連俄羅斯風情街</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6363869,38.9288632,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000005">
+			<name>landmark_03</name>
+			<description><![CDATA[description: 香格里拉酒店<br>type: hotel<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">香格里拉酒店</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">hotel</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6527805,38.9259253,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000006">
+			<name>ship_01</name>
+			<description><![CDATA[description: 船舶停留的位置<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">船舶停留的位置</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6596256,38.9371356,0 121.6586171,38.9352329,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000007">
+			<name>shipline_01</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6586171,38.9352329,0 121.6596256,38.9371356,0 121.6598864,38.9375007,0 121.6609864,38.9371912,0 121.6752176,38.9475191,0 121.6767814,38.9481824,0 121.6786455,38.9477443,0 121.7029356,38.9283168,0 121.7210459,38.9195693,0 121.7288114,38.9063199,0 121.730528,38.904984,0 121.7316438,38.9029802,0 121.7316165,38.8697877,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000008">
+			<name>shipline_02</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6586171,38.9352329,0 121.6598455,38.9373214,0 121.6608534,38.9371845,0 121.6618506,38.9375484,0 121.6641989,38.9384699,0 121.6670838,38.939525,0 121.6699472,38.9403964,0 121.6725103,38.9407003,0 121.6746131,38.9407921,0 121.6760615,38.9408046,0 121.6778103,38.9407253,0 121.7267553,38.9386976,0 121.7323342,38.9368282,0 121.7354242,38.9340909,0 121.7366258,38.9290166,0 121.7378274,38.9151939,0 121.7412295,38.8689968,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000009">
+			<name>shipline_03</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6586171,38.9352329,0 121.659418,38.9372277,0 121.6600188,38.9376282,0 121.6609864,38.9371912,0 121.6619257,38.9373481,0 121.7265482,38.9360423,0 121.7330713,38.916144,0 121.7330713,38.8942362,0 121.7330528,38.8694224,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF67300000A">
+			<name>landmark_02</name>
+			<description><![CDATA[description: 大連火車站<br>type: station<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">大連火車站</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">station</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6331253,38.9227869,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300000B">
+			<name>center</name>
+			<description><![CDATA[description: 中心<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">中心</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6753697,38.9258453,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300000C">
+			<name>road_02</name>
+			<description><![CDATA[description: 人民路<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">人民路</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6183728,38.9125462,0 121.6226643,38.9130137,0 121.6279,38.9130137,0 121.6294449,38.9134812,0 121.6316765,38.9175549,0 121.6357964,38.9190909,0 121.6394013,38.9200925,0 121.6429204,38.9210274,0 121.644122,38.92056,0 121.6448945,38.9214949,0 121.6448945,38.9219623,0 121.6466111,38.9222962,0 121.6509884,38.9237652,0 121.655795,38.9251007,0 121.658799,38.9262359,0 121.6606015,38.92677,0 121.6618031,38.929107,0 121.6623181,38.9296745,0 121.6621035,38.9299249,0 121.6615456,38.929975,0 121.6589492,38.9307095,0 121.6578549,38.9310433,0 121.6591424,38.9334469,0 121.6609448,38.9366516,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF67300000D">
+			<name>road_03</name>
+			<description><![CDATA[description: 港隆路<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">港隆路</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.7171108,38.9107785,0 121.7136775,38.9109788,0 121.7107593,38.9121142,0 121.707725,38.9133495,0 121.6772551,38.9246352,0 121.6729636,38.9245017,0 121.6703886,38.9250359,0 121.6682429,38.9263713,0 121.6658396,38.9282409,0 121.6629214,38.9273061,0 121.6606015,38.92677,0 121.6621035,38.9299249,0 121.6635209,38.9325715,0 121.6649813,38.935118,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF67300000E">
+			<name>landmark_04</name>
+			<description><![CDATA[description: 海之韻公園<br>type: park<br>elevation: 138]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">海之韻公園</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D">138.0</SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.7035193,38.9027968,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300000F">
+			<name>ship_02</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6629364,38.9341017,0 121.6639664,38.9358376,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000010">
+			<name>road_04</name>
+			<description><![CDATA[description: 通往碼頭<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">通往碼頭</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6531899,38.9325448,0 121.6543915,38.9348482,0 121.6554644,38.9369513,0 121.6562798,38.9383533,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000011">
+			<name>landmark_05</name>
+			<description><![CDATA[description: 海軍廣場<br>type: park<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">海軍廣場</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6688842,38.9187236,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000012">
+			<name>road_05</name>
+			<description><![CDATA[description: 港浦路<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">港浦路</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6649813,38.935118,0 121.664023,38.9334361,0 121.6628213,38.9311994,0 121.6621035,38.9299249,0 121.6629501,38.9292631,0 121.6647525,38.928729,0 121.6658396,38.9282409,0 121.6668554,38.928729,0 121.6703315,38.9296637,0 121.6709323,38.9291296,0 121.6716619,38.9285954,0 121.6729923,38.9280613,0 121.6745372,38.9277942,0 121.6756959,38.9277942,0 121.6769834,38.9279945,0 121.6782708,38.9277942,0 121.681747,38.9264921,0 121.6849656,38.9255573,0 121.6877551,38.9245891,0 121.6913262,38.9234169,0 121.6936866,38.9226824,0 121.6986219,38.9209462,0 121.7017976,38.9199111,0 121.7047587,38.9190096,0 121.7083636,38.9177408,0 121.7104236,38.9171064,0 121.7141572,38.9156372,0 121.7155734,38.9145686,0 121.7168609,38.9129324,0 121.7173329,38.9110958,0 121.71729,38.9097935,0 121.7166463,38.9082239,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000013">
+			<name>stockyard_01</name>
+			<description><![CDATA[description: 堆場 1<br>type: 2x6x3<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">堆場 1</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">2x6x3</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6594448,38.9353894,0 121.6597452,38.9352809,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000014">
+			<name>stockyard_02</name>
+			<description><![CDATA[description: 堆場2<br>type: 3x7x5<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">堆場2</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">3x7x5</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6603138,38.9354153,0 121.6606947,38.9352859,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000015">
+			<name>stockyard_03</name>
+			<description><![CDATA[description: 堆場3<br>type: 2x8x9<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">堆場3</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">2x8x9</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6549044,38.9353497,0 121.6555267,38.9351327,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000016">
+			<name>landmark_06</name>
+			<description><![CDATA[description: 大連觀光塔<br>type: park<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">大連觀光塔</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6328269,38.9065689,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000017">
+			<name>landmark_07</name>
+			<description><![CDATA[description: 人民廣場<br>type: park<br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">人民廣場</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6146308,38.9033629,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000018">
+			<name>hill_01</name>
+			<description><![CDATA[description: 海之韵公园-山<br>type: park<br>elevation: 138]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">海之韵公园-山</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D">138.0</SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.703446,38.9067298,0 121.7004419,38.9067966,0 121.6982103,38.9056611,0 121.698897,38.9043921,0 121.6969658,38.9033568,0 121.6960645,38.9029894,0 121.6943479,38.9029894,0 121.6918588,38.9025218,0 121.6922022,38.9004511,0 121.6950198,38.8974233,0 121.6979233,38.8966665,0 121.6996104,38.8948857,0 121.7007531,38.8914578,0 121.7020084,38.8894119,0 121.7036928,38.8878337,0 121.7062355,38.8879257,0 121.7072011,38.8884098,0 121.7087997,38.8877166,0 121.7101999,38.8871695,0 121.712445,38.8917729,0 121.7139108,38.8928054,0 121.7148154,38.8939897,0 121.7160402,38.8956507,0 121.7173392,38.8979508,0 121.7207352,38.903977,0 121.7136598,38.9035237,0 121.7087675,38.9004512,0 121.7101837,38.9035237,0 121.7091966,38.9048596,0 121.7066217,38.9063958,0 121.703446,38.9067298,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF673000019">
+			<name>dock_01</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6524024,38.9337626,0 121.6547589,38.9331587,0 121.657205,38.9381659,0 121.6554455,38.9388335,0 121.6524024,38.9337626,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF67300001A">
+			<name>dock_02</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6575913,38.9322239,0 121.6589646,38.93179,0 121.6615824,38.9367639,0 121.660295,38.9372063,0 121.6598443,38.9367493,0 121.6590933,38.9351073,0 121.6575913,38.9322239,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF67300001B">
+			<name>dock_03</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6614966,38.9308552,0 121.663299,38.9303544,0 121.6658739,38.9352951,0 121.6643719,38.9358626,0 121.6614966,38.9308552,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF67300001C">
+			<name>hill_02</name>
+			<description><![CDATA[description: <br>type: <br>elevation: 210]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D">210.0</SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6305721,38.9129419,0 121.6314304,38.9123074,0 121.6312158,38.9107046,0 121.6320741,38.9106712,0 121.6322458,38.9092686,0 121.6326749,38.9092018,0 121.6328037,38.9086341,0 121.6331899,38.9082,0 121.6343486,38.907866,0 121.6355932,38.9079662,0 121.6364086,38.9074987,0 121.6373098,38.9075321,0 121.6381681,38.9079996,0 121.6377818,38.9083336,0 121.6364944,38.9083336,0 121.6361511,38.9095024,0 121.6357219,38.9097027,0 121.6362369,38.9104374,0 121.6362798,38.9110051,0 121.636666,38.9106712,0 121.6370523,38.9109383,0 121.6368377,38.9114058,0 121.638726,38.9123074,0 121.6373527,38.9148452,0 121.6364086,38.9149454,0 121.6349923,38.9145781,0 121.6332757,38.9142442,0 121.6323316,38.914144,0 121.6316449,38.9138435,0 121.6305721,38.9129419,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF67300001D">
+			<name>hill_03</name>
+			<description><![CDATA[description: <br>type: <br>elevation: 128]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D">128.0</SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6268896,38.8937704,0 121.6271901,38.8934698,0 121.6271471,38.8929687,0 121.6271471,38.8922005,0 121.627705,38.8921337,0 121.6286063,38.8927683,0 121.6290354,38.8935032,0 121.6295075,38.8945386,0 121.6297221,38.8956742,0 121.63028,38.8960082,0 121.6305804,38.895741,0 121.6301941,38.8943048,0 121.6294217,38.8930021,0 121.6297221,38.8925345,0 121.63028,38.8928351,0 121.631267,38.8927683,0 121.6316532,38.893904,0 121.6327261,38.894405,0 121.6338848,38.8948726,0 121.6340994,38.8944384,0 121.6333269,38.893904,0 121.6333699,38.8934363,0 121.6325116,38.8919333,0 121.6320824,38.891666,0 121.6318249,38.8909646,0 121.6325974,38.8905303,0 121.6332411,38.8905303,0 121.6339278,38.8902297,0 121.6347432,38.8896285,0 121.6355156,38.8903299,0 121.6362881,38.8918331,0 121.6362881,38.8932025,0 121.6365885,38.8934363,0 121.6372752,38.8925345,0 121.6365456,38.8902631,0 121.6352259,38.8891357,0 121.6355156,38.88876,0 121.6367173,38.8890606,0 121.6369104,38.8888685,0 121.6367602,38.8885261,0 121.6369855,38.8883424,0 121.6371464,38.8883591,0 121.6374683,38.8888101,0 121.6377043,38.8887266,0 121.6381764,38.8879917,0 121.6387343,38.8878497,0 121.6392493,38.8876242,0 121.6408371,38.8873236,0 121.6415667,38.8870564,0 121.6418671,38.8873486,0 121.6418242,38.8877912,0 121.6414379,38.8883591,0 121.6405367,38.8880919,0 121.6401505,38.88876,0 121.6394209,38.8893612,0 121.6392063,38.8895951,0 121.6394638,38.8901629,0 121.6398501,38.8904969,0 121.6406226,38.8902631,0 121.6418242,38.8904635,0 121.6432404,38.8904301,0 121.6438412,38.8907308,0 121.6434979,38.8916994,0 121.6425108,38.8918999,0 121.6420817,38.8922673,0 121.6419958,38.8926681,0 121.6432833,38.8928685,0 121.6437983,38.8932025,0 121.6437983,38.8936702,0 121.6444849,38.8941712,0 121.644442,38.8945386,0 121.6436695,38.894739,0 121.6422104,38.8947056,0 121.6415238,38.897077,0 121.6430258,38.8977784,0 121.6440129,38.8981124,0 121.6433691,38.8986134,0 121.6424679,38.8987136,0 121.6416954,38.8979454,0 121.6412234,38.897912,0 121.6410517,38.898413,0 121.6397642,38.8983462,0 121.6381335,38.8981458,0 121.6370606,38.898246,0 121.6362023,38.8987136,0 121.6360306,38.8991144,0 121.6365456,38.899248,0 121.6373181,38.8993816,0 121.6386484,38.8996822,0 121.6381335,38.899916,0 121.6371893,38.8996822,0 121.6356015,38.8993482,0 121.6310524,38.8978118,0 121.6301083,38.8977116,0 121.6292929,38.8966762,0 121.6288208,38.8958746,0 121.6283059,38.895908,0 121.6271901,38.8944718,0 121.6268896,38.8937704,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF67300001E">
+			<name>tree_01</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6424239,38.9163838,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300001F">
+			<name>tree_02</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6496337,38.921459,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000020">
+			<name>tree_03</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6783012,38.9205241,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000021">
+			<name>tree_04</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.7011321,38.9111746,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000022">
+			<name>tree_05</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6666282,38.9062322,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000023">
+			<name>tree_06</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6252578,38.9213254,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000024">
+			<name>tree_07</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.652037,38.8946096,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000025">
+			<name>tree_08</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6570152,38.9274687,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000026">
+			<name>land_02</name>
+			<description><![CDATA[description: 大連棒棰島<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_02B72BC6D63A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">大連棒棰島</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.717524,38.8858435,0 121.7170197,38.8856639,0 121.7168749,38.8854217,0 121.7169124,38.8853215,0 121.7186934,38.8842901,0 121.7191547,38.8841482,0 121.7197395,38.8841565,0 121.7214024,38.8843945,0 121.7217565,38.8844906,0 121.7219657,38.8846033,0 121.7220247,38.8847536,0 121.7218477,38.8847996,0 121.7217833,38.8849457,0 121.7216438,38.885096,0 121.7214132,38.8851796,0 121.7212576,38.885213,0 121.7211718,38.8851378,0 121.7208338,38.8850459,0 121.7204851,38.8851169,0 121.7202866,38.8853132,0 121.719954,38.8853549,0 121.7189241,38.8857391,0 121.718688,38.8858184,0 121.7183286,38.8858769,0 121.7179424,38.8858852,0 121.7176742,38.8858393,0 121.717524,38.8858435,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="57113BF673000027">
+			<name>landmark_08</name>
+			<description><![CDATA[<div>description: 棒棰島<br></div><div>type: park<br></div><div>elevation:<br></div>]]></description>
+			<styleUrl>#__managed_style_0DB486B1883A33B12F17</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">棒棰島</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F">park</SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.7190206,38.8850543,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF673000028">
+			<name>hill_04</name>
+			<description><![CDATA[description: 陽光健身公園<br>type: <br>elevation: 104]]></description>
+			<LookAt>
+				<longitude>0</longitude>
+				<latitude>0</latitude>
+				<altitude>220</altitude>
+				<heading>0</heading>
+				<tilt>0</tilt>
+				<gx:fovy>35</gx:fovy>
+				<range>0</range>
+			</LookAt>
+			<styleUrl>#__managed_style_335F428DDC3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">陽光健身公園</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D">104.0</SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.6784825,38.8798929,0 121.6773667,38.8800266,0 121.6765943,38.8813295,0 121.6764226,38.8823985,0 121.6773238,38.8839352,0 121.6774097,38.8854385,0 121.6781392,38.8865742,0 121.678268,38.8876766,0 121.6802421,38.8879772,0 121.6800275,38.8885785,0 121.6796413,38.8890461,0 121.680285,38.8895138,0 121.6800275,38.8904825,0 121.6808429,38.8906495,0 121.681272,38.8906161,0 121.681272,38.8912174,0 121.6808,38.8913176,0 121.6807141,38.8929543,0 121.6797271,38.8932549,0 121.6793408,38.8937893,0 121.6808858,38.8942903,0 121.6821733,38.8940565,0 121.6835036,38.8932215,0 121.6839328,38.8926871,0 121.6835036,38.8922194,0 121.6839757,38.8913844,0 121.683804,38.8910169,0 121.6832891,38.8906161,0 121.6825166,38.8906495,0 121.6821733,38.8902487,0 121.6822591,38.8890795,0 121.6829028,38.8885451,0 121.6840186,38.8887121,0 121.6845336,38.8877768,0 121.6852632,38.8878436,0 121.6854348,38.8872423,0 121.6850057,38.8866076,0 121.6843619,38.88614,0 121.6844907,38.8854385,0 121.6839328,38.885405,0 121.6831174,38.8865074,0 121.6828599,38.8869083,0 121.6822162,38.8868415,0 121.6819158,38.8863738,0 121.6824308,38.8858059,0 121.6830745,38.8853048,0 121.6829028,38.8849374,0 121.6818299,38.8848706,0 121.681787,38.8846033,0 121.6827312,38.8844029,0 121.6844049,38.8835677,0 121.684319,38.8810622,0 121.683847,38.8808284,0 121.6832891,38.8798595,0 121.6825166,38.8796591,0 121.6817441,38.8787571,0 121.6814008,38.8796591,0 121.6806712,38.8795589,0 121.6803708,38.8789575,0 121.6799417,38.8787571,0 121.6793408,38.8788907,0 121.6786971,38.87859,0 121.6781821,38.8788907,0 121.678225,38.8792916,0 121.6784825,38.8798929,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark id="57113BF673000029">
+			<name>tree_09</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6781994,38.895877,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300002A">
+			<name>tree_10</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6881557,38.9020225,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300002B">
+			<name>tree_11</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6878124,38.9160481,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300002C">
+			<name>tree_12</name>
+			<description><![CDATA[description: <br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_073BDF180B3A338CA30F</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9"></SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6730495,38.8903991,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="57113BF67300002D">
+			<name>landmark_09</name>
+			<description><![CDATA[description: 陽光健身公園<br>type: <br>elevation: ]]></description>
+			<styleUrl>#__managed_style_64CBF4BFBA3A338CA30E</styleUrl>
+			<ExtendedData>
+				<SchemaData schemaUrl="#__managed_schema">
+					<SimpleData name="COL57113BFB001408C9">陽光健身公園</SimpleData>
+					<SimpleData name="COL57113BFB00029E4F"></SimpleData>
+					<SimpleData name="COL57113BFB0052EB5D"></SimpleData>
+				</SchemaData>
+			</ExtendedData>
+			<Point>
+				<coordinates>121.6798302,38.8819692,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="04520E03433A344B7F2C">
+			<name>hill_05</name>
+			<LookAt>
+				<longitude>121.668638342208</longitude>
+				<latitude>38.90460755905851</latitude>
+				<altitude>210</altitude>
+				<heading>0</heading>
+				<tilt>0</tilt>
+				<gx:fovy>30.00000037063307</gx:fovy>
+				<range>3624.149631829465</range>
+				<altitudeMode>absolute</altitudeMode>
+			</LookAt>
+			<styleUrl>#__managed_style_08E190BF4A3A338CA30C</styleUrl>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							121.6621621388503,38.90229006618655,0 121.6624280940549,38.90224616711257,0 121.6636127189129,38.9023973061993,0 121.6639128210185,38.90237168518312,0 121.6642183678069,38.90214684500953,0 121.6642943109007,38.90182163780588,0 121.6639178950861,38.90132951064385,0 121.6636329942278,38.90084718297543,0 121.6646320664394,38.90031922445281,0 121.6663150497685,38.89982069939977,0 121.6667605121554,38.89939325738404,0 121.6672485132471,38.89815103398045,0 121.6681287549905,38.89497809611784,0 121.6675479836794,38.89357569475633,0 121.6670261561132,38.89267073023986,0 121.6661495089682,38.89179713454612,0 121.664492970276,38.89137129219993,0 121.6634568694287,38.89126353333165,0 121.6621971428679,38.89028945931574,0 121.6619482701991,38.88832976667338,0 121.6649344633348,38.88753046887137,0 121.6668283364076,38.88740052171713,0 121.6688623396531,38.88711902258765,0 121.6691175494774,38.8871463418266,0 121.6695100119119,38.8873942759674,0 121.6696900007807,38.88740953363835,0 121.6698862085927,38.88728009743124,0 121.6709764768346,38.88583647825703,0 121.6709005848464,38.88559104292016,0 121.6704310154369,38.88515714592895,0 121.6698472572048,38.88486522454517,0 121.6697137045659,38.88432562241474,0 121.6697912344587,38.88401988136727,0 121.6704754325811,38.88303999453765,0 121.6706854853653,38.88287161643773,0 121.670918303825,38.88279235492691,0 121.6713438802206,38.88280046616655,0 121.6717418365524,38.88299060062883,0 121.6723075304829,38.88304176827003,0 121.6728714009449,38.8830194144909,0 121.6730886406686,38.88294914767339,0 121.673545595255,38.88253924995311,0 121.6740739348979,38.88262664579248,0 121.6743112831601,38.88280005932793,0 121.6744486561226,38.88299277339524,0 121.6742096058346,38.8835724902623,0 121.6742310152741,38.88382016053941,0 121.6746923396903,38.88498874265795,0 121.6745819316336,38.8863762498843,0 121.6741311886841,38.88663858690997,0 121.6740767715508,38.88681100650158,0 121.6740584262886,38.88785685296122,0 121.6738975945985,38.88838580475223,0 121.6738696640871,38.88873824016949,0 121.673608618806,38.88907752079248,0 121.6733095697968,38.88963338322565,0 121.6731632727312,38.88986541947166,0 121.672870756204,38.89012927141945,0 121.6726836458872,38.89033327915914,0 121.6724273338221,38.89046531899025,0 121.6723223199709,38.89056395212249,0 121.6717625851736,38.8905362458856,0 121.6714947215521,38.89062809770291,0 121.6707602119357,38.89152982589298,0 121.6704781033166,38.89162530750546,0 121.6696562568761,38.8916606365466,0 121.6692812246244,38.89179590850392,0 121.6691662181336,38.89199297869921,0 121.6692490285231,38.89230298181676,0 121.6708403471713,38.89242791492716,0 121.6709856637025,38.89250023408711,0 121.6709555016661,38.89289129369808,0 121.669974091707,38.89344764335404,0 121.6693539411114,38.89384646521838,0 121.6693189404268,38.89402009787999,0 121.6692173509003,38.89417639456894,0 121.6695729853477,38.89514866604171,0 121.6697847006714,38.89544327562663,0 121.6701228199421,38.89574855785008,0 121.6705372905277,38.89588000926579,0 121.6712198562431,38.8961069508197,0 121.6718468548412,38.8961507466657,0 121.6723171216791,38.89629611433485,0 121.6726013650977,38.89669692771906,0 121.6733898941873,38.8975470925512,0 121.6733661080336,38.89784119077751,0 121.6731705760297,38.89800030175354,0 121.6727334171546,38.89843730199451,0 121.6726122487777,38.89905876109196,0 121.6724962152028,38.89918036508053,0 121.6722560159936,38.89939145202035,0 121.6720902724855,38.89944742803273,0 121.6711941783288,38.89939610034865,0 121.6705830824214,38.89976067576046,0 121.6705390855153,38.90000814430267,0 121.6703456405117,38.9002262799333,0 121.6699732854364,38.90046932332655,0 121.669996160198,38.90066017001488,0 121.6702307199645,38.90076643672648,0 121.670774007431,38.90078973818864,0 121.671066242076,38.90091753241165,0 121.671109748869,38.90143580578602,0 121.6708930575704,38.90188320469287,0 121.6705702762886,38.9024838017155,0 121.6703582739524,38.90265320424832,0 121.6697410734887,38.90287897095768,0 121.6691929379079,38.90348728946713,0 121.6688253046326,38.90369291832788,0 121.6681962102619,38.90364621176685,0 121.6675866472546,38.90358184194427,0 121.6673168558788,38.90356528480028,0 121.6670309828385,38.90364429846068,0 121.6668401144066,38.90372739251848,0 121.6665948364979,38.90395752218905,0 121.6664177792975,38.904033609039,0 121.6657562894124,38.9040236236623,0 121.664736181015,38.90423989313507,0 121.6640194975742,38.90425487770546,0 121.6633510329351,38.90405121102884,0 121.662889043179,38.90378314498441,0 121.6620586573973,38.90305944396361,0 121.661954919832,38.90284691236793,0 121.6619384074574,38.90260850029195,0 121.6620110308402,38.90241521316987,0 121.6621621388503,38.90229006618655,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark id="00867DD40A3A345F6739">
+			<name>building_residential_01</name>
+			<LookAt>
+				<longitude>121.6365119967409</longitude>
+				<latitude>38.91574248032745</latitude>
+				<altitude>-1.414648398423424e-09</altitude>
+				<heading>358.4455243957979</heading>
+				<tilt>0</tilt>
+				<gx:fovy>30.00000037063307</gx:fovy>
+				<range>20635.74744676605</range>
+				<altitudeMode>absolute</altitudeMode>
+			</LookAt>
+			<styleUrl>#__managed_style_00303C65EC3A3461C906</styleUrl>
+			<Point>
+				<coordinates>121.6131142216268,38.91257336307206,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="04C367A14C3A34661380">
+			<name>building_office_03</name>
+			<LookAt>
+				<longitude>121.6364778668893</longitude>
+				<latitude>38.91574021949737</latitude>
+				<altitude>1.414648398423424e-09</altitude>
+				<heading>45.4455244</heading>
+				<tilt>0</tilt>
+				<gx:fovy>30.00000037063307</gx:fovy>
+				<range>20635.74744676273</range>
+				<altitudeMode>absolute</altitudeMode>
+			</LookAt>
+			<styleUrl>#__managed_style_00303C65EC3A3461C906</styleUrl>
+			<Point>
+				<coordinates>121.6892618721297,38.92223993211672,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="0DCD834FF53A34616258">
+			<name>building_office_01</name>
+			<LookAt>
+				<longitude>121.6364778668893</longitude>
+				<latitude>38.91574021949737</latitude>
+				<altitude>1.414648398423424e-09</altitude>
+				<heading>358.4455243948284</heading>
+				<tilt>0</tilt>
+				<gx:fovy>30.00000037063307</gx:fovy>
+				<range>20635.74744676273</range>
+				<altitudeMode>absolute</altitudeMode>
+			</LookAt>
+			<styleUrl>#__managed_style_00303C65EC3A3461C906</styleUrl>
+			<Point>
+				<coordinates>121.6205001032213,38.91424675243029,0</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+	<Placemark id="0CBF5E3B473A34865221">
+		<name>building_villa_01</name>
+		<LookAt>
+			<longitude>121.6727777282802</longitude>
+			<latitude>38.90704058596835</latitude>
+			<altitude>0</altitude>
+			<heading>358.4455199158639</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00000037063307</gx:fovy>
+			<range>11372.32181890154</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_006081B10B3A34867FA4</styleUrl>
+		<Point>
+			<coordinates>121.6836349756353,38.89660287254121,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="00515B1C6A3A3488469B">
+		<name>building_residential_02</name>
+		<LookAt>
+			<longitude>121.614736631258</longitude>
+			<latitude>38.91811771495816</latitude>
+			<altitude>-7.073241992117119e-10</altitude>
+			<heading>358.4455179459541</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00000037063307</gx:fovy>
+			<range>9881.762343423792</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_006081B10B3A34867FA4</styleUrl>
+		<Point>
+			<coordinates>121.6096565304724,38.9122115746781,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="050990B8043A3489763C">
+		<name>building_residential_03</name>
+		<LookAt>
+			<longitude>121.614736631258</longitude>
+			<latitude>38.91811771495816</latitude>
+			<altitude>-7.073241992117119e-10</altitude>
+			<heading>358.4455179459541</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00000037063307</gx:fovy>
+			<range>9881.762343423792</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_006081B10B3A34867FA4</styleUrl>
+		<Point>
+			<coordinates>121.6014189493669,38.90919114569954,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="019D9C783C3A348A2900">
+		<name>building_residential_04</name>
+		<LookAt>
+			<longitude>121.6117452281792</longitude>
+			<latitude>38.91016941056992</latitude>
+			<altitude>-7.073241992117119e-10</altitude>
+			<heading>358.4455175391662</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00000037063307</gx:fovy>
+			<range>3802.601562145326</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_006081B10B3A34867FA4</styleUrl>
+		<Point>
+			<coordinates>121.6057947311049,38.91075649909059,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
 </kml>

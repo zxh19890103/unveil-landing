@@ -2,7 +2,7 @@ import * as THREE from "three";
 import type { LngLat } from "./geo-mercator.js";
 import { gltfLoader } from "./loader.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
-import type { GLTF } from "three/addons/loaders/GLTFLoader.js";
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 
 type LODLevel = {
   type: "model" | "label" | "point";
@@ -12,7 +12,7 @@ type LODLevel = {
   distance: number;
 };
 
-type ModelInitializationParams = {
+export type ModelInitializationParams = {
   scaleFactor: number;
   /**
    * all components are times of 1/2 pi
@@ -123,22 +123,15 @@ export class ModelObj extends THREE.Object3D {
     }
   }
 
-  gltfTransform(gltf: GLTF): THREE.Object3D {
-    return gltf.scene;
-  }
-
   async loadLODs(levels: LODLevel[]) {
     for (const { type, url, distance } of levels) {
       switch (type) {
         case "model": {
-          const gltf = await gltfLoader.loadAsync(url);
+          const gltf = await gltfLoader.load2(url);
+          this.atom = gltf;
+          this.wrapper.add(gltf);
 
-          const scene = this.gltfTransform(gltf);
-
-          this.atom = scene;
-          this.wrapper.add(scene);
-
-          const box3 = new THREE.Box3().setFromObject(scene);
+          const box3 = new THREE.Box3().setFromObject(this.wrapper);
           box3.getSize(this.size);
 
           // onloaded

@@ -17,7 +17,7 @@ export class Truck extends ModelObj {
       rotation: [0, -1, 0],
       scaleFactor: 0.001,
       scaleFactorToSee: 0.004,
-      visibleDistance: 20,
+      visibleDistance: 64,
     });
 
     this.traverse((child) => {

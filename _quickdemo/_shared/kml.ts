@@ -41,6 +41,7 @@ export class KmlGisMap extends THREE.Object3D {
   readonly shipplaces: KmlParsedRes[] = [];
   readonly stockyards: KmlParsedRes[] = [];
   readonly trees: KmlParsedRes[] = [];
+  readonly buildings: KmlParsedRes[] = [];
 
   constructor(url: string, readonly options: KmlGisOptions) {
     super();
@@ -53,13 +54,33 @@ export class KmlGisMap extends THREE.Object3D {
       center[0]
     );
 
+    const parseLookAt = (tag: Element) => {
+      return {
+        longitude: +tag.querySelector("longitude").textContent,
+        latitude: +tag.querySelector("latitude").textContent,
+        altitude: +tag.querySelector("altitude").textContent,
+        heading: +tag.querySelector("heading").textContent,
+        tilt: +tag.querySelector("tilt").textContent,
+        fovy: +tag.querySelector("fovy").textContent,
+        range: +tag.querySelector("range").textContent,
+      };
+    };
+
+    const checkLngLatValid = (latlng: number[]) => {
+      if (isNaN(latlng[0]) || isNaN(latlng[1])) {
+        throw new Error("check lnglat invalid.");
+      }
+    };
+
     const parse = (coordinates: string) => {
       return coordinates
-        .split("\n")
+        .split(/[\n\s]/)
         .map((i) => i.trim())
         .filter(Boolean)
         .map((i) => {
           const lnglat = i.split(",").map((c) => Number(c));
+
+          checkLngLatValid(lnglat);
 
           const xy = mercator.project(lnglat as LngLat);
 
@@ -79,26 +100,59 @@ export class KmlGisMap extends THREE.Object3D {
         for (const mark of marks) {
           const lastChild = mark.lastElementChild;
           const type = lastChild.tagName as KmlParsedResType;
-          const [nameTag, descriptionTag, _, extendedDataTag] = mark.children;
+
+          const nameChild = mark.querySelector("name");
+          const extendedDataChild = mark.querySelector("ExtendedData"); // 3 columns
+
           const coordinates =
             lastChild.querySelector("coordinates").textContent;
 
-          const id = nameTag.textContent.trim();
-          const name = id.split("_")[0] as KmlParsedResName;
-          const [descTag, typeTag, elevationTag] = extendedDataTag.children;
-          const desc = descTag.textContent.trim();
-          const marker = typeTag.textContent.trim() as KmlParsedResMarker;
-          const elevation = +elevationTag.textContent.trim();
+          const id = nameChild.textContent.trim();
+          const idSegments = id.split("_");
+          const name = idSegments[0] as KmlParsedResName;
 
-          result.push({
-            type,
-            id,
-            name,
-            desc,
-            marker,
-            elevation,
-            points: parse(coordinates),
-          });
+          if (extendedDataChild) {
+            // This is the legacy data edited on Google map.
+            const [descTag, typeTag, elevationTag] =
+              extendedDataChild.querySelectorAll("SimpleData");
+
+            const desc = descTag.textContent.trim();
+            const marker = typeTag.textContent.trim() as KmlParsedResLandMark;
+            const elevation = +elevationTag.textContent.trim();
+
+            result.push({
+              type,
+              id,
+              name,
+              desc,
+              marker,
+              elevation,
+              points: parse(coordinates),
+              lookAt: {
+                heading: 0,
+              },
+            });
+          } else {
+            // for Google Earth!
+            const lookatChild = mark.querySelector("LookAt");
+            const lookAt = parseLookAt(lookatChild);
+
+            // it's a html block!
+            const desc = mark.querySelector("description")?.textContent ?? "--";
+            const marker = idSegments[1] as KmlParsedResLandMark;
+            const elevation = lookAt.altitude;
+
+            result.push({
+              type,
+              id,
+              name,
+              desc,
+              marker,
+              elevation,
+              points: parse(coordinates),
+              lookAt: lookAt,
+            });
+          }
         }
 
         return result;
@@ -144,6 +198,10 @@ export class KmlGisMap extends THREE.Object3D {
                   this.stockyards.push(item);
                   break;
                 }
+                case "hill": {
+                  this.createHill(item);
+                  break;
+                }
               }
               break;
             }
@@ -156,8 +214,14 @@ export class KmlGisMap extends THREE.Object3D {
               } else if (item.name === "tree") {
                 this.createTree(item);
                 this.trees.push(item);
+              } else if (item.name === "building") {
+                this.createBuilding(item);
+                this.buildings.push(item);
               } else {
-                const marker = this.createMarker(item.desc, item.marker);
+                const marker = this.createMarker(
+                  item.desc,
+                  item.marker as KmlParsedResLandMark
+                );
                 marker.position.copy(item.points[0]);
               }
               break;
@@ -327,7 +391,7 @@ export class KmlGisMap extends THREE.Object3D {
     return mesh;
   }
 
-  createMarker(text: string, type: KmlParsedResMarker = null) {
+  createMarker(text: string, type: KmlParsedResLandMark = null) {
     const div = document.createElement("div");
     div.className = "Marker";
     div.style.cssText = `font-size: 0.9rem;`;
@@ -344,6 +408,8 @@ export class KmlGisMap extends THREE.Object3D {
   }
 
   createTree(item: KmlParsedRes) {}
+
+  createBuilding(item: KmlParsedRes) {}
 
   createHill(item: KmlParsedRes) {
     const curve = new THREE.CatmullRomCurve3(
@@ -383,6 +449,7 @@ export class KmlGisMap extends THREE.Object3D {
       new THREE.ShaderMaterial({
         precision: "mediump",
         glslVersion: "300 es",
+        side: THREE.DoubleSide,
         uniforms: {
           map: { value: grassLand },
           cityLand: { value: cityLand },
@@ -393,7 +460,6 @@ export class KmlGisMap extends THREE.Object3D {
         varying vec3 vPos;
         varying vec2 vUv;
 
-        
         void main() {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
           vec4 wpos = modelMatrix * vec4(position.xyz, 1.0);
@@ -457,6 +523,9 @@ export class KmlGisMap extends THREE.Object3D {
   }
 }
 
+/**
+ * more like the Category
+ */
 type KmlParsedResName =
   | "ship"
   | "shipline"
@@ -467,18 +536,35 @@ type KmlParsedResName =
   | "hill"
   | "stockyard"
   | "center"
+  | "building"
   | "tree";
 
 type KmlParsedResType = "Polygon" | "LineString" | "Point";
-type KmlParsedResMarker = "park" | "station" | "hotel";
+
+/**
+ * For google earth: named it on `name` field with format: `landmark_{marker}_{id}`
+ */
+type KmlParsedResLandMark = "park" | "station" | "hotel";
+export type KmlParsedResBuilding = "tower" | "office" | "residential" | "villa";
 
 type KmlParsedRes = {
   type: KmlParsedResType;
   elevation: number;
-  marker: KmlParsedResMarker;
+  marker: KmlParsedResLandMark | KmlParsedResBuilding;
   id: string;
   desc: string;
   name: KmlParsedResName;
   points: THREE.Vector3[];
   curve?: THREE.Curve<THREE.Vector3>;
+  lookAt: Partial<LookAtCfg>;
+};
+
+type LookAtCfg = {
+  longitude: number;
+  latitude: number;
+  altitude: number;
+  heading: number;
+  tilt: number;
+  fovy: number;
+  range: number;
 };
