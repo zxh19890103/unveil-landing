@@ -6,7 +6,7 @@ port: 4002
 host: "0.0.0.0"
 permalink: pretty
 quickdemoJsHost: "http://0.0.0.0:3003/"
-quickdemoJsHost: "http://192.168.10.79:3003/"
+# quickdemoJsHost: "http://192.168.10.79:3003/"
 
 title: Time-Space Photos - Your Best Memory Building and Sharing Tool
 tagline: photos,memeory,memories,old time, time space,private,share,friends,families

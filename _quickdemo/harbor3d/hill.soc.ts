@@ -4,110 +4,34 @@ import { whenReady } from "@/_shared/SoCFramework.js";
 import { textLoader } from "@/_shared/loader.js";
 
 const shapeLatlngStr = `
-              121.6358332,38.9381659,0
-              121.6331295,38.9370977,0
-              121.6343312,38.9351616,0
-              121.6327004,38.9351282,0
-              121.6322283,38.9356623,0
-              121.6300825,38.9347777,0
-              121.6309408,38.93295,0
-              121.6292886,38.932491,0
-              121.6273892,38.9354122,0
-              121.6255893,38.9346987,0
-              121.6267934,38.9316484,0
-              121.6244357,38.9308013,0
-              121.6228504,38.9327585,0
-              121.6221634,38.9324831,0
-              121.6234213,38.9303257,0
-              121.6224248,38.9298813,0
-              121.6213579,38.9309402,0
-              121.6210635,38.9303633,0
-              121.6165816,38.9286232,0
-              121.6131295,38.9310894,0
-              121.609911,38.9295701,0
-              121.6005997,38.9181014,0
-              121.5875637,38.9025454,0
-              121.6400938,38.8869862,0
-              121.705399,38.8721417,0
-              121.7096824,38.8769744,0
-              121.7100666,38.8801203,0
-              121.7124046,38.8808914,0
-              121.712511,38.8831324,0
-              121.7108764,38.8868852,0
-              121.7121603,38.8903705,0
-              121.7144743,38.8925197,0
-              121.7163593,38.8951365,0
-              121.7166151,38.8965116,0
-              121.7173654,38.8967483,0
-              121.7179336,38.8978687,0
-              121.718931,38.8977532,0
-              121.7221672,38.904659,0
-              121.7187424,38.906976,0
-              121.7190941,38.9080908,0
-              121.7202182,38.9129457,0
-              121.7208661,38.9153732,0
-              121.720484,38.9176671,0
-              121.7140983,38.9194667,0
-              121.7133087,38.9180959,0
-              121.7096008,38.9192627,0
-              121.7055495,38.9205964,0
-              121.7064763,38.9216629,0
-              121.699575,38.9236621,0
-              121.6838835,38.9283943,0
-              121.6811014,38.9278887,0
-              121.678491,38.9288521,0
-              121.6793064,38.9302877,0
-              121.6779331,38.9322907,0
-              121.677504,38.933359,0
-              121.6755299,38.9330585,0
-              121.6739849,38.932925,0
-              121.6720537,38.93179,0
-              121.6708521,38.9315229,0
-              121.6714958,38.9333923,0
-              121.6696934,38.9339932,0
-              121.6667752,38.929186,0
-              121.663299,38.9303544,0
-              121.6658739,38.9352951,0
-              121.6643719,38.9358626,0
-              121.6614966,38.9308552,0
-              121.6589646,38.93179,0
-              121.6615824,38.9367639,0
-              121.6600804,38.9372313,0
-              121.6575913,38.9322239,0
-              121.6547589,38.9331587,0
-              121.657205,38.9381659,0
-              121.6554455,38.9388335,0
-              121.6515402,38.9322907,0
-              121.6498665,38.9314895,0
-              121.6476778,38.931189,0
-              121.6469912,38.9325578,0
-              121.646562,38.9331587,0
-              121.647592,38.9335593,0
-              121.6472916,38.9340934,0
-              121.6476778,38.934494,0
-              121.6501669,38.9335593,0
-              121.6505102,38.9341268,0
-              121.6473345,38.9355956,0
-              121.6513686,38.9400352,0
-              121.6502098,38.9407696,0
-              121.6505102,38.9412035,0
-              121.6472058,38.9429392,0
-              121.6425709,38.9397014,0
-              121.6417126,38.9404024,0
-              121.6358332,38.9381659,0
+121.6784825,38.8798929,0 121.6773667,38.8800266,0 121.6765943,38.8813295,0 121.6764226,38.8823985,0 121.6773238,38.8839352,0 121.6774097,38.8854385,0 121.6781392,38.8865742,0 121.678268,38.8876766,0 121.6802421,38.8879772,0 121.6800275,38.8885785,0 121.6796413,38.8890461,0 121.680285,38.8895138,0 121.6800275,38.8904825,0 121.6808429,38.8906495,0 121.681272,38.8906161,0 121.681272,38.8912174,0 121.6808,38.8913176,0 121.6807141,38.8929543,0 121.6797271,38.8932549,0 121.6793408,38.8937893,0 121.6808858,38.8942903,0 121.6821733,38.8940565,0 121.6835036,38.8932215,0 121.6839328,38.8926871,0 121.6835036,38.8922194,0 121.6839757,38.8913844,0 121.683804,38.8910169,0 121.6832891,38.8906161,0 121.6825166,38.8906495,0 121.6821733,38.8902487,0 121.6822591,38.8890795,0 121.6829028,38.8885451,0 121.6840186,38.8887121,0 121.6845336,38.8877768,0 121.6852632,38.8878436,0 121.6854348,38.8872423,0 121.6850057,38.8866076,0 121.6843619,38.88614,0 121.6844907,38.8854385,0 121.6839328,38.885405,0 121.6831174,38.8865074,0 121.6828599,38.8869083,0 121.6822162,38.8868415,0 121.6819158,38.8863738,0 121.6824308,38.8858059,0 121.6830745,38.8853048,0 121.6829028,38.8849374,0 121.6818299,38.8848706,0 121.681787,38.8846033,0 121.6827312,38.8844029,0 121.6844049,38.8835677,0 121.684319,38.8810622,0 121.683847,38.8808284,0 121.6832891,38.8798595,0 121.6825166,38.8796591,0 121.6817441,38.8787571,0 121.6814008,38.8796591,0 121.6806712,38.8795589,0 121.6803708,38.8789575,0 121.6799417,38.8787571,0 121.6793408,38.8788907,0 121.6786971,38.87859,0 121.6781821,38.8788907,0 121.678225,38.8792916,0 121.6784825,38.8798929,0 
 `;
 
 whenReady((world, camera, renderer, controls) => {
+  renderer.setClearColor(0xffffff);
+
+  world.add(new THREE.AxesHelper(10));
+
+  const grassLand = textLoader.load("/quickdemo/harbor3d/7546-v1.jpg");
+  const cityLand = textLoader.load("/quickdemo/harbor3d/cityland.jpg");
+
+  grassLand.wrapS = THREE.MirroredRepeatWrapping;
+  grassLand.wrapT = THREE.MirroredRepeatWrapping;
+  grassLand.magFilter = THREE.LinearFilter;
+  cityLand.wrapS = THREE.MirroredRepeatWrapping;
+  // grassLand.minFilter
+  // grassLand.wrapS = THREE.MirroredRepeatWrapping;
+
   const mercator = geoMercator(150, 10000, 121.63, 38.935);
 
   const toXyz = (latlng: LatLng) => {
     const xy = mercator.project(latlng);
-    return new THREE.Vector3(xy[0], 0, -xy[1]);
+    return new THREE.Vector3(xy[0], latlng[2] ?? 0, -xy[1]);
   };
 
   const parse = (coordinates: string) => {
     return coordinates
-      .split("\n")
+      .split(/[\n\s]/)
       .map((i) => i.trim())
       .filter(Boolean)
       .map((i) => {
@@ -115,7 +39,7 @@ whenReady((world, camera, renderer, controls) => {
       });
   };
 
-  const centerLatlng = [121.66281753515082, 38.90913394082861] as LatLng;
+  const centerLatlng = [121.68062955877913, 38.88629044521131] as LatLng;
 
   const center = toXyz(centerLatlng);
   controls.target.copy(center);
@@ -123,61 +47,148 @@ whenReady((world, camera, renderer, controls) => {
 
   const shape = parse(shapeLatlngStr);
 
-  const createHill = (latlng: LatLng, elevation: number, shape: LatLng[]) => {
+  const createHill = (shape: LatLng[], peaks: LatLng[]) => {
     const curve = new THREE.CatmullRomCurve3(
-      shape.map((s) => toXyz(s)),
+      shape.map(toXyz),
       true,
       "catmullrom",
       0.5
     );
-    const points = curve.getSpacedPoints(600);
 
-    const top = toXyz(latlng);
-    top.y = elevation * 0.03;
+    const ridge = new THREE.CatmullRomCurve3(
+      peaks.map(toXyz),
+      false,
+      "catmullrom",
+      0.5
+    );
 
-    points.unshift(top);
+    const newXAxis = ridge
+      .getPointAt(1)
+      .sub(ridge.getPointAt(0))
+      .setComponent(1, 0)
+      .normalize();
+
+    const newYAxis = new THREE.Vector3(0, 1, 0);
+    const newZAxis = new THREE.Vector3().crossVectors(newYAxis, newXAxis);
+    const basis = new THREE.Matrix4().makeBasis(newXAxis, newYAxis, newZAxis);
+    const elevation = Math.max(...peaks.map((x) => x[2]));
+
+    world.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(ridge.getSpacedPoints(300)),
+        new THREE.LineBasicMaterial({ color: 0xffffff })
+      )
+    );
+
+    world.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(curve.getSpacedPoints(300)),
+        new THREE.LineBasicMaterial({ color: 0xffffff })
+      )
+    );
+
+    const points = curve.getSpacedPoints(500);
+
+    let pt0 = new THREE.Vector3();
+    let xSeries = [];
 
     const indices: number[] = [];
+    const uvs: number[] = [];
+
+    points.forEach((pt) => {
+      pt0.copy(pt).applyMatrix4(basis);
+      xSeries.push(pt0.x);
+    });
+
+    let x0 = Math.min(...xSeries);
+    let x1 = Math.max(...xSeries);
+    const span = x1 - x0;
+
+    xSeries.forEach((v, i) => {
+      const r = (v - x0) / span;
+      uvs.push(r, 1);
+    });
+
+    xSeries.forEach((v, i) => {
+      const r = (v - x0) / span;
+      xSeries[i] = ridge.getPointAt(r);
+      uvs.push(r, 0);
+    });
+
+    const totalPts = [...points, ...xSeries];
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setFromPoints(points);
-    geometry.computeVertexNormals();
+    geometry.setFromPoints(totalPts);
 
-    const uvs: Float32Array = new Float32Array(2 * points.length);
+    const rOffset = points.length;
 
-    uvs[0] = 0.5;
-    uvs[1] = 1.0;
+    for (let i = 0, len = points.length - 1; i < len; i++) {
+      const index0 = i;
+      const index1 = i + 1;
 
-    for (let i = 1, len = points.length - 1; i < len; i++) {
-      const index0 = 0;
-      const index1 = i;
-      const index2 = i + 1;
+      const rindex0 = rOffset + i;
+      const rindex1 = rOffset + i + 1;
 
-      uvs[2 * index1] = 1;
-      uvs[2 * index1 + 1] = 0.5;
-
-      indices.push(index0, index1, index2);
+      indices.push(index0, index1, rindex1, rindex1, rindex0, index0);
     }
 
     geometry.setIndex(indices);
-    geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-
-    const tex = textLoader.load("/quickdemo/harbor3d/hills.jpg");
-    tex.magFilter = THREE.NearestFilter;
-    tex.minFilter = THREE.NearestFilter;
+    geometry.setAttribute(
+      "uv",
+      new THREE.BufferAttribute(new Float32Array(uvs), 2)
+    );
 
     return new THREE.Mesh(
       geometry,
-      new THREE.MeshToonMaterial({
-        color: 0xffffff,
-        emissive: 0x12de09,
-        emissiveIntensity: 0.3,
-        map: tex,
+      new THREE.ShaderMaterial({
+        visible: true,
+        transparent: true,
+        opacity: 0.1,
+        precision: "mediump",
+        glslVersion: "300 es",
+        side: THREE.DoubleSide,
+        wireframe: false,
+        uniforms: {
+          map: { value: grassLand },
+          cityLand: { value: cityLand },
+          maxY: { value: elevation },
+        },
+        vertexShader: `
+            uniform float maxY;
+            varying vec2 vUv;
+            varying float vY;
+
+            void main() {
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+              vec4 wpos = modelMatrix * vec4(position.xyz, 1.0);
+              vY = 1.0 - wpos.y / maxY;
+              vUv = uv;
+            }
+            `,
+        fragmentShader: `
+            uniform sampler2D map;
+            uniform sampler2D cityLand;
+            varying vec2 vUv;
+            varying float vY;
+
+            out vec4 FragColor;
+
+            void main() {
+              vec4 texel2 = texture2D(cityLand, vUv);
+              vec4 texel1 = texture2D(map, vUv);
+              vec4 quantizedColor = mix(texel1, texel2, pow(vY, 3.0));
+              FragColor = vec4(quantizedColor.rgb, 1.0);
+            }
+            `,
       })
     );
   };
 
-  const hill = createHill(centerLatlng, 138, shape);
+  const hill = createHill(shape, [
+    [121.67955387799792, 38.8813347859973, 0.3],
+    [121.67992629541239, 38.88630445482012, 0.4],
+    [121.68210759741146, 38.89206055333178, 0.3],
+  ]);
 
   world.add(hill);
 });

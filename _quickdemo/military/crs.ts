@@ -9,7 +9,7 @@ export const setLngLat = (object3d: THREE.Object3D, lnglat: LngLat) => {
   object3d.position.y = xy[1];
 };
 
-export const lngLat = (lng: number, lat: number): THREE.Vector3 => {
+export const lngLat = (lng: number, lat: number, alt?: number): THREE.Vector3 => {
   const xy = _geoMercator.project([lng, lat]);
   return new THREE.Vector3(xy[0], xy[1], 0);
 };

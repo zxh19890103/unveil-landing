@@ -39,6 +39,7 @@ export class KmlGisMap extends THREE.Object3D {
   readonly roads: THREE.CatmullRomCurve3[] = [];
   readonly waterways: THREE.CatmullRomCurve3[] = [];
   readonly shipplaces: KmlParsedRes[] = [];
+  readonly hillpeaks: KmlParsedRes[] = [];
   readonly stockyards: KmlParsedRes[] = [];
   readonly trees: KmlParsedRes[] = [];
   readonly buildings: KmlParsedRes[] = [];
@@ -158,6 +159,8 @@ export class KmlGisMap extends THREE.Object3D {
         return result;
       })
       .then((res) => {
+        this.hillpeaks.push(...res.filter((x) => x.name === "peaks"));
+
         for (const item of res) {
           switch (item.type) {
             case "Polygon": {
@@ -412,77 +415,130 @@ export class KmlGisMap extends THREE.Object3D {
   createBuilding(item: KmlParsedRes) {}
 
   createHill(item: KmlParsedRes) {
+    const peak = this.hillpeaks.find((p) => p.id.includes(item.id));
+    if (!peak) return;
+
+    const elevation = item.elevation * 0.03;
+
+    peak.points.forEach((pt, i) => {
+      pt.y = (0.5 + Math.random() * 0.5) * elevation;
+    });
+
     const curve = new THREE.CatmullRomCurve3(
       item.points,
-      false,
+      true,
       "catmullrom",
       0.5
     );
 
-    const points = curve.getSpacedPoints(600);
-    const top = new THREE.Vector3();
-    points.unshift(points[0]);
+    const ridge = new THREE.CatmullRomCurve3(
+      peak.points,
+      false,
+      "centripetal",
+      0.5
+    );
+
+    const newXAxis = ridge
+      .getPointAt(1)
+      .sub(ridge.getPointAt(0))
+      .setComponent(1, 0)
+      .normalize();
+
+    const newYAxis = new THREE.Vector3(0, 1, 0);
+    const newZAxis = new THREE.Vector3().crossVectors(newYAxis, newXAxis);
+    const basis = new THREE.Matrix4().makeBasis(newXAxis, newYAxis, newZAxis);
+
+    const points = curve.getSpacedPoints(500);
+
+    let pt0 = new THREE.Vector3();
+    let xSeries = [];
 
     const indices: number[] = [];
+    const uvs: number[] = [];
+
+    points.forEach((pt) => {
+      pt0.copy(pt).applyMatrix4(basis);
+      xSeries.push(pt0.x);
+    });
+
+    const x0 = Math.min(...xSeries);
+    const span = Math.max(...xSeries) - x0;
+
+    xSeries.forEach((x) => {
+      const r = (x - x0) / span;
+      uvs.push(r, 1);
+    });
+
+    xSeries.forEach((x, i) => {
+      const r = (x - x0) / span;
+      xSeries[i] = ridge.getPointAt(r);
+      uvs.push(r, 0);
+    });
+
+    const totalPts = [...points, ...xSeries];
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setFromPoints(points);
-    geometry.computeVertexNormals();
+    geometry.setFromPoints(totalPts);
 
-    geometry.computeBoundingBox();
-    geometry.boundingBox.getCenter(top);
+    const rOffset = points.length;
 
-    geometry.attributes.position.setXYZ(0, top.x, item.elevation * 0.01, top.z);
+    for (let i = 0, len = points.length - 1; i < len; i++) {
+      const index0 = i;
+      const index1 = i + 1;
 
-    for (let i = 1, len = points.length - 1; i < len; i++) {
-      const index0 = 0;
-      const index1 = i;
-      const index2 = i + 1;
+      const rindex0 = rOffset + i;
+      const rindex1 = rOffset + i + 1;
 
-      indices.push(index0, index1, index2);
+      indices.push(index0, index1, rindex1, rindex1, rindex0, index0);
     }
 
     geometry.setIndex(indices);
+    geometry.setAttribute(
+      "uv",
+      new THREE.BufferAttribute(new Float32Array(uvs), 2)
+    );
 
     const hill = new THREE.Mesh(
       geometry,
       new THREE.ShaderMaterial({
+        visible: true,
+        transparent: true,
         precision: "mediump",
         glslVersion: "300 es",
         side: THREE.DoubleSide,
+        wireframe: false,
         uniforms: {
           map: { value: grassLand },
           cityLand: { value: cityLand },
-          peak: { value: top },
+          maxY: { value: elevation },
         },
         vertexShader: `
-        uniform vec3 peak;
-        varying vec3 vPos;
-        varying vec2 vUv;
+            uniform float maxY;
+            varying vec2 vUv;
+            varying float vY;
 
-        void main() {
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
-          vec4 wpos = modelMatrix * vec4(position.xyz, 1.0);
-          vec4 wpeak = modelMatrix * vec4(peak, 1.0);
-          
-          vPos = wpos.xyz;
-          vUv = abs(normalize(vPos - wpeak.xyz).xz);
-        }
-        `,
+            void main() {
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+              vec4 wpos = modelMatrix * vec4(position.xyz, 1.0);
+              vY = 1.0 - wpos.y / maxY;
+              vUv = uv;
+            }
+            `,
         fragmentShader: `
-        uniform sampler2D map;
-        uniform sampler2D cityLand;
-        varying vec3 vPos;
-        varying vec2 vUv;
-        out vec4 FragColor; 
-        
-        void main() {
-          vec4 texel = texture2D(map, vUv);
-          vec4 texel2 = texture2D(cityLand, vUv);
-          vec4 quantizedColor = mix(texel, texel2, length(vUv));
-          FragColor = vec4(quantizedColor.rgb, 1.0);
-        }
-        `,
+            uniform sampler2D map;
+            uniform sampler2D cityLand;
+            varying vec2 vUv;
+            varying float vY;
+
+            out vec4 FragColor;
+
+            void main() {
+              vec4 texel2 = texture2D(cityLand, vUv);
+              vec4 texel1 = texture2D(map, vUv);
+              vec4 quantizedColor = mix(texel1, texel2, pow(vY, 1.7));
+              FragColor = vec4(quantizedColor.rgb, 1.0);
+            }
+            `,
       })
     );
 
@@ -534,6 +590,7 @@ type KmlParsedResName =
   | "land"
   | "dock"
   | "hill"
+  | "peaks"
   | "stockyard"
   | "center"
   | "building"

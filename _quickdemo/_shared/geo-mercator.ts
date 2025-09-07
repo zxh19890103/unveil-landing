@@ -1,4 +1,4 @@
-export type LngLat = [number, number];
+export type LngLat = [number, number, number?];
 export type XY = [number, number];
 export type XYZ = [number, number, number];
 

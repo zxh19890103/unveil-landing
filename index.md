@@ -1,6 +1,7 @@
 ---
 title: Unveil - 用簡易動畫說明複雜內容
 layout: landing
+location: /quickdemo/harbor3d/
 ---
 
 <section class="flex flex-col-reverse md:flex-row items-center max-w-6xl mx-auto py-20 gap-10">

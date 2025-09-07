@@ -119,7 +119,7 @@ threeJs.onAnimate(renderRendererTiles);
 //#endregion
 
 // truck
-const map = new KmlGisMap("./dalianharbor.kml", {
+const map = new KmlGisMap("./Harbor3D.kml", {
   center: "38.92186, 121.62554",
   scale: 300,
   onCenter: (center) => {

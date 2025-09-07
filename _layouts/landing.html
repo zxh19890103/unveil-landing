@@ -1,6 +1,10 @@
 ---
 ---
 
+{% if page.location %}
+<script> location.href = "{{ page.location }}"; </script>
+{% endif %}
+
 <!DOCTYPE html>
 <html lang="zh-Hant" class="scroll-smooth">
 
