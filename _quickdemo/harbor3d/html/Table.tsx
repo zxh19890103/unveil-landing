@@ -4,7 +4,7 @@ import React from "react";
 type Column<T> = {
   key: string;
   title?: React.ReactNode;
-  width?: string; // e.g. '12rem' or '120px' or '15%'
+  width?: string | number; // e.g. '12rem' or '120px' or '15%'
   render?: (item: T, idx: number) => React.ReactNode;
   className?: string;
 };

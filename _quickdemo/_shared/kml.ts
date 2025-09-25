@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { geoMercator, type LngLat } from "./geo-mercator.js";
+import { GeoMercator, geoMercator, type LngLat } from "./geo-mercator.js";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { textLoader } from "./loader.js";
 
@@ -44,6 +44,10 @@ export class KmlGisMap extends THREE.Object3D {
   readonly trees: KmlParsedRes[] = [];
   readonly buildings: KmlParsedRes[] = [];
 
+  private ready = false;
+
+  readonly mercator: GeoMercator;
+
   constructor(url: string, readonly options: KmlGisOptions) {
     super();
 
@@ -54,6 +58,8 @@ export class KmlGisMap extends THREE.Object3D {
       center[1],
       center[0]
     );
+
+    this.mercator = mercator;
 
     const parseLookAt = (tag: Element) => {
       return {
@@ -166,12 +172,12 @@ export class KmlGisMap extends THREE.Object3D {
             case "Polygon": {
               switch (item.name) {
                 case "land": {
-                  const land = this.createLand(item);
+                  const land = this.createWhiteLand(item);
                   land.position.y = -0.01;
                   break;
                 }
                 case "hill": {
-                  this.createHill(item);
+                  // this.createHill(item);
                   break;
                 }
                 case "dock": {
@@ -189,8 +195,8 @@ export class KmlGisMap extends THREE.Object3D {
                   break;
                 }
                 case "road": {
-                  const road = this.createRoad(item);
-                  road.position.y = 0;
+                  // const road = this.createRoad(item);
+                  // road.position.y = 0;
                   break;
                 }
                 case "ship": {
@@ -202,7 +208,7 @@ export class KmlGisMap extends THREE.Object3D {
                   break;
                 }
                 case "hill": {
-                  this.createHill(item);
+                  // this.createHill(item);
                   break;
                 }
               }
@@ -235,6 +241,8 @@ export class KmlGisMap extends THREE.Object3D {
       .then(() => {
         this.options.onReady?.();
         for (const fn of this.readyFns) fn();
+        this.readyFns = [];
+        this.ready = true;
       });
   }
 
@@ -394,6 +402,33 @@ export class KmlGisMap extends THREE.Object3D {
     return mesh;
   }
 
+  createWhiteLand(
+    item: KmlParsedRes,
+    color: THREE.ColorRepresentation = 0xdeae9d
+  ) {
+    const geometry = new THREE.ShapeGeometry(
+      new THREE.Shape(
+        item.points.map((vec) => {
+          return new THREE.Vector2(vec.x, vec.z);
+        })
+      )
+    );
+
+    const mat = new THREE.MeshBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide,
+    });
+
+    const mesh = new THREE.Mesh(geometry, mat);
+
+    mesh.name = item.desc;
+    mesh.rotation.x = Math.PI / 2;
+
+    this.add(mesh);
+
+    return mesh;
+  }
+
   createMarker(text: string, type: KmlParsedResLandMark = null) {
     const div = document.createElement("div");
     div.className = "Marker";
@@ -418,7 +453,7 @@ export class KmlGisMap extends THREE.Object3D {
     const peak = this.hillpeaks.find((p) => p.id.includes(item.id));
     if (!peak) return;
 
-    const elevation = item.elevation * 0.03;
+    const elevation = item.elevation * 0.005;
 
     peak.points.forEach((pt, i) => {
       pt.y = (0.5 + Math.random() * 0.5) * elevation;
@@ -510,6 +545,7 @@ export class KmlGisMap extends THREE.Object3D {
         uniforms: {
           map: { value: grassLand },
           cityLand: { value: cityLand },
+          texel2: { value: new THREE.Color(0xdeae9d) },
           maxY: { value: elevation },
         },
         vertexShader: `
@@ -527,16 +563,18 @@ export class KmlGisMap extends THREE.Object3D {
         fragmentShader: `
             uniform sampler2D map;
             uniform sampler2D cityLand;
+            uniform vec3 texel2;
+
             varying vec2 vUv;
             varying float vY;
 
             out vec4 FragColor;
 
             void main() {
-              vec4 texel2 = texture2D(cityLand, vUv);
-              vec4 texel1 = texture2D(map, vUv);
-              vec4 quantizedColor = mix(texel1, texel2, pow(vY, 1.7));
-              FragColor = vec4(quantizedColor.rgb, 1.0);
+              // vec4 texel2 = texture2D(cityLand, vUv);
+              vec3 texel1 = texture2D(map, vUv).rgb;
+              vec3 quantizedColor = mix(texel1, texel2, pow(vY, 1.7));
+              FragColor = vec4(quantizedColor, 1.0);
             }
             `,
       })
@@ -571,11 +609,15 @@ export class KmlGisMap extends THREE.Object3D {
   }
 
   readonly center = new THREE.Vector3();
-  readonly readyFns: VoidFunction[] = [];
+  private readyFns: VoidFunction[] = [];
 
   onCenter() {}
   onReady(readyFn: VoidFunction) {
-    this.readyFns.push(readyFn);
+    if (this.ready) {
+      readyFn();
+    } else {
+      this.readyFns.push(readyFn);
+    }
   }
 }
 

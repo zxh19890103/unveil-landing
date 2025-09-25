@@ -1,14 +1,25 @@
 import { ModelObj } from "@/_shared/ModelObj.class.js";
+import type { ShipmentOrderDetail } from "./data/types.js";
+
+type UserData = {
+  tel: string;
+  carType: string;
+  license_plate: string;
+  driver: string;
+  status: "運輸中";
+  shipmentOrderDetails: ShipmentOrderDetail[];
+};
 
 export class Truck extends ModelObj {
   readonly $$type = "truck";
 
-  readonly userData = {
-    license_plate: "AA-1234",
-    driver: "John",
+  readonly userData: UserData = {
+    tel: "",
+    carType: "",
+    license_plate: "",
+    driver: "",
     status: "運輸中",
-    speed_kmh: 15,
-    carrying_container_id: "CTN-5678",
+    shipmentOrderDetails: [],
   };
 
   constructor(label: string = "truck") {

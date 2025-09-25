@@ -22,6 +22,14 @@ import Descriptions from "./html/Descriptions.js";
 import { textLoader } from "@/_shared/loader.js";
 import { Tree } from "./Tree.class.js";
 import { Building, queryBuildingType } from "./Building.class.js";
+import {
+  loadCars,
+  loadShipmentOrderDetail,
+  loadShipmentOrders,
+  NAME_2_ROAD,
+} from "./data/index.js";
+import SimpleList from "./html/Table.js";
+import { OSMGeoJson } from "../osm/std/index.js";
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 
@@ -126,12 +134,166 @@ const map = new KmlGisMap("./Harbor3D.kml", {
     camera.position.set(center.x, 10, center.y);
     threeJs.controls["target"].copy(center);
   },
-  onReady: () => {},
+  onReady: async () => {
+    const buildings = await OSMGeoJson.createFromUrl(
+      "/quickdemo/osm/dalian_geojson.geojson",
+      map.mercator
+    );
+
+    buildings.scale.set(3, 3, 3);
+
+    // console.log([...buildings.roads.keys()]);
+    // buildings.position.x = 1;
+
+    /**
+     * @todo
+     * 0. load all cars
+     * 1. create trucks by cars data;
+     * 2. find roads for truck.
+     * 3. load all shipment orders
+     * 4. load all shipment order details
+     * 5. load details info to cars accordinglly
+     * 6. set a timer to load cars every 3secs
+     * 7. set a timer to load details every 3secs
+     * 8. update the cars by the commands on cars data.
+     * 9. update the details on cars.
+     */
+
+    world.add(buildings);
+
+    (async () => {
+      const truckTemplate = new Truck();
+
+      const columns = [
+        {
+          key: "shortName",
+          title: "品类",
+          width: 120,
+        },
+        {
+          key: "containerNumber",
+          title: "集装箱",
+          width: 80,
+        },
+        {
+          key: "count",
+          title: "数量",
+          width: 60,
+        },
+      ];
+
+      const OrderInfo = ({ order }) => {
+        return (
+          <div>
+            <dl>
+              <dd>
+                <label>运单号：</label>
+                <span>{order?._order?.id}</span>
+              </dd>
+              <dd>
+                <label>发出地：</label>
+                <span>{order?._order.startPlace ?? "--"}</span>
+              </dd>
+              <dd>
+                <label>目的地：</label>
+                <span>{order?._order.destination ?? "--"}</span>
+              </dd>
+              <dd>
+                <label>司机：</label>
+                <span>{order?.driverName ?? "--"}</span>
+              </dd>
+              <dd>
+                <label>车牌：</label>
+                <span>{order?.carNumber ?? "--"}</span>
+              </dd>
+            </dl>
+          </div>
+        );
+      };
+
+      const TruckPopup = ({ data }) => {
+        const first = data.shipmentOrderDetails[0];
+        const tableData = data.shipmentOrderDetails;
+
+        return (
+          <div>
+            <OrderInfo order={first} />
+            <SimpleList
+              selected={null}
+              rowKey="id"
+              compact
+              columns={columns}
+              data={tableData}
+            />
+          </div>
+        );
+      };
+
+      const cars = await loadCars();
+      const orders = await loadShipmentOrders();
+
+      const details = [];
+
+      for (const order of orders) {
+        const orderDetails = await loadShipmentOrderDetail(order.id);
+        details.push(...orderDetails);
+        order._details = orderDetails;
+        orderDetails.forEach((detail) => {
+          detail._order = order;
+        });
+      }
+
+      const carID2Truck: Record<string, Truck> = {};
+
+      for (const car of cars) {
+        const truckCopy = truckTemplate.clone();
+
+        carID2Truck[car.id] = truckCopy;
+
+        truckCopy.userData.license_plate = car.carNumber;
+        truckCopy.userData.driver = car.driver;
+        truckCopy.userData.carType = car.carType;
+        truckCopy.userData.tel = car.tel;
+
+        truckCopy.popup<Truck>(TruckPopup);
+        truckCopy.info<Truck>(TruckPopup);
+
+        appState.objects.push(truckCopy);
+
+        map.add(truckCopy);
+
+        const shipmentOrderDetails = details.filter((d) => d.carId === car.id);
+        const shipmentORder = shipmentOrderDetails[0]?._order;
+
+        map.onReady(() => {
+          const pos = new THREE.Vector3();
+          const dir = new THREE.Vector3();
+          let u = 0;
+          let speed = Math.random() * 0.001;
+
+          // const road = map.roads[NAME_2_ROAD[shipmentORder.destination]];
+          // threeJs.onAnimate((delta) => {
+          //   if (u >= 1) return;
+
+          //   road.getPointAt(u, pos);
+
+          //   truckCopy.position.copy(pos);
+
+          //   road.getTangentAt(u, dir);
+          //   pos.add(dir);
+          //   truckCopy.lookAt(pos);
+
+          //   u += speed;
+          // });
+        });
+      }
+    })();
+  },
 });
 
 world.add(map);
 
-// cargo
+// cargos
 {
   map.onReady(() => {
     map.stockyards.forEach((stockYard) => {
@@ -193,70 +355,7 @@ world.add(map);
   });
 }
 
-{
-  const truck = new Truck();
-
-  for (let i = 0; i < 10; i++) {
-    const truckCopy = truck.clone();
-
-    truckCopy.popup<Truck>(({ data }) => {
-      return (
-        <Descriptions
-          compact
-          labelWidth="5rem"
-          items={[
-            { value: data.license_plate, label: "車牌" },
-            { value: data.driver, label: "司機" },
-            { value: data.status, label: "狀態" },
-            { value: data.speed_kmh, label: "時速" },
-          ]}
-        />
-      );
-    });
-
-    truckCopy.info<Truck>(({ data }) => {
-      return (
-        <Descriptions
-          labelWidth="5rem"
-          items={[
-            { value: data.license_plate, label: "車牌" },
-            { value: data.driver, label: "司機" },
-            { value: data.status, label: "狀態" },
-            { value: data.speed_kmh, label: "時速" },
-          ]}
-        />
-      );
-    });
-
-    appState.objects.push(truckCopy);
-
-    map.add(truckCopy);
-
-    map.onReady(() => {
-      const pos = new THREE.Vector3();
-      const dir = new THREE.Vector3();
-      let u = 0;
-      let speed = Math.random() * 0.0003;
-
-      const road = map.roads[i % 3];
-
-      threeJs.onAnimate((delta) => {
-        if (u >= 1) return;
-
-        road.getPointAt(u, pos);
-
-        truckCopy.position.copy(pos);
-
-        road.getTangentAt(u, dir);
-        pos.add(dir);
-        truckCopy.lookAt(pos);
-
-        u += speed;
-      });
-    });
-  }
-}
-
+// ships
 {
   const ship = new Ship();
 
@@ -314,21 +413,21 @@ world.add(map);
   appState.objects.push(ship);
 }
 
+// trees and buildings
 {
-  map.onReady(() => {
-    map.trees.forEach((item) => {
-      const tree = new Tree();
-      tree.position.copy(item.points[0]);
-      world.add(tree);
-    });
-
-    map.buildings.forEach((item) => {
-      const building = new Building(queryBuildingType(item.marker));
-      building.position.copy(item.points[0]);
-      building.rotateY(item.lookAt.heading * DEG2RAD);
-      world.add(building);
-    });
-  });
+  // map.onReady(() => {
+  //   map.trees.forEach((item) => {
+  //     const tree = new Tree();
+  //     tree.position.copy(item.points[0]);
+  //     world.add(tree);
+  //   });
+  //   map.buildings.forEach((item) => {
+  //     const building = new Building(queryBuildingType(item.marker));
+  //     building.position.copy(item.points[0]);
+  //     building.rotateY(item.lookAt.heading * DEG2RAD);
+  //     world.add(building);
+  //   });
+  // });
 }
 
 threeJs.startAnimation();

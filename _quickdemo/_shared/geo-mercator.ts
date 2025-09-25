@@ -2,7 +2,9 @@ export type LngLat = [number, number, number?];
 export type XY = [number, number];
 export type XYZ = [number, number, number];
 
-class GeoMercator {
+const toRad = Math.PI / 180;
+
+export class GeoMercator {
   private λ0: number = 116.3974; // longitude center
   private φ0: number = 40; // latitude center
   private scaleFactorLon: number = 1;
@@ -27,7 +29,7 @@ class GeoMercator {
     const x = this.scaleFactorLon * (λ - this.λ0) + this.translateX;
     const y =
       this.scaleFactorLat *
-        Math.log(Math.tan(Math.PI / 4 + ((φ - this.φ0) * Math.PI) / 360)) +
+        Math.log(Math.tan(Math.PI / 4 + 0.5 * (φ * toRad - this.φ0 * toRad))) +
       this.translateY;
     return [x, y];
   }

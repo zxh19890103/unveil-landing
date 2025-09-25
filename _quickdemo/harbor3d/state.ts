@@ -1,5 +1,10 @@
 import { createState } from "@/_shared/state.js";
 import type { Object3D } from "three";
+import type {
+  ShipmentCar,
+  ShipmentOrder,
+  ShipmentOrderDetail,
+} from "./data/types.js";
 
 export type Persipective = "top" | "left" | "right" | "back" | "front";
 
@@ -12,6 +17,10 @@ type State = {
   objects: Object3D[];
   focus: Object3D;
   following: Object3D;
+
+  cars: ShipmentCar[];
+  shipmentOrders: ShipmentOrder[];
+  shipmentOrderDetails: ShipmentOrderDetail[];
 };
 
 type Computed = {
@@ -31,6 +40,9 @@ export const appState = createState<State, Computed>(
     interactive: false,
     panels: true,
     objects: [],
+    cars: [],
+    shipmentOrderDetails: [],
+    shipmentOrders: [],
     focus: null,
     following: null,
   },

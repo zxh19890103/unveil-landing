@@ -1,5 +1,5 @@
 export default {
-  projects: ["_shared", "samrt-rc", "military", "harbor3d"],
+  projects: ["_shared", "samrt-rc", "military", "harbor3d", "osm"],
   importmaps: {
     imports: {
       three: "/assets/jslibs/three/three.module.js",
