@@ -1,11 +1,12 @@
 {
   // "editor.fontFamily": "Cascadia Code PL, Yuppy TC",
-  "editor.fontFamily": "Chalkboard SE, Yuppy TC",
+  "editor.fontFamily": "Anonymous Pro, Yuppy TC",
+  // "editor.fontFamily": "Chalkboard SE, Yuppy TC",
   "editor.fontSize": 14,
-  "workbench.fontAliasing": "antialiased",
+  // "workbench.fontAliasing": "antialiased",
   "editor.fontLigatures": true,
-  "editor.fontWeight": "300",
-  "window.zoomLevel": 1.2,
+  "editor.fontWeight": "600",
+  "window.zoomLevel": 1,
   "editor.letterSpacing": 0,
   // "workbench.colorTheme": "Default Dark+"
   "workbench.colorTheme": "Atom One Light"

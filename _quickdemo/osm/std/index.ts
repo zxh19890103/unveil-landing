@@ -1,13 +1,16 @@
 import * as THREE from "three";
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 
 type LatLng = [number, number, number?];
 
 type PolygonCoordinates = LatLng[][];
 type LineStringCoordinates = LatLng[];
+type PointCoordinates = LatLng;
 
 type GeoJsonFeatureGeometryTypeCoordinatesMap = {
   Polygon: PolygonCoordinates;
   LineString: LineStringCoordinates;
+  Point: PointCoordinates;
 };
 
 type GeoJsonFeatureGeometryType =
@@ -21,12 +24,18 @@ type GeoJsonFeatureGeometryMap = {
 };
 
 type GeoJsonFeatureProperties = {
-  id: string;
+  id: string | number;
   building?: string;
   "building:levels"?: number;
+  natural?: "coastline";
   height?: number;
   waterway?: string;
   highway?: string;
+  shipway?: "yes";
+  truckroad?: "yes";
+  choices?: number[];
+  pier?: "yes";
+  deepwater?: "yes" | "no";
   name?: string;
   [k: string]: any;
 };
@@ -61,6 +70,10 @@ type OSMGeoJsonOptions = {
    * @default 0.0001
    */
   heightScale?: number;
+  eachLineString?: (
+    feature: GeoJsonFeature<"LineString">,
+    curve: THREE.CatmullRomCurve3
+  ) => void;
 };
 
 const defaultOptions: OSMGeoJsonOptions = {
@@ -82,22 +95,49 @@ export class OSMGeoJson extends THREE.Object3D {
 
     data.features.forEach((feature) => {
       if (feature.type === "Feature") {
-        const { geometry } = feature;
+        const { geometry, properties } = feature;
 
         switch (geometry.type) {
           case "Polygon": {
-            const mesh = this.polygonToMesh(
-              feature as GeoJsonFeature<"Polygon">
-            );
-            this.add(mesh);
+            if (properties.building !== undefined) {
+              const mesh = this.polygonToMesh(
+                feature as GeoJsonFeature<"Polygon">
+              );
+
+              this.add(mesh);
+            }
+
             break;
           }
           case "LineString": {
-            const mesh = this.lineStringToLine(
-              feature as GeoJsonFeature<"LineString">
+            if (properties.truckroad) {
+              const mesh = this.lineStringToMesh(
+                feature as GeoJsonFeature<"LineString">
+              );
+
+              if (mesh) this.add(mesh);
+            } else if (properties.shipway) {
+              const smoothline = this.lineStringToSmoothLine(
+                feature as GeoJsonFeature<"LineString">,
+                true
+              );
+              if (smoothline) this.add(smoothline);
+            } else {
+              const mesh = this.lineStringToLine(
+                feature as GeoJsonFeature<"LineString">
+              );
+
+              if (mesh) this.add(mesh);
+            }
+
+            break;
+          }
+          case "Point": {
+            const marker = this.pointToMarker(
+              feature as GeoJsonFeature<"Point">
             );
-            if (mesh !== null) {
-              this.add(mesh);
+            if (marker) {
+              this.add(marker);
             }
             break;
           }
@@ -108,6 +148,17 @@ export class OSMGeoJson extends THREE.Object3D {
         }
       }
     });
+  }
+
+  private pointToMarker(feature: GeoJsonFeature<"Point">): CSS2DObject {
+    const div = document.createElement("div");
+    div.innerHTML = `<img src="/quickdemo/harbor3d/markers/anchor.svg" style="width: 16px; height: 16px" />`;
+    const marker = new CSS2DObject(div);
+    const [x, y] = this._options.projector.project(
+      feature.geometry.coordinates
+    );
+    marker.position.set(x, 0, -y);
+    return marker;
   }
 
   private polygonToMesh(feature: GeoJsonFeature<"Polygon">): THREE.Mesh {
@@ -123,7 +174,7 @@ export class OSMGeoJson extends THREE.Object3D {
       height = feature.properties.height;
     else if (feature.properties["building:levels"] !== undefined)
       height = 3 * feature.properties["building:levels"];
-    else height = 50;
+    else height = Math.random() * 50;
 
     height = heightScale * Math.max(this._options.heightBase, height);
 
@@ -155,19 +206,19 @@ export class OSMGeoJson extends THREE.Object3D {
       return new THREE.Vector3(x, 0, -y);
     });
 
-    const path = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
+    const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
 
-    const width = 0.001;
+    const width = 0.1;
     const roadShape = new THREE.Shape();
     roadShape.moveTo(0, -width / 2);
     roadShape.lineTo(0, width / 2);
 
     // 3. Create the geometry.
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
-      steps: 80, // Number of segments for a smooth path
-      extrudePath: path,
+      steps: 300, // Number of segments for a smooth path
+      extrudePath: curve,
       depth: 0,
-      bevelEnabled: false,
+      bevelEnabled: true,
       bevelSegments: 12,
       bevelSize: 0.1,
       bevelThickness: 0.7,
@@ -176,17 +227,12 @@ export class OSMGeoJson extends THREE.Object3D {
 
     const roadGeometry = new THREE.ExtrudeGeometry(roadShape, extrudeSettings);
 
-    const highwayType = highwayColors[feature.properties.highway];
-
-    if (highwayType === undefined) {
-      // console.log(feature.properties.highway);
-      return null;
-    }
+    this._options.eachLineString?.(feature, curve);
 
     const material = new THREE.MeshBasicMaterial({
       transparent: false,
       opacity: 0.8,
-      color: highwayType,
+      color: 0x000000,
       depthTest: true,
     });
 
@@ -195,26 +241,84 @@ export class OSMGeoJson extends THREE.Object3D {
 
   readonly roads: Map<string, THREE.CatmullRomCurve3> = new Map();
 
-  private lineStringToLine(feature: GeoJsonFeature<"LineString">): THREE.Line {
+  private lineStringToSmoothLine(
+    feature: GeoJsonFeature<"LineString">,
+    dash = false
+  ) {
     const pts = feature.geometry.coordinates.map((coord) => {
       const [x, y] = this._options.projector.project(coord);
       return new THREE.Vector3(x, 0, -y);
     });
 
-    const path = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
-    this.roads.set(feature.properties.name, path);
+    const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
 
-    const color = feature.properties.name === "中山路" ? 0xfe10fe : 0x000000;
+    const highwayType = highwayColors[feature.properties.highway];
+
+    if (highwayType === undefined) {
+      return null;
+    }
+
+    this._options.eachLineString?.(feature, curve);
+
+    const line = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(curve.getSpacedPoints(80)),
+      dash
+        ? new THREE.LineDashedMaterial({
+            dashSize: 0.1,
+            gapSize: 0.1,
+            color: highwayType,
+          })
+        : new THREE.LineBasicMaterial({
+            color: highwayType,
+          })
+    );
+
+    line.computeLineDistances();
+
+    return line;
+  }
+
+  private lineStringToLine(
+    feature: GeoJsonFeature<"LineString">,
+    dash = false
+  ): THREE.Line {
+    const pts = feature.geometry.coordinates.map((coord) => {
+      const [x, y] = this._options.projector.project(coord);
+      return new THREE.Vector3(x, 0, -y);
+    });
+
+    const highwayType = highwayColors[feature.properties.highway];
+
+    if (highwayType === undefined) {
+      return null;
+    }
 
     return new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(path.getSpacedPoints(100)),
-      new THREE.LineBasicMaterial({ color })
+      new THREE.BufferGeometry().setFromPoints(pts),
+      dash
+        ? new THREE.LineDashedMaterial({
+            dashSize: 0.1,
+            gapSize: 0.2,
+            color: highwayType,
+          })
+        : new THREE.LineBasicMaterial({
+            color: highwayType,
+          })
     );
   }
 
-  static async createFromUrl(url: string, projector: Projector) {
+  static async createFromUrl(
+    url: string,
+    projector: Projector | OSMGeoJsonOptions
+  ) {
     const data = await fetch(url, { method: "GET" }).then((r) => r.json());
-    return new OSMGeoJson(data, { projector });
+
+    if (Object.getPrototypeOf(projector) === Object.prototype) {
+      return new OSMGeoJson(data, projector as OSMGeoJsonOptions);
+    } else {
+      const options = { projector } as OSMGeoJsonOptions;
+      return new OSMGeoJson(data, options);
+    }
   }
 }
 

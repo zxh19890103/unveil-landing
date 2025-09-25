@@ -1,0 +1,8 @@
+[out:json][timeout:180];
+// bounding box (minLat,minLon,maxLat,maxLon)
+(
+  way["natural"="coastline"](38.8394, 121.5289, 38.9909, 121.7472);
+);
+out body;
+>;
+out skel qt;
