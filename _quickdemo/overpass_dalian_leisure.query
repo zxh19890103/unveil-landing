@@ -1,0 +1,12 @@
+[out:json][timeout:180];
+// bounding box (minLat,minLon,maxLat,maxLon)
+(
+  way["leisure"="park"](38.8394, 121.5289, 38.9909, 121.7472);
+  relation["leisure"="park"](38.8394, 121.5289, 38.9909, 121.7472);
+  way["waterway"="river"](38.8394, 121.5289, 38.9909, 121.7472);
+  way["natural"="water"]["water"="lake"](38.8394, 121.5289, 38.9909, 121.7472);
+  relation["natural"="water"]["water"="lake"](38.8394, 121.5289, 38.9909, 121.7472);
+);
+out body;
+>;
+out skel qt;

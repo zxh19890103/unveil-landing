@@ -17,6 +17,7 @@ type State = {
   objects: Object3D[];
   focus: Object3D;
   following: Object3D;
+  warnMsg: string;
 
   cars: ShipmentCar[];
   shipmentOrders: ShipmentOrder[];
@@ -34,11 +35,12 @@ type Computed = {
 
 export const appState = createState<State, Computed>(
   {
+    warnMsg: "",
     persipective: "top",
     loading: true,
     fullscreen: false,
     interactive: false,
-    panels: true,
+    panels: false,
     objects: [],
     cars: [],
     shipmentOrderDetails: [],

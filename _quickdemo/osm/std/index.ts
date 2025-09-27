@@ -31,6 +31,7 @@ type GeoJsonFeatureProperties = {
   height?: number;
   waterway?: string;
   highway?: string;
+  leisure?: string;
   shipway?: "yes";
   truckroad?: "yes";
   choices?: number[];
@@ -70,6 +71,7 @@ type OSMGeoJsonOptions = {
    * @default 0.0001
    */
   heightScale?: number;
+  eachPoint?: (feature: GeoJsonFeature<"Point">) => void;
   eachLineString?: (
     feature: GeoJsonFeature<"LineString">,
     curve: THREE.CatmullRomCurve3
@@ -99,14 +101,24 @@ export class OSMGeoJson extends THREE.Object3D {
 
         switch (geometry.type) {
           case "Polygon": {
-            if (properties.building !== undefined) {
+            if (properties.building) {
               const mesh = this.polygonToMesh(
                 feature as GeoJsonFeature<"Polygon">
               );
 
               this.add(mesh);
+            } else if (properties.leisure) {
+              const mesh = this.polygonToPlane(
+                feature as GeoJsonFeature<"Polygon">
+              );
+              this.add(mesh);
+            } else if (properties.natural === "coastline") {
+              const mesh = this.polygonToPlane(
+                feature as GeoJsonFeature<"Polygon">
+              );
+              mesh.position.y -= 0.001;
+              this.add(mesh);
             }
-
             break;
           }
           case "LineString": {
@@ -122,7 +134,7 @@ export class OSMGeoJson extends THREE.Object3D {
                 true
               );
               if (smoothline) this.add(smoothline);
-            } else {
+            } else if (properties.highway) {
               const mesh = this.lineStringToLine(
                 feature as GeoJsonFeature<"LineString">
               );
@@ -157,7 +169,10 @@ export class OSMGeoJson extends THREE.Object3D {
     const [x, y] = this._options.projector.project(
       feature.geometry.coordinates
     );
+
     marker.position.set(x, 0, -y);
+
+    this._options.eachPoint?.(feature);
     return marker;
   }
 
@@ -193,6 +208,28 @@ export class OSMGeoJson extends THREE.Object3D {
         emissive: 0xe9eaee,
         emissiveIntensity: 0.5,
       })
+    );
+
+    mesh.rotation.x = Math.PI / 2;
+
+    return mesh;
+  }
+
+  private polygonToPlane(feature: GeoJsonFeature<"Polygon">): THREE.Mesh {
+    const pts = feature.geometry.coordinates[0].map((polygon) => {
+      const [x, y] = this._options.projector.project(polygon);
+      return new THREE.Vector2(x, -y);
+    });
+
+    const shape = new THREE.Shape(pts);
+
+    let color = 0xdedede;
+    if (feature.properties.leisure) color = 0x23de94;
+    else if (feature.properties.natural === "coastline") color = 0xe0e0d2;
+
+    const mesh = new THREE.Mesh(
+      new THREE.ShapeGeometry(shape),
+      new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, color })
     );
 
     mesh.rotation.x = Math.PI / 2;
@@ -287,22 +324,16 @@ export class OSMGeoJson extends THREE.Object3D {
       return new THREE.Vector3(x, 0, -y);
     });
 
-    const highwayType = highwayColors[feature.properties.highway];
-
-    if (highwayType === undefined) {
-      return null;
-    }
-
     return new THREE.Line(
       new THREE.BufferGeometry().setFromPoints(pts),
       dash
         ? new THREE.LineDashedMaterial({
             dashSize: 0.1,
             gapSize: 0.2,
-            color: highwayType,
+            color: 0x000000,
           })
         : new THREE.LineBasicMaterial({
-            color: highwayType,
+            color: 0x000000,
           })
     );
   }

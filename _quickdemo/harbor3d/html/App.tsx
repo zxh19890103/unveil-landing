@@ -36,12 +36,25 @@ const App = () => {
         <Controls />
       </div>
       <ExecuteButton />
+      <WarnMsg />
       <Tooltips />
       <Popup />
       <Loading />
     </>
   );
 };
+
+const WarnMsg = memo(() => {
+  appState.use("/warnMsg");
+
+  if (!appState.warnMsg) return null;
+
+  return (
+    <div className="  rounded border border-orange-400 text-xl fixed right-1 top-1 p-2 bg-orange-300 text-white">
+      系统提醒：{appState.warnMsg}
+    </div>
+  );
+});
 
 const ExecuteButton = memo(() => {
   return (
