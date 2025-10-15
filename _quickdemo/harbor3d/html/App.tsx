@@ -47,11 +47,13 @@ const App = () => {
 const WarnMsg = memo(() => {
   appState.use("/warnMsg");
 
-  if (!appState.warnMsg) return null;
+  // if (!appState.warnMsg) return null;
 
   return (
-    <div className="  rounded border border-orange-400 text-xl fixed right-1 top-1 p-2 bg-orange-300 text-white">
-      系统提醒：{appState.warnMsg}
+    <div className="  rounded border border-red-400 fixed right-1 top-1 p-2 bg-red-300 text-white flex gap-2">
+      {/* <img className=" w-6 h-6" src="/quickdemo/harbor3d/icons/info.svg" /> */}
+      ⚠️
+      <div>系统提醒：{appState.warnMsg}</div>
     </div>
   );
 });

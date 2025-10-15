@@ -144,7 +144,10 @@ export class ModelObj extends THREE.Object3D {
           this.lod.addLevel(this.wrapper, distance);
           break;
         }
-        case "label":
+        case "label": {
+          this.lod.addLevel(this.createLabel(), distance);
+          break;
+        }
         case "point": {
           this.lod.addLevel(this.wrapper2, distance);
           break;
@@ -159,6 +162,60 @@ export class ModelObj extends THREE.Object3D {
     const label = new CSS2DObject(div);
     div.innerHTML = `${this.label}`;
     return label;
+  }
+
+  private LoadingLabel: CSS2DObject = null;
+  private UnLoadingLabel: CSS2DObject = null;
+  private loadingName: "loading" | "unloading" = null;
+
+  playLoading(type: "loading" | "unloading" = "loading") {
+    this.loadingName = type;
+
+    if (type === "loading" && this.LoadingLabel) {
+      this.add(this.LoadingLabel);
+      return;
+    }
+
+    if (type === "unloading" && this.UnLoadingLabel) {
+      this.add(this.UnLoadingLabel);
+      return;
+    }
+
+    const div = document.createElement("div");
+    div.className = `cargo-indicator ${type}`;
+    div.innerHTML = `
+      <span class="text">${type === "loading" ? "装载中" : "卸载中"}</span>
+      <div class="dots">
+        <span class="box"></span>
+        <span class="box"></span>
+        <span class="box"></span>
+      </div>
+    `;
+    const label = new CSS2DObject(div);
+
+    if (type === "loading") {
+      this.LoadingLabel = label;
+    } else if (type === "unloading") {
+      this.UnLoadingLabel = label;
+    }
+
+    this.add(label);
+  }
+
+  stopLoading() {
+    if (this.loadingName) {
+      if (this.loadingName === "loading" && this.LoadingLabel) {
+        this.remove(this.LoadingLabel);
+        return;
+      }
+
+      if (this.loadingName === "unloading" && this.UnLoadingLabel) {
+        this.remove(this.LoadingLabel);
+        return;
+      }
+
+      this.loadingName = null;
+    }
   }
 
   private traverseFns: VoidFunction[] = [];

@@ -104,3 +104,116 @@
     display: block;
   }
 }
+
+/* Container and Text Styles */
+.cargo-indicator {
+  display: flex;
+  align-items: center;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #2c3e50; /* Dark text */
+
+  /* The Dots Container */
+  .dots {
+    display: flex;
+    margin-left: 10px;
+  }
+
+  /* The Individual "Cargo Boxes" */
+  .box {
+    width: 6px;
+    height: 6px;
+    background-color: #e67e22; /* Orange color for cargo */
+    margin: 0 3px;
+    border-radius: 2px; /* Square shape */
+    opacity: 0.2; /* Start mostly hidden */
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------- */
+/* --- 1. LOADING: Boxes appear sequentially on the right and move left (INBOUND) --- */
+/* ---------------------------------------------------- */
+
+.cargo-indicator.loading .box {
+  animation: cargo-load 1.5s infinite ease-in-out;
+}
+
+/* Staggering the animation timing */
+.cargo-indicator.loading .box:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.cargo-indicator.loading .box:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.cargo-indicator.loading .box:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes cargo-load {
+  0% {
+    opacity: 0.2;
+    transform: translateX(10px); /* Start slightly off-center to the right */
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(0); /* Peak visibility */
+  }
+  60% {
+    opacity: 0.2;
+    transform: translateX(-10px); /* Move left and fade */
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateX(-10px); /* Reset for the next cycle */
+  }
+}
+
+/* ---------------------------------------------------- */
+/* --- 2. UNLOADING: Boxes appear sequentially on the left and move right (OUTBOUND) --- */
+/* ---------------------------------------------------- */
+
+.cargo-indicator.unloading .text {
+  content: "Unloading"; /* We can't actually change the text content with just CSS */
+}
+
+.cargo-indicator.unloading .box {
+  /* Use a separate keyframe for the reverse motion */
+  animation: cargo-unload 1.5s infinite ease-in-out;
+}
+
+/* Reverse the staggering for an opposite visual direction */
+.cargo-indicator.unloading .box:nth-child(1) {
+  animation-delay: 0.4s;
+}
+
+.cargo-indicator.unloading .box:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.cargo-indicator.unloading .box:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes cargo-unload {
+  /* This is just the reverse of cargo-load */
+  0% {
+    opacity: 0.2;
+    transform: translateX(-10px); /* Start slightly off-center to the left */
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(0); /* Peak visibility */
+  }
+  60% {
+    opacity: 0.2;
+    transform: translateX(10px); /* Move right and fade */
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateX(10px); /* Reset for the next cycle */
+  }
+}
