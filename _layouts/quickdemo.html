@@ -46,7 +46,7 @@
   <script type="module" src="{{site.quickdemoJsHost}}{{ jsEntryfile }}/{{ page.mainjs | default: 'index'}}.js"></script>
   <script src="{{site.quickdemoJsHost}}events-client"></script>
   {% else %}
-  <script type="module" src="./index.js?t={{site.time | date: '%s'}}"></script>
+  <script type="module" src="./{{ page.mainjs | default: 'index'}}.js?t={{site.time | date: '%s'}}"></script>
   {% endif %}
 </body>
 

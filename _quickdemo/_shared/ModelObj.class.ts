@@ -184,7 +184,6 @@ export class ModelObj extends THREE.Object3D {
     const div = document.createElement("div");
     div.className = `cargo-indicator ${type}`;
     div.innerHTML = `
-      <span class="text">${type === "loading" ? "装载中" : "卸载中"}</span>
       <div class="dots">
         <span class="box"></span>
         <span class="box"></span>
@@ -216,6 +215,17 @@ export class ModelObj extends THREE.Object3D {
 
       this.loadingName = null;
     }
+  }
+
+  showDanger(ms: number = 1000) {
+    const div = document.createElement("div");
+    const img = document.createElement("img");
+    img.className = "breathing";
+    img.src = "/quickdemo/@icons/danger.svg";
+    img.style.cssText = `opacity: 0.87; width: 32px; transform: scale(1, 1) translate(0, -50%)`;
+    div.appendChild(img);
+    const label = new CSS2DObject(div);
+    this.add(label);
   }
 
   private traverseFns: VoidFunction[] = [];

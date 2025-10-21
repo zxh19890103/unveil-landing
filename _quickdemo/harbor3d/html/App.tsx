@@ -44,15 +44,19 @@ const App = () => {
   );
 };
 
+const isNullish = (val: any) => val === null || val === undefined || val === "";
+
 const WarnMsg = memo(() => {
   appState.use("/warnMsg");
 
-  // if (!appState.warnMsg) return null;
+  const msg = appState.warnMsg;
 
   return (
-    <div className="  rounded border border-red-400 fixed right-1 top-1 p-2 bg-red-300 text-white flex gap-2">
-      {/* <img className=" w-6 h-6" src="/quickdemo/harbor3d/icons/info.svg" /> */}
-      ⚠️
+    <div
+      hidden={isNullish(msg)}
+      className="  rounded border border-red-400 fixed right-1 top-1 p-2 bg-white text-slate-900 flex items-center gap-2"
+    >
+      <img src="/quickdemo/@icons/tidal.svg" className=" w-6 h-6" />
       <div>系统提醒：{appState.warnMsg}</div>
     </div>
   );

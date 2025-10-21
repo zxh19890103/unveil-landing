@@ -1,3 +1,4 @@
+import { textLoader } from "@/_shared/loader.js";
 import * as THREE from "three";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 
@@ -36,6 +37,7 @@ type GeoJsonFeatureProperties = {
   truckroad?: "yes";
   choices?: number[];
   pier?: "yes";
+  landmark?: "yes";
   deepwater?: "yes" | "no";
   name?: string;
   [k: string]: any;
@@ -108,10 +110,10 @@ export class OSMGeoJson extends THREE.Object3D {
 
               this.add(mesh);
             } else if (properties.leisure) {
-              const mesh = this.polygonToPlane(
-                feature as GeoJsonFeature<"Polygon">
-              );
-              this.add(mesh);
+              // const mesh = this.polygonToPlane(
+              //   feature as GeoJsonFeature<"Polygon">
+              // );
+              // this.add(mesh);
             } else if (properties.natural === "coastline") {
               const mesh = this.polygonToPlane(
                 feature as GeoJsonFeature<"Polygon">
@@ -145,12 +147,24 @@ export class OSMGeoJson extends THREE.Object3D {
             break;
           }
           case "Point": {
-            const marker = this.pointToMarker(
-              feature as GeoJsonFeature<"Point">
-            );
-            if (marker) {
-              this.add(marker);
+            if (feature.properties.landmark) {
+              const marker = this.pointToLandMarker(
+                feature as GeoJsonFeature<"Point">
+              );
+
+              if (marker) {
+                this.add(marker);
+              }
+            } else {
+              const marker = this.pointToMarker(
+                feature as GeoJsonFeature<"Point">
+              );
+
+              if (marker) {
+                this.add(marker);
+              }
             }
+
             break;
           }
           default: {
@@ -162,10 +176,44 @@ export class OSMGeoJson extends THREE.Object3D {
     });
   }
 
+  private pointToLandMarker(feature: GeoJsonFeature<"Point">): CSS2DObject {
+    const div = document.createElement("div");
+    div.className = "relative rounded text-white";
+    div.style.cssText = `font-size: 12px;`;
+    div.innerHTML = `
+    <img src="/quickdemo/harbor3d/marker.svg" style="width: 30px; height: 30px" />
+    <span style="
+    white-space: nowrap; position: absolute; left: 12px; 
+    transform: translate(-50%, 0); top: -22px; 
+    width: fit-content; padding: 2px 4px; 
+    border-radius: 3px; 
+    background: rgba(231,91,12,0.61); 
+    color: #fff">${feature.properties.name}</span>
+    `
+
+    const marker = new CSS2DObject(div);
+
+    const [x, y] = this._options.projector.project(
+      feature.geometry.coordinates
+    );
+
+    marker.position.set(x, 0, -y);
+
+    this._options.eachPoint?.(feature);
+    return marker;
+  }
+
   private pointToMarker(feature: GeoJsonFeature<"Point">): CSS2DObject {
     const div = document.createElement("div");
-    div.innerHTML = `<img src="/quickdemo/harbor3d/markers/anchor.svg" style="width: 16px; height: 16px" />`;
+    div.className = " p-1 rounded text-white text-xs flex items-center gap-1";
+    div.style.cssText = `background: rgba(0,0,0,0.56)`;
+    div.innerHTML = `
+    <img src="/quickdemo/harbor3d/markers/anchor.svg" style="width: 16px; height: 16px" />
+    <span>${feature.properties.name}</span>
+    `;
+
     const marker = new CSS2DObject(div);
+
     const [x, y] = this._options.projector.project(
       feature.geometry.coordinates
     );
@@ -223,13 +271,45 @@ export class OSMGeoJson extends THREE.Object3D {
 
     const shape = new THREE.Shape(pts);
 
-    let color = 0xdedede;
-    if (feature.properties.leisure) color = 0x23de94;
-    else if (feature.properties.natural === "coastline") color = 0xe0e0d2;
+    // let color = 0xdedede;
+    // if (feature.properties.leisure) color = 0x23de94;
+    // else if (feature.properties.natural === "coastline") color = 0xe0e0d2;
+
+    const material = new THREE.ShaderMaterial({
+      precision: "mediump",
+      uniforms: {
+        map: { value: textLoader.load("/quickdemo/harbor3d/7546-v1.jpg") },
+        quantizationLevel: { value: 64.0 },
+      },
+      lights: false,
+      vertexShader: `
+          varying vec2 vPos;
+    
+          void main() {
+            vec4 pos = modelMatrix * vec4(position.xyz, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+            vPos = pos.xz;
+          }
+          `,
+      fragmentShader: `
+          uniform sampler2D map;
+          uniform float quantizationLevel;
+          varying vec2 vPos;
+          
+          void main() {
+            vec2 uv = mod(vPos, 2.0) / 2.0;
+            vec4 texel = texture2D(map, uv * 1.0);
+            vec4 quantizedColor = texel * 0.9;
+            gl_FragColor = vec4(quantizedColor.rgb, 1.0);
+          }
+          `,
+      side: THREE.BackSide,
+    });
 
     const mesh = new THREE.Mesh(
       new THREE.ShapeGeometry(shape),
-      new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, color })
+      material
+      // new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, color })
     );
 
     mesh.rotation.x = Math.PI / 2;
@@ -243,19 +323,23 @@ export class OSMGeoJson extends THREE.Object3D {
       return new THREE.Vector3(x, 0, -y);
     });
 
-    const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+    const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
 
     const width = 0.1;
     const roadShape = new THREE.Shape();
     roadShape.moveTo(0, -width / 2);
     roadShape.lineTo(0, width / 2);
 
+    const length = curve.getLength();
+    const steps = Math.max(Math.floor(length / 0.5), 2);
+    // console.log("LineString length:", length, "steps:", steps);
+
     // 3. Create the geometry.
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
-      steps: 300, // Number of segments for a smooth path
+      steps: steps, // Number of segments for a smooth path
       extrudePath: curve,
-      depth: 0,
-      bevelEnabled: true,
+      depth: 1,
+      bevelEnabled: false,
       bevelSegments: 12,
       bevelSize: 0.1,
       bevelThickness: 0.7,
@@ -289,9 +373,9 @@ export class OSMGeoJson extends THREE.Object3D {
 
     const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
 
-    const highwayType = highwayColors[feature.properties.highway];
+    const highwayTypeColor = highwayColors[feature.properties.highway];
 
-    if (highwayType === undefined) {
+    if (highwayTypeColor === undefined) {
       return null;
     }
 
@@ -303,10 +387,10 @@ export class OSMGeoJson extends THREE.Object3D {
         ? new THREE.LineDashedMaterial({
             dashSize: 0.1,
             gapSize: 0.1,
-            color: highwayType,
+            color: highwayTypeColor,
           })
         : new THREE.LineBasicMaterial({
-            color: highwayType,
+            color: highwayTypeColor,
           })
     );
 
@@ -330,10 +414,14 @@ export class OSMGeoJson extends THREE.Object3D {
         ? new THREE.LineDashedMaterial({
             dashSize: 0.1,
             gapSize: 0.2,
-            color: 0x000000,
+            color: 0xffffff,
+            depthTest: true,
+            depthWrite: false,
           })
         : new THREE.LineBasicMaterial({
-            color: 0x000000,
+            color: 0xffffff,
+            depthTest: true,
+            depthWrite: false,
           })
     );
   }

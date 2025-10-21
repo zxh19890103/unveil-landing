@@ -5,8 +5,10 @@ esbuild
   .build({
     entryPoints: [
       "./harbor3d/index.tsx",
+      "./harbor3d/index-version-2.tsx",
       "./military/index.ts",
       "./smart-rc/index.ts",
+      "./osm/index.tsx"
     ],
     // outfile: "./dist/out.js",
     outdir: "../_site/quickdemo",

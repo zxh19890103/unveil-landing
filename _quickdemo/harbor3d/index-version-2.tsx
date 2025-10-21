@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import * as THREE from "three";
 
 import "@/_shared/_three-ext.v.js";
-import { dayjs, geoMercator, ThreeJsSetup } from "@/_shared/index.js";
+import { geoMercator, ThreeJsSetup } from "@/_shared/index.js";
 import { Sky } from "three/addons/objects/Sky.js";
 import { Water } from "three/addons/objects/Water.js";
 import {
@@ -18,8 +18,17 @@ import Descriptions from "./html/Descriptions.js";
 import { textLoader } from "@/_shared/loader.js";
 import { OSMGeoJson } from "../osm/std/index.js";
 import { Truck } from "./Truck.class.js";
+import { UserInteractionDetector } from "@/_shared/UserInteractionDetector.class.js";
+import gsap from "gsap";
 
 type PierFour = `码头${1 | 2 | 3 | 4}`;
+
+type BackendDockingPlace =
+  | "深港1号位"
+  | "深港2号位"
+  | "普通停靠3号位"
+  | "普通停靠4号位"
+  | "散货停靠5号位";
 
 type RoadName =
   | "主路段"
@@ -64,6 +73,7 @@ namespace Data {
     amount: number;
     goodMaterialID: number;
     shortName: number;
+    imageUrl: string;
   }
 
   export interface Order {
@@ -73,6 +83,7 @@ namespace Data {
     distanceKM: number;
     weight: number;
     goodType: string;
+    originOrder: string;
   }
 
   export interface OrderWithDetails extends Order {
@@ -109,6 +120,7 @@ namespace Data {
      * 车牌
      */
     carNo: string;
+    targetDock: string;
   }
 
   export interface Action2 {
@@ -152,7 +164,7 @@ namespace Data {
      * details to tell clients which vessel and where to go
      * or, something else.
      */
-    details?: Action2Detail[];
+    detailList?: Action2Detail[];
   }
 
   interface Action2Detail {
@@ -160,7 +172,7 @@ namespace Data {
     shipVesselNo: string;
     shipVesselName: string;
     vesselDockingNo: string;
-    vesselDockingName: string;
+    vesselDockingName: BackendDockingPlace;
     /**
      * 1 - 靠泊
      * 2 - 离泊
@@ -243,7 +255,7 @@ namespace Data {
     /**
      * action for ship
      */
-    action3: Action2["details"]["0"];
+    action3: Action2["detailList"]["0"];
   }
 }
 
@@ -272,15 +284,19 @@ type VehicleState<T extends Data.VehicleStateType = Data.VehicleStateType> = {
   u: number;
   dir: 1 | -1;
   speed: number;
-  details: any[];
-  raw?: any;
+  shipOrders: Data.Order[];
+  details: Data.OrderDetailWithOrder[];
+  /**
+   * the raw data from api
+   */
+  raw?: T extends "car" ? Data.Car : Data.Ship;
 };
 
 const Apis = () => {
   async function LoadShipOrderData() {
     const data = await CallApi<Data.OrderWithDetails[]>(
       "http://8.140.53.90:8099/api/app/ship-order/ship-order-and-detail",
-      `[{"orderIds":"3","shipmentDate":"2025-09-19T00:00:00","originOrder":"K000250901","startPlace":"大连港","destination":"双D港","distanceKM":60.000000,"weight":30.000000,"containerNumber":"090012","goodType":"食品","status":"待确认","detailList":[{"shipOrderId":1,"idx":1,"carId":90012,"goodMaterialID":6,"shortName":"4","count":1000.000000,"price":3000.000000,"amount":9.000000,"containerNumber":"27000.000000","carNumber":null,"driverName":null,"lastModificationTime":null,"lastModifierId":null,"creationTime":"0001-01-01T00:00:00","creatorId":null,"id":3}],"lastModificationTime":null,"lastModifierId":null,"creationTime":"0001-01-01T00:00:00","creatorId":null,"id":1}]`
+      `[{"orderIds":"3","shipmentDate":"2025-09-19T00:00:00","originOrder":"K000250901","startPlace":"大连港","destination":"双D港","distanceKM":60.000000,"weight":30.000000,"containerNumber":"090012","goodType":"食品","status":"待确认","detailList":[{"shipOrderId":1,"idx":1,"carId":3,"goodMaterialID":6,"shortName":"4","count":1000.000000,"price":3000.000000,"amount":9.000000,"containerNumber":"27000.000000","carNumber":null,"driverName":null,"lastModificationTime":null,"lastModifierId":null,"creationTime":"0001-01-01T00:00:00","creatorId":null,"id":3}],"lastModificationTime":null,"lastModifierId":null,"creationTime":"0001-01-01T00:00:00","creatorId":null,"id":1}]`
     );
 
     const details: Data.OrderDetailWithOrder[] = [];
@@ -311,6 +327,7 @@ const Apis = () => {
         u: Math.random() * 0.6 + 0.1,
         dir: -1,
         speed: 0,
+        shipOrders: [],
         details: [],
       };
 
@@ -328,12 +345,12 @@ const Apis = () => {
   }
 
   async function LoadTidalVesselDocking() {
-    const data = await CallApi<Data.Paged<Data.Action2>>(
-      "http://8.140.53.90:8099/api/app/tidal-vessel-docking?Sorting=id&SkipCount=0&MaxResultCount=10",
+    const data = await CallApi<Data.Action2[]>(
+      "http://8.140.53.90:8099/api/app/tidal-vessel-docking/action-list-and-detail?Sorting=id&SkipCount=0&MaxResultCount=10",
       `{"totalCount":2,"items":[]}`
     );
 
-    return data.items;
+    return data;
   }
 
   async function LoadShips() {
@@ -346,6 +363,7 @@ const Apis = () => {
         u: 0.5,
         dir: -1,
         speed: 0,
+        shipOrders: [],
         details: [],
       },
       {
@@ -356,6 +374,7 @@ const Apis = () => {
         u: 0.7,
         dir: -1,
         speed: 0,
+        shipOrders: [],
         details: [],
       },
       {
@@ -366,6 +385,7 @@ const Apis = () => {
         u: 0.3,
         dir: -1,
         speed: 0,
+        shipOrders: [],
         details: [],
       },
       {
@@ -376,6 +396,7 @@ const Apis = () => {
         u: 0.8,
         dir: -1,
         speed: 0,
+        shipOrders: [],
         details: [],
       },
     ];
@@ -406,18 +427,21 @@ const Apis = () => {
 
         this.tasks.forEach((task) => {
           if (task.phase === "ready") {
-            if (task.runAtMs >= now) {
+            if (now >= task.runAtMs) {
               task.phase = "running";
               task.what = this.getTaskWhat(task);
 
               const tid = `${task.type}-${task.identity}`;
               SendMsg(`${task.type}-${task.identity}`, task);
-              console.log("senmsg", tid);
-
+              console.log("task processed, msg is sent.", tid);
               task.phase = "sent";
             } else {
-              task.phase = "timeout";
-              console.log("task timeout");
+              const diff = task.runAtMs - now;
+              console.log(
+                "task is waiting to run:",
+                `${task.type}-${task.identity}`,
+                this.durationFormat(diff)
+              );
             }
           }
         });
@@ -429,12 +453,25 @@ const Apis = () => {
       loop();
     }
 
-    private vesselDockingName2PierName: Record<string, PierFour> = {
-      码头1: "码头1",
-      码头2: "码头2",
-      码头3: "码头3",
-      码头4: "码头4",
-    };
+    private durationFormat(durMs: number) {
+      const totalSec = Math.ceil(durMs / 1000);
+      const days = Math.floor(totalSec / 86400);
+      const hours = Math.floor((totalSec % 86400) / 3600);
+      const mins = Math.floor((totalSec % 3600) / 60);
+
+      const parts: string[] = [];
+      if (days) parts.push(`${days} ${days === 1 ? "day" : "days"}`);
+      if (hours) parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+      if (mins) parts.push(`${mins} mins`);
+
+      if (parts.length === 0) {
+        parts.push(`${totalSec} sec${totalSec === 1 ? "" : "s"}`);
+      }
+
+      const formatted = parts.join(" ");
+
+      return formatted;
+    }
 
     private getTaskWhat(task: Data.VehicleTask) {
       let what: Data.AskVehicleTodoWhat = { type: "unknown" };
@@ -444,10 +481,7 @@ const Apis = () => {
         if (action.actionType === 1) {
           what = {
             type: "toPier",
-            /**
-             * @todo Where to go?
-             */
-            place: "码头2",
+            place: this.vesselDockingName2PierName[action.targetDock] ?? null,
             durationMs: task.durationToFinishMs,
           };
         } else if (action.actionType === 2) {
@@ -480,22 +514,32 @@ const Apis = () => {
     }
 
     push(action: Data.Action1) {
-      if (this.action1has[action.id]) return;
+      if (this.action1has[action.id]) {
+        console.log("[task push#1] skip existing action1", action.id);
+        return;
+      }
 
       const now = Date.now();
-      const actionTime = new Date(action.actionDateTime).getTime();
+      const actionTime = new Date(action.actionDateTime + "Z").getTime();
 
       console.log(
-        "[push1]",
-        "car action trigger after",
-        Math.floor((actionTime - now) / 1000) + "s"
+        "[task push #1] action Time (today):",
+        new Date(actionTime).toLocaleTimeString()
       );
 
       if (actionTime > now) {
+        console.log(
+          "[task push#1] ",
+          "car action trigger after",
+          Math.floor((actionTime - now) / 1000) + "s"
+        );
+
+        const isMovingReq = action.actionType === 1 || action.actionType === 5;
+
         this.tasks.push({
           addedAtMs: now,
-          durationToFinishMs: 250 * 1000,
-          runAtMs: actionTime,
+          durationToFinishMs: isMovingReq ? 25 * 1000 : 0,
+          runAtMs: isMovingReq ? actionTime : actionTime,
           type: "car",
           identity: action.correspondingRange === 2 ? "" + action.carId : "all",
           what: null,
@@ -504,28 +548,35 @@ const Apis = () => {
           action2: null,
           action3: null,
         });
+      } else {
+        console.log("[task push#1] ", "car action ignored for past time");
       }
 
       this.action1has[action.id] = true;
     }
 
     push2(action: Data.Action2) {
-      if (this.action2has[action.id]) return;
+      if (this.action2has[action.id]) {
+        console.log("[task push #2] skip existing action2", action.id);
+        return;
+      }
 
       const now = Date.now();
-      const actionTime = new Date(action.startActionDateTime).getTime();
-
-      console.log(
-        "[push2]",
-        "ship action trigger after",
-        Math.floor((actionTime - now) / 1000) + "s"
-      );
+      const actionTime = new Date(action.startActionDateTime + "Z").getTime();
 
       if (actionTime > now) {
+        console.log(
+          "[task push #3]",
+          "tidal action trigger after",
+          Math.floor((actionTime - now) / 1000) + "s"
+        );
+
+        const threehours = 3 * 60 * 60 * 1000;
+
         this.tasks.push({
           addedAtMs: now,
           durationToFinishMs: 0,
-          runAtMs: actionTime,
+          runAtMs: actionTime - threehours,
           type: "msg",
           identity: null,
           what: null,
@@ -536,15 +587,34 @@ const Apis = () => {
         });
 
         // details
-        if (action.details && action.details.length > 0) {
-          action.details.forEach((action3) => {
-            const duration =
-              new Date(action3.recommendedDockingTime).getTime() - actionTime;
+        if (action.detailList?.length > 0) {
+          action.detailList.forEach((action3) => {
+            const dockingTime = new Date(
+              action3.recommendedDockingTime + "Z"
+            ).getTime();
+
+            const dockingName = action3.vesselDockingName;
+
+            // oh, my god! remove all the blank spaces.
+            action3.vesselDockingName = dockingName.replaceAll(
+              " ",
+              ""
+            ) as BackendDockingPlace;
+
+            console.log(
+              "[task push #2]",
+              "ship action trigger after",
+              Math.floor((actionTime - now) / 1000) + "s"
+            );
+
+            const isDocking = action3.actionType === 1;
 
             this.tasks.push({
               addedAtMs: now,
-              durationToFinishMs: duration,
-              runAtMs: actionTime,
+              durationToFinishMs: isDocking
+                ? Math.max(dockingTime - actionTime, 10 * 1000)
+                : 10 * 1000,
+              runAtMs: isDocking ? actionTime : dockingTime,
               type: "ship",
               identity: action3.shipVesselName,
               what: null,
@@ -555,6 +625,8 @@ const Apis = () => {
             });
           });
         }
+      } else {
+        console.log("[task push#2] ", "ship action ignored for past time");
       }
 
       this.action2has[action.id] = true;
@@ -573,8 +645,6 @@ const Apis = () => {
       } else {
         this.push(action as Data.Action1);
       }
-
-      console.log(action);
     }
 
     private action2action = {
@@ -585,11 +655,24 @@ const Apis = () => {
       leaving: 5,
     };
 
-    private place2place: Record<string, PierFour> = {
-      1: "码头1",
-      2: "码头2",
-      3: "码头3",
-      4: "码头4",
+    private place2PierName: Record<BackendDockingPlace, PierFour> = {
+      深港1号位: "码头3",
+      深港2号位: "码头2",
+      普通停靠3号位: "码头1",
+      普通停靠4号位: "码头4",
+      散货停靠5号位: "码头4",
+    };
+
+    private vesselDockingName2PierName: Record<string, PierFour> = {
+      深港1号位: "码头3",
+      深港2号位: "码头2",
+      普通停靠3号位: "码头1",
+      普通停靠4号位: "码头4",
+      散货停靠5号位: "码头4",
+      码头1: "码头1",
+      码头2: "码头2",
+      码头3: "码头3",
+      码头4: "码头4",
     };
 
     /**
@@ -626,6 +709,7 @@ const Apis = () => {
             remark: "",
             carId: +identity,
             carNo: "",
+            targetDock: this.place2PierName[place],
           };
 
           return action1;
@@ -634,8 +718,8 @@ const Apis = () => {
             id: this.__action_id++,
             shipVesselNo: identity,
             shipVesselName: identity,
-            vesselDockingNo: this.place2place[place],
-            vesselDockingName: this.place2place[place],
+            vesselDockingNo: this.place2PierName[place],
+            vesselDockingName: this.place2PierName[place],
             actionType: action === "docking" ? 1 : 2,
             recommendedDockingTime: this.__calcAt(now, actionDelay, actionDur),
             description: "--",
@@ -652,7 +736,7 @@ const Apis = () => {
             description: "--",
             recommendedDockingTime: "",
             estimateTime: 0,
-            details: [action3],
+            detailList: [action3],
           };
 
           return action2;
@@ -673,7 +757,7 @@ const Apis = () => {
           description: text,
           recommendedDockingTime: "",
           estimateTime: 0,
-          details: [],
+          detailList: [],
         };
 
         return action2;
@@ -702,22 +786,28 @@ const Apis = () => {
     let counter = 0;
 
     const next = async () => {
-      const actions1 = await LoadCarActions();
-      const actions2 = await LoadTidalVesselDocking();
+      const [actions1, actions2] = await Promise.allSettled([
+        LoadCarActions(),
+        LoadTidalVesselDocking(),
+      ]);
 
-      actions1.forEach((action) => {
-        actionManager.push(action);
-      });
+      if (actions1.status === "fulfilled") {
+        actions1.value?.forEach?.((action) => {
+          actionManager.push(action);
+        });
+      }
 
-      actions2.forEach((action) => {
-        actionManager.push2(action);
-      });
+      if (actions2.status === "fulfilled") {
+        actions2.value?.forEach?.((action) => {
+          actionManager.push2(action);
+        });
+      }
 
       if (!actionManager.isRunning) {
         actionManager.run();
       }
 
-      console.log("monitor tick...", counter++);
+      console.log("[🎭] monitor tick...", counter++);
       setTimeout(next, interval);
     };
 
@@ -775,13 +865,25 @@ const Apis = () => {
 
   let onMessage: (vehicle: VehicleState, todo: Data.AskVehicleTodoWhat) => void;
 
+  // put details on cars and create info tsx
   const loadDetails = async () => {
     liveData.details = await LoadShipOrderData();
-    // put details on cars and create info tsx
+
+    liveData.cars.forEach((c) => {
+      c.details = [];
+      c.shipOrders = [];
+    });
+
     liveData.details.forEach((d) => {
-      const car = liveData.cars.find((c) => c.id === d.carId);
+      // const car = liveData.cars.find((c) => c.id === d.carId);
+      const car = liveData.cars[0]; // temp use the first car
       if (!car) return;
+
       car.details.push(d);
+
+      const shipOrderExists = car.shipOrders.indexOf(d.shipOrder);
+      if (shipOrderExists >= 0) return;
+      car.shipOrders.push(d.shipOrder);
     });
   };
 
@@ -823,25 +925,62 @@ const threejsContainer = document.querySelector(
 
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
+threeJs.camera.position.set(0, 34, 0);
 
-threeJs.addCSS2DRenderer();
+let cameraIsMoving = false;
+
+function MoveCameraToStart() {
+  gsap
+    .to(threeJs.activeCamera.position, {
+      y: 8,
+      ease: "power3.inOut",
+      duration: 10,
+      onStart: () => {
+        cameraIsMoving = true;
+      },
+      onComplete: () => {
+        cameraIsMoving = false;
+      },
+    })
+    .play();
+}
+
+const rendererMapMarker = threeJs.addCSS2DRenderer();
 
 const { scene: world } = threeJs;
+
 const staticWorld = threeJs.createWorld();
-const rendererTiles = threeJs.addWebGLRenderer("static", threejsContainer, {
+const staticMapWorld = threeJs.createWorld();
+
+const rendererTiles = threeJs.addWebGLRenderer("background", threejsContainer, {
   animated: false,
   antialias: true,
   zIndex: 1,
 });
 
-world.addEventListener("click", (e) => {
-  console.log("clicked", e);
+const rendererMap = threeJs.addWebGLRenderer("map", threejsContainer, {
+  animated: false,
+  antialias: true,
+  zIndex: 1,
+});
+
+let shouldStaticMapRender = false;
+
+new UserInteractionDetector(3000, (active) => {
+  console.log("user interacting.", active);
+  shouldStaticMapRender = active;
 });
 
 const renderRendererTiles = () => {
   rendererTiles.render(staticWorld, threeJs.activeCamera);
+
+  if (cameraIsMoving || shouldStaticMapRender || appState.following !== null) {
+    rendererMap.render(staticMapWorld, threeJs.activeCamera);
+    rendererMapMarker.render(staticMapWorld, threeJs.activeCamera);
+  }
 };
 
+// the fisrt render.
 threeJs.onAnimate(renderRendererTiles);
 
 //#region lights
@@ -849,8 +988,11 @@ threeJs.onAnimate(renderRendererTiles);
   const dirLight = new THREE.DirectionalLight(0xffffff, 2.2);
   const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
   dirLight.position.set(0, 100, 0);
+
   world.add(dirLight, ambLight);
+
   staticWorld.add(dirLight.clone(), ambLight.clone());
+  staticMapWorld.add(dirLight.clone(), ambLight.clone());
 }
 //#endregion
 
@@ -966,7 +1108,12 @@ threeJs.onAnimate(renderRendererTiles);
     }
   );
 
-  world.add(coastlinesObj3, buildlingsObj3, roadsObj3, leisureWaysObj3);
+  staticMapWorld.add(
+    coastlinesObj3,
+    buildlingsObj3,
+    roadsObj3,
+    leisureWaysObj3
+  );
 
   type Way = {
     curve: THREE.CatmullRomCurve3;
@@ -1041,21 +1188,33 @@ threeJs.onAnimate(renderRendererTiles);
 
   const calcWayLength = (way: Way) => {
     let dist = 0;
+    eachWayNode(way, (w) => {
+      dist += w.curve.getLength();
+    });
+    return dist;
+  };
+
+  const eachWayNode = (way: Way, func: (way: Way) => void) => {
     let h = way;
     while (h) {
-      dist += h.curve.getLength();
+      func(h);
       h = h.next;
     }
-    return dist;
   };
 
   // use data load
 
   await apis.init();
 
-  type VehicleStateUITogether = {
-    state: VehicleState<"car" | "ship">;
-    speedFactor?: number;
+  type VehicleStateUITogether<
+    T extends Data.VehicleStateType = Data.VehicleStateType
+  > = {
+    /**
+     * the total distance on way set.
+     */
+    distance?: number;
+    docking?: "docking" | "docked" | "leaving";
+    state: VehicleState<T>;
     duration?: number;
     paused?: boolean;
     way?: Way;
@@ -1078,7 +1237,7 @@ threeJs.onAnimate(renderRendererTiles);
       if (vehicle.paused || vehicle.state.speed === 0) continue;
 
       if (MoveVehicle(vehicle)) {
-        console.log(vehicle.state.name, "is moving...");
+        // console.log(vehicle.state.name, "is moving...");
       } else {
         vehicle.wayHead = vehicle.wayHead.next;
 
@@ -1087,7 +1246,10 @@ threeJs.onAnimate(renderRendererTiles);
           console.log("next road:", way.name);
           setWayHead(vehicle, way);
         } else {
-          OnVehicleArrival(vehicle);
+          if (vehicle.docking === "docking") {
+            vehicle.docking = "docked";
+          }
+          OnVehicleArrival(vehicle, vehicle.docking === "docked");
           console.log(vehicle.state.name, "stopped!");
         }
       }
@@ -1126,32 +1288,42 @@ threeJs.onAnimate(renderRendererTiles);
       case "toPier": {
         if (vehicle.type === "ship") {
           const way = findShipWay(what.place);
-          console.log("find way", way);
+          console.log("[find way] for ship", way);
           if (!way) break;
           stateUIPair.duration = what.durationMs;
+          stateUIPair.docking = "docking";
           setWay(stateUIPair, way);
           stateUIPair.paused = false;
         } else if (vehicle.type === "car") {
           const way = findTruckWay(vehicle.road, what.place);
+          console.log("[find way] for truck", way);
           if (!way) break;
           stateUIPair.duration = what.durationMs;
+          stateUIPair.docking = "docking";
           setWay(stateUIPair, way);
           stateUIPair.paused = false;
         }
         break;
       }
       case "leavePier": {
+        if (stateUIPair.docking !== "docked") {
+          console.warn("the vehicle is not docked....");
+          break;
+        }
+
         const way = reverseWay(stateUIPair.way);
         setWay(stateUIPair, way);
         stateUIPair.paused = false;
+        stateUIPair.docking = "leaving";
+        OnVehicleLeave(stateUIPair);
         break;
       }
       case "alert": {
-        appState.warnMsg = `潮汐来了，请注意！`;
+        appState.warnMsg = what.message;
         break;
       }
       case "danger": {
-        appState.warnMsg = `车辆 ${vehicle.name} 装载了危化品！`;
+        stateUIPair.ui.showDanger();
         break;
       }
     }
@@ -1194,8 +1366,7 @@ threeJs.onAnimate(renderRendererTiles);
 
   function setWay(vehicle: VehicleStateUITogether, way: Way) {
     vehicle.way = way;
-    vehicle.speedFactor = (80 * calcWayLength(way)) / vehicle.duration;
-    console.log("vehicle speed factor: ", vehicle.speedFactor);
+    vehicle.distance = calcWayLength(way);
     setWayHead(vehicle, way);
   }
 
@@ -1212,7 +1383,10 @@ threeJs.onAnimate(renderRendererTiles);
     vehicle.state.dir = way.dir;
 
     const dist = __roads__[way.name].getLength();
-    vehicle.state.speed = vehicle.speedFactor / dist;
+    const propotion = dist / vehicle.distance;
+    const time = vehicle.duration * propotion; // ms
+    // 1000/60 ms per frame
+    vehicle.state.speed = 16.67 / time;
   }
 
   function MoveVehicle(vehicle: VehicleStateUITogether) {
@@ -1236,8 +1410,15 @@ threeJs.onAnimate(renderRendererTiles);
     return true;
   }
 
-  function OnVehicleArrival(vehicle: VehicleStateUITogether) {
+  function OnVehicleLeave(vehicle: VehicleStateUITogether) {
     if (vehicle.state.type === "ship") {
+      const ship = vehicle.ui as Ship;
+      ship.stopLoading();
+    }
+  }
+
+  function OnVehicleArrival(vehicle: VehicleStateUITogether, docked: boolean) {
+    if (vehicle.state.type === "ship" && docked) {
       const ship = vehicle.ui as Ship;
       ship.playLoading("loading");
     }
@@ -1245,12 +1426,14 @@ threeJs.onAnimate(renderRendererTiles);
 
   function CreateShipObj3(name: string) {
     const ship = new Ship(name);
+    // @ts-ignore
+    ship.$$displayName = name;
 
-    ship.info<Ship>(({ data }) => {
+    ship.info<Ship>(({}) => {
       return <Descriptions items={[{ value: name, label: "名稱" }]} />;
     });
 
-    ship.popup<Ship>(({ data }) => {
+    ship.popup<Ship>(({}) => {
       return <Descriptions items={[{ value: name, label: "名稱" }]} compact />;
     });
 
@@ -1263,25 +1446,111 @@ threeJs.onAnimate(renderRendererTiles);
 
   function CreateCarObj3(name: string) {
     const truck = new Truck(name);
+    // @ts-ignore
+    truck.$$displayName = name;
 
-    truck.info<Truck>(({ data }) => {
+    truck.info<Truck>(({}) => {
       const vehichle = vehicles.find((x) => x.ui === truck);
-      return <div>{JSON.stringify(vehichle?.state.raw)}</div>;
+
+      if (!vehichle) return <div>No Data</div>;
+
+      const { state } = vehichle as VehicleStateUITogether<"car">;
+
+      return (
+        <div className=" text-sm flex flex-col gap-1">
+          <div>
+            <b>司机：</b> {state.raw.driver}
+          </div>
+          <div>
+            <b>车牌号：</b> {state.raw.carNumber}
+          </div>
+          <div>
+            <details>
+              <summary className=" cursor-pointer">
+                货物明细 ({state.details.length})
+              </summary>
+              <table className=" rounded-sm overflow-hidden text-xs w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className=" border-r border-b border-slate-700 p-1 text-left">
+                      集装箱
+                    </th>
+                    <th className=" border-r border-b  border-slate-700 p-1 text-left">
+                      运单
+                    </th>
+                    <th className="  border-r border-b p-1 border-slate-700  text-left">
+                      货物名称
+                    </th>
+                    <th className="  border-r border-b  border-slate-700 p-1 text-left">
+                      数量
+                    </th>
+                    <th className=" border-b p-1 border-slate-700 text-left">
+                      图片
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {state.details.map((d) => (
+                    <tr key={d.id}>
+                      <td className="  border-r border-b  border-slate-700 p-1">
+                        {d.containerNumber}
+                      </td>
+                      <td className="  border-r border-b  border-slate-700 p-1">
+                        {d.shipOrder?.originOrder}
+                      </td>
+                      <td className="  border-r border-b  border-slate-700 p-1">
+                        {d.shortName}
+                      </td>
+                      <td className="  border-r border-b  border-slate-700 p-1">
+                        {d.amount} x {d.count}
+                      </td>
+                      <td className="  border-b  border-slate-700  p-1">
+                        <a
+                          className=" underline"
+                          href={d.imageUrl}
+                          target="_blank"
+                        >
+                          查看
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
+          </div>
+        </div>
+      );
     });
 
-    truck.popup<Truck>(({ data }) => {
+    truck.popup<Truck>(({}) => {
       const vehichle = vehicles.find((x) => x.ui === truck);
+
+      if (!vehichle) return <div>No Data</div>;
+
+      const { state } = vehichle as VehicleStateUITogether<"car">;
+
       return (
         <div>
           <Descriptions
-            items={Object.entries(vehichle?.state.raw ?? {}).map(
-              ([name, value]) => {
-                return {
-                  label: name,
-                  value: value as string,
-                };
-              }
-            )}
+            items={[
+              {
+                value: state.raw.driver,
+                label: "司机",
+              },
+              {
+                value: state.raw.carNumber,
+                label: "车牌号",
+              },
+              {
+                value: state.shipOrders.map((o) => o.originOrder).join(", "),
+                label: "运单",
+              },
+              {
+                value: state.details.length,
+                label: "货物明细",
+              },
+            ]}
           />
         </div>
       );
@@ -1313,6 +1582,8 @@ threeJs.onAnimate(renderRendererTiles);
 
     obj3.lookAt(reusable_pos);
   }
+
+  MoveCameraToStart();
 })();
 
 threeJs.startAnimation();
@@ -1326,8 +1597,8 @@ threeJs.addEventListener("birdEye", (e) => {
   }
 });
 
-const Crs = new THREE.AxesHelper(1);
-world.add(Crs);
+// const Crs = new THREE.AxesHelper(1);
+// world.add(Crs);
 
 {
   const interactive = createInteractive(threeJs, threejsContainer);

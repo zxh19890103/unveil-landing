@@ -8,8 +8,8 @@ const ObjTypes = {
   ship: "貨船",
   cargo: "集裝箱",
   stockyard: "堆場",
-  undefined: "為定義",
-  null: "為設定",
+  undefined: "未定義",
+  null: "未設定",
 };
 
 export const ObjectsPanel = () => {
@@ -17,20 +17,12 @@ export const ObjectsPanel = () => {
 
   const columns: SimpleListColDef<Object3D>[] = [
     {
-      title: "類型",
+      title: "名称",
       key: "$$type",
       render: (item) => {
-        return ObjTypes[item.$$type] + `#${item.id}`;
+        return ObjTypes[item.$$type] + `-${item.$$displayName}`;
       },
-      width: "20%",
-    },
-    {
-      title: "狀態",
-      key: "status",
-      render: (item) => {
-        return item.userData["status"];
-      },
-      width: "15%",
+      width: "120px",
     },
   ];
 

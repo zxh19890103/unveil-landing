@@ -129,7 +129,6 @@ export const createState = <O extends {}, C extends {}>(
   );
 
   const computedCache = {};
-  console.log("computedMeta", computedMeta);
 
   let currentComputing: string = null;
 

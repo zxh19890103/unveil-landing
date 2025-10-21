@@ -287,9 +287,9 @@ export const createSelector = (context: WithActiveCamera) => {
   let current: THREE.Object3D;
 
   const hightlight = new THREE.Mesh(
-    new THREE.CircleGeometry(1.1),
+    new THREE.CircleGeometry(3.1),
     new THREE.MeshBasicMaterial({
-      color: 0xdf2a32,
+      color: 0xea1201,
       transparent: true,
       opacity: 0.35,
       depthTest: false,
