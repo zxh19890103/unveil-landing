@@ -106,6 +106,8 @@ const PersipectiveOptions = () => {
   return (
     <div>
       <ul className=" Opts w-24" onClick={onItemClick}>
+        <li itemID="topview">俯视</li>
+        <li itemID="default">默认</li>
         <li itemID="top">正上</li>
         <li itemID="left">左側</li>
         <li itemID="right">右側</li>

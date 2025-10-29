@@ -6,7 +6,13 @@ import type {
   ShipmentOrderDetail,
 } from "./data/types.js";
 
-export type Persipective = "top" | "left" | "right" | "back" | "front";
+export type Persipective =
+  | "top"
+  | "left"
+  | "right"
+  | "back"
+  | "front"
+  | "topview";
 
 type State = {
   loading: boolean;

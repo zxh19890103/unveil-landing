@@ -40,6 +40,7 @@ const App = () => {
       <Tooltips />
       <Popup />
       <Loading />
+      <DataLoading />
     </>
   );
 };
@@ -91,6 +92,20 @@ const ExecuteButton = memo(() => {
     </button>
   );
 });
+
+const DataLoading = () => {
+  appState.use("/loading");
+
+  if (appState.loading) {
+    return (
+      <div className=" w-screen h-screen fixed top-0 left-0 bg-slate-800/65 text-white flex items-center justify-center">
+        Loading....
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const Loading = () => {
   const [state, setState] = useState({ loaded: 0, total: 0 });

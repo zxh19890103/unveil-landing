@@ -26,7 +26,7 @@ export class Truck extends ModelObj {
     super("./generic_truck/scene.gltf", label, 0x123212, {
       offset: [0, 0, 0],
       rotation: [0, -1, 0],
-      scaleFactor: 0.001,
+      scaleFactor: 0.0022,
       scaleFactorToSee: 0.004,
       visibleDistance: 34,
     });

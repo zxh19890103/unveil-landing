@@ -20,6 +20,7 @@ import { OSMGeoJson } from "../osm/std/index.js";
 import { Truck } from "./Truck.class.js";
 import { UserInteractionDetector } from "@/_shared/UserInteractionDetector.class.js";
 import gsap from "gsap";
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 type PierFour = `码头${1 | 2 | 3 | 4}`;
 
@@ -520,7 +521,7 @@ const Apis = () => {
       }
 
       const now = Date.now();
-      const actionTime = new Date(action.actionDateTime + "Z").getTime();
+      const actionTime = new Date(action.actionDateTime).getTime();
 
       console.log(
         "[task push #1] action Time (today):",
@@ -538,7 +539,7 @@ const Apis = () => {
 
         this.tasks.push({
           addedAtMs: now,
-          durationToFinishMs: isMovingReq ? 25 * 1000 : 0,
+          durationToFinishMs: isMovingReq ? 60 * 1000 : 0,
           runAtMs: isMovingReq ? actionTime : actionTime,
           type: "car",
           identity: action.correspondingRange === 2 ? "" + action.carId : "all",
@@ -562,9 +563,11 @@ const Apis = () => {
       }
 
       const now = Date.now();
-      const actionTime = new Date(action.startActionDateTime + "Z").getTime();
+      const actionTime = new Date(action.startActionDateTime).getTime();
 
-      if (actionTime > now) {
+      const onehour = 1 * 60 * 60 * 1000;
+
+      if (actionTime + onehour > now) {
         console.log(
           "[task push #3]",
           "tidal action trigger after",
@@ -590,43 +593,48 @@ const Apis = () => {
         if (action.detailList?.length > 0) {
           action.detailList.forEach((action3) => {
             const dockingTime = new Date(
-              action3.recommendedDockingTime + "Z"
+              action3.recommendedDockingTime
             ).getTime();
 
-            const dockingName = action3.vesselDockingName;
+            if (dockingTime > now) {
+              const dockingName = action3.vesselDockingName;
 
-            // oh, my god! remove all the blank spaces.
-            action3.vesselDockingName = dockingName.replaceAll(
-              " ",
-              ""
-            ) as BackendDockingPlace;
+              // oh, my god! remove all the blank spaces.
+              action3.vesselDockingName = dockingName.replaceAll(
+                " ",
+                ""
+              ) as BackendDockingPlace;
 
-            console.log(
-              "[task push #2]",
-              "ship action trigger after",
-              Math.floor((actionTime - now) / 1000) + "s"
-            );
+              console.log(
+                "[task push #2]",
+                "ship action trigger after",
+                Math.floor((actionTime - now) / 1000) + "s"
+              );
 
-            const isDocking = action3.actionType === 1;
+              const isDocking = action3.actionType === 1;
 
-            this.tasks.push({
-              addedAtMs: now,
-              durationToFinishMs: isDocking
-                ? Math.max(dockingTime - actionTime, 10 * 1000)
-                : 10 * 1000,
-              runAtMs: isDocking ? actionTime : dockingTime,
-              type: "ship",
-              identity: action3.shipVesselName,
-              what: null,
-              phase: "ready",
-              action2: null,
-              action1: null,
-              action3: action3,
-            });
+              this.tasks.push({
+                addedAtMs: now,
+                durationToFinishMs: 120 * 1000,
+                runAtMs: isDocking ? dockingTime : dockingTime,
+                type: "ship",
+                identity: action3.shipVesselName,
+                what: null,
+                phase: "ready",
+                action2: null,
+                action1: null,
+                action3: action3,
+              });
+            } else {
+              console.log(
+                "[task push#2] ",
+                "ship action ignored for past time"
+              );
+            }
           });
         }
       } else {
-        console.log("[task push#2] ", "ship action ignored for past time");
+        console.log("[task push#3] ", "tidal action ignored for past time");
       }
 
       this.action2has[action.id] = true;
@@ -925,25 +933,54 @@ const threejsContainer = document.querySelector(
 
 const threeJs = new ThreeJsSetup(threejsContainer, 75);
 threeJs.setupControls();
-threeJs.camera.position.set(0, 34, 0);
+threeJs.camera.position.set(0, 36, 0);
 
 let cameraIsMoving = false;
 
-function MoveCameraToStart() {
-  gsap
-    .to(threeJs.activeCamera.position, {
-      y: 8,
+function MoveCameraToStart(s = 10) {
+  const toPos = [-0.3069527653108622, 2.8388682244405175, 7.473058758318586];
+  const tl = gsap.timeline();
+
+  tl.eventCallback("onStart", () => {
+    console.log("📷 cam is moving");
+    cameraIsMoving = true;
+  });
+
+  tl.eventCallback("onComplete", () => {
+    console.log("📷 cam moving stopped");
+    cameraIsMoving = false;
+  });
+
+  const to = new THREE.Quaternion(
+    -0.18035045777699726,
+    -0.02018761969426093,
+    -0.0037023489201679595,
+    0.9833882575072681
+  );
+
+  tl.to(threeJs.activeCamera.position, {
+    x: toPos[0],
+    y: toPos[1],
+    z: toPos[2],
+    ease: "power3.inOut",
+    duration: s,
+  }).to(
+    threeJs.activeCamera.quaternion,
+    {
+      x: to.x,
+      y: to.y,
+      z: to.z,
+      w: to.w,
       ease: "power3.inOut",
-      duration: 10,
-      onStart: () => {
-        cameraIsMoving = true;
-      },
-      onComplete: () => {
-        cameraIsMoving = false;
-      },
-    })
-    .play();
+      duration: s,
+    },
+    "+1"
+  );
+
+  tl.play();
 }
+
+// window["__camera__"] = threeJs.camera;
 
 const rendererMapMarker = threeJs.addCSS2DRenderer();
 
@@ -1055,6 +1092,13 @@ threeJs.onAnimate(renderRendererTiles);
 // Map
 
 (async () => {
+  // use data load
+  appState.loading = true;
+
+  await apis.init();
+
+  appState.loading = false;
+
   const scale = 600;
 
   const mercator = geoMercator(
@@ -1201,10 +1245,6 @@ threeJs.onAnimate(renderRendererTiles);
       h = h.next;
     }
   };
-
-  // use data load
-
-  await apis.init();
 
   type VehicleStateUITogether<
     T extends Data.VehicleStateType = Data.VehicleStateType
@@ -1616,7 +1656,26 @@ threeJs.addEventListener("birdEye", (e) => {
   const follower = createFollowing(threeJs);
 
   appState.effect("/persipective", (val) => {
-    follower.persipective(val);
+    if (val === "topview") {
+      if (appState.following) {
+        follower.unfollow();
+      }
+      setTimeout(() => {
+        gsap
+          .to(threeJs.activeCamera.position, {
+            x: 0,
+            y: 30,
+            z: 0,
+            ease: "power1.in",
+            duration: 3,
+          })
+          .play();
+      }, 0);
+    } else if (val === "default") {
+      MoveCameraToStart(3);
+    } else {
+      follower.persipective(val);
+    }
   });
 
   appState.effect("/following", (obj) => {
