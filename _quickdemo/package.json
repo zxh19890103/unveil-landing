@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit && node build.js",
+    "togeojson": "node ./30days-map-challenge-shared/tools/togeojson.js",
     "dev": "node dev.js"
   },
   "devDependencies": {

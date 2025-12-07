@@ -201,7 +201,7 @@ export class ThreeJsSetup
     const renderer = new THREE.WebGLRenderer(options);
 
     renderer.setClearColor(0xffffff);
-    renderer.setClearAlpha(0);
+    renderer.setClearAlpha(1);
 
     renderer.setPixelRatio(window.devicePixelRatio);
     // Set initial size based on the specific containerElement's dimensions

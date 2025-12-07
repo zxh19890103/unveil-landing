@@ -1,5 +1,13 @@
 export default {
-  projects: ["_shared", "samrt-rc", "military", "harbor3d", "osm"],
+  projects: [
+    "_shared",
+    "samrt-rc",
+    "military",
+    "harbor3d",
+    "30days-map-challenge-shared",
+    "30days-map-challenge-8-urban",
+    "osm",
+  ],
   importmaps: {
     imports: {
       three: "/assets/jslibs/three/three.module.js",
