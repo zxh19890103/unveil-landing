@@ -58,9 +58,17 @@ export const getEarthRadiusOnLat = (lat: number) => {
   return R2 - DR21 * Math.pow(Math.sin(lat * DEG2RAD), 2);
 };
 
-export const latlngToSphere = ({ lat, lon }: { lat: number; lon: number }) => {
+export const latlngToSphere = ({
+  lat,
+  lon,
+  lng,
+}: {
+  lng?: number;
+  lat: number;
+  lon?: number;
+}) => {
   const latRad = lat * DEG2RAD;
-  const lngRad = lon * DEG2RAD;
+  const lngRad = (lon ?? lng) * DEG2RAD;
 
   const R = getEarthRadiusOnLat(lat);
   const r = R * Math.cos(latRad);
@@ -128,6 +136,7 @@ export function pixelsPerMeter(
   const fovRad = camera.fov * DEG2RAD;
   const r = getEarthRadiusOnLat(lat);
   const heightInMeters = camera.position.length() - r;
+  console.log(heightInMeters);
   const visibleWorldHeight = 2 * heightInMeters * Math.tan(fovRad / 2);
   return screenHeightPx / visibleWorldHeight;
 }
@@ -167,11 +176,15 @@ export function getZoomScale(z: number) {
 export function getTileZoomLevel(
   ppm: number,
   lat: number,
-  adjustment: number = 0
+  adjustment: number = 0,
+  max = 19
 ) {
   const resolution = 1 / ppm;
-  const zoom = Math.round(resolutionToZoom(resolution, lat));
-  return Math.max(0, Math.min(zoom, 19) + adjustment);
+  let zoom = Math.round(resolutionToZoom(resolution, lat));
+  zoom = Math.min(max, Math.max(zoom, 0));
+  zoom += adjustment;
+  zoom = Math.min(max, Math.max(zoom, 0));
+  return zoom;
 }
 
 type Camera = {

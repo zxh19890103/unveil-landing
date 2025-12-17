@@ -5,6 +5,9 @@ import fs from "node:fs";
 import chokidar from "chokidar";
 import { Transform } from "node:stream";
 import config from "./_config.js";
+import * as osmroute from "./dev.osm.js";
+import * as demroute from "./dev.dem.js";
+import * as texroute from "./dev.texture.js";
 
 const PORT = 3003;
 const allowedOrigin = "*";
@@ -73,8 +76,18 @@ function importRewriteTransformer(rewriteFn) {
 }
 
 // Compile TS file with transformer, return JS code string
-async function compileTsFile(filePath, rewriteFn) {
-  const program = ts.createProgram([filePath], compilerOptions);
+async function compileTsFile(filePath, rewriteFn, config = null) {
+  const tsCfg = {
+    ...compilerOptions,
+    ...config,
+  };
+
+  if (config) {
+  }
+  console.log(tsCfg.rootDir, filePath);
+
+  const program = ts.createProgram([filePath], tsCfg);
+
   const sourceFile = program.getSourceFile(filePath);
   if (!sourceFile) throw new Error(`File not found: ${filePath}`);
 
@@ -151,15 +164,6 @@ watcher
   .on("change", onSourceChanged)
   .on("unlink", onSourceChanged);
 
-function getUnpackFile(folder, pkgname, exportDefault) {
-  const folderpath = path.join(ROOT_DIR, folder);
-  const modulepath = path.join(folderpath, "node_modules", pkgname);
-  const pkgjsonpath = path.join(modulepath, `package.json`);
-  const json = JSON.parse(fs.readFileSync(pkgjsonpath, { encoding: "utf8" }));
-  const unpkgfile = path.join(modulepath, json.unpkg);
-  return fs.createReadStream(unpkgfile, { encoding: "utf-8" });
-}
-
 const sseReqClients = new Set();
 
 const notifySseReqClients = (type) => {
@@ -189,9 +193,7 @@ const server = http.createServer(async (req, res) => {
       `
     );
     return;
-  }
-
-  if (req.url === "/events") {
+  } else if (req.url === "/events") {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -203,21 +205,41 @@ const server = http.createServer(async (req, res) => {
       sseReqClients.delete(res);
     });
     return;
+  } else if (texroute.route.test(req.url)) {
+    texroute.handler(req, res);
+    return;
+  } else if (osmroute.route.test(req.url)) {
+    osmroute.handler(req, res);
+    return;
+  } else if (demroute.route.test(req.url)) {
+    demroute.handler(req, res);
+    return;
   }
 
+  // default: ts and js
   try {
     if (/\$npm/.test(req.url)) {
       // $npm/three-geojson-geometry
-      const [, folder, pkg] = /^\/(.+)\$npm\/(.+)$/.exec(req.url);
-      const js = getUnpackFile(folder, pkg);
+      const [, pkg] = /^\/\$npm\/(.+)\.js$/.exec(req.url);
+      // console.log(folder, pkg)
+      // const js = getUnpackFile(folder, pkg);
       res.setHeader("Content-Type", "application/javascript");
-      js.pipe(
-        wrapStream({
-          prefix:
-            "// hahah \nimport * as THREE from \"three\"; \n globalThis['THREE'] = THREE;\n",
-          suffix: "\n \n export default globalThis['GeoJsonGeometry'];",
-        })
-      ).pipe(res);
+
+      res.statusCode = 200;
+
+      const folder = path.join(ROOT_DIR, `./node_modules/${pkg}`);
+      const mainfile = "./index.js";
+      const esmfile = path.join(folder, mainfile);
+
+      const [esmCode, _] = await compileTsFile(esmfile, defaultEsmTransformer, {
+        allowJs: true,
+        rootDir: folder,
+        baseUrl: folder,
+        paths: [],
+      });
+      res.setHeader("Content-Type", "application/javascript");
+      moduleCache.set(esmfile, esmCode);
+      res.end(esmCode);
     } else {
       if (!req.url.endsWith(".js")) {
         res.statusCode = 404;
@@ -246,34 +268,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       // Compile with import rewrite
-      const [jsCode, _] = await compileTsFile(filePath, (importPath) => {
-        const isLike3rdPartyPkg =
-          !importPath.startsWith(".") &&
-          !importPath.startsWith("/") &&
-          !importPath.startsWith("@");
-
-        if (isLike3rdPartyPkg) {
-          if (
-            IMPORTMAP.imports.some((name) => {
-              if (name.endsWith("/")) {
-                return importPath.startsWith(name);
-              } else {
-                return importPath === name;
-              }
-            })
-          )
-            return importPath;
-
-          // Leave node_modules or absolute imports untouched
-          return "./$npm/" + importPath;
-        }
-
-        // Add ".js" extension if missing
-        if (!importPath.endsWith(".js")) {
-          return importPath + ".js";
-        }
-        return importPath;
-      });
+      const [jsCode, _] = await compileTsFile(filePath, defaultEsmTransformer);
 
       res.setHeader("Content-Type", "application/javascript");
       moduleCache.set(filePath, jsCode);
@@ -281,10 +276,42 @@ const server = http.createServer(async (req, res) => {
     }
   } catch (e) {
     res.statusCode = 500;
+    console.log(e);
     res.end("Internal Server Error:\n" + e.message);
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`TS server running at http://localhost:${PORT}`);
 });
+
+function defaultEsmTransformer(importPath) {
+  const isLike3rdPartyPkg =
+    !importPath.startsWith(".") &&
+    !importPath.startsWith("/") &&
+    !importPath.startsWith("@/");
+
+  if (isLike3rdPartyPkg) {
+    if (
+      IMPORTMAP.imports.some((name) => {
+        if (name.endsWith("/")) {
+          return importPath.startsWith(name);
+        } else {
+          return importPath === name;
+        }
+      })
+    ) {
+      return importPath;
+    }
+
+    // Leave node_modules or absolute imports untouched
+    return "$npm/" + importPath + ".js";
+  }
+
+  // Add ".js" extension if missing
+  if (!importPath.endsWith(".js")) {
+    return importPath + ".js";
+  }
+
+  return importPath;
+}

@@ -41,7 +41,7 @@ controls.enableDamping = true; // Enable damping (inertia) for a smoother experi
 controls.dampingFactor = 0.05; // How much damping to apply
 controls.screenSpacePanning = false; // Prevents panning in screen space
 controls.minDistance = 2; // Minimum zoom distance
-controls.maxDistance = 100; // Maximum zoom distance
+// controls.maxDistance = 100; // Maximum zoom distance
 controls.maxPolarAngle = Math.PI / 2; // Limit vertical rotation to avoid going below the "ground"
 
 const clock = new THREE.Clock();

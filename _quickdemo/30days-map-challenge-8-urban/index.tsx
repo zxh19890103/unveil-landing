@@ -4,6 +4,7 @@ import { ThreeJsSetup } from "@/_shared/ThreeJsSetup.class.js";
 
 import {
   getCameraDistanceFromEarthSurface,
+  getEarthRadiusOnLat,
   getTileZoomLevel,
   latlngToSphere,
   latLonToTile,
@@ -13,11 +14,26 @@ import {
   tileToLatLon,
 } from "../30days-map-challenge-shared/core/index.js";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { FirstPersonControls } from "three/addons/controls/FirstPersonControls.js";
 import { memo, useEffect, useState } from "react";
 
 import "@/30days-map-challenge-shared/core/pixel.js";
+import { getWorldBBox } from "./raycast.js";
+import * as osmRender from "./osm-render/index.js";
 
-const threejsContainer = document.querySelector("#threejs-container");
+const threejsContainer = document.querySelector(
+  "#threejs-container"
+) as HTMLDivElement;
+
+/**
+ * on polars
+ */
+const R1 = 6.356752 * 1e6;
+/**
+ * on equator
+ */
+const R2 = 6.378137 * 1e6;
+
 const EARTH_RADIUS = 6378137;
 
 const threeJs = new ThreeJsSetup(
@@ -33,15 +49,12 @@ const { scene: world, camera } = threeJs;
 const axes = new THREE.AxesHelper(EARTH_RADIUS * 1.5);
 world.add(axes);
 
-// const grid = new THREE.GridHelper(1, 10);
-// world.add(grid);
-
 const dirLight = new THREE.DirectionalLight(0xffffff, 2);
 
 dirLight.position.set(0, 0, 0.5 * EARTH_RADIUS);
 dirLight.target.position.set(0, 0, 0);
 
-world.add(new THREE.AmbientLight(0xffffff, 1));
+world.add(new THREE.AmbientLight(0xffffff, 2));
 world.add(dirLight);
 
 threeJs.startAnimation();
@@ -119,26 +132,33 @@ const MIN_PAN_SPEED = 0.0005;
 const MIN_GAP_CAM_SURFACE = 500.0; // m
 // --------------------
 
-orbitControls.enableDamping = true;
+orbitControls.enableDamping = false;
 orbitControls.enablePan = true;
-orbitControls.minDistance = EARTH_RADIUS + MIN_GAP_CAM_SURFACE;
+orbitControls.zoomToCursor = false;
+orbitControls.minDistance = 0; //Ï R1 + MIN_GAP_CAM_SURFACE;
 orbitControls.maxDistance = 10.01 * EARTH_RADIUS;
 orbitControls.maxPolarAngle = (160 * Math.PI) / 180;
 orbitControls.minPolarAngle = (10 * Math.PI) / 180;
 
 const zoomSpeedLevels = Object.fromEntries(
-  new Array(21).fill(0).map((_, i) => {
-    return [i, { zoom: getSpeedFromZoomLevel(i), pan: getPanSpeedFromZoom(i) }];
+  new Array(24).fill(0).map((_, i) => {
+    return [
+      i,
+      {
+        zoom: i < 12 ? 1 : getSpeedFromZoomLevel(i),
+        pan: getPanSpeedFromZoom(i),
+      },
+    ];
   })
 );
-
-let currentZoomLv = 0;
 
 camera.position.set(0, 3 * EARTH_RADIUS, 2 * EARTH_RADIUS);
 
 // world.add(new THREE.AxesHelper(ER * 1.6));
 
 const vec3util = new THREE.Vector3();
+
+type MapTilePhase = "created" | "mesh" | "texture" | "removed";
 
 class MapTile {
   /**
@@ -149,6 +169,19 @@ class MapTile {
   private _4_corners: Geo.LatLng[] = [];
   private _4_uvs: Geo.UV[] = [];
   private _4_dem_pos: Geo.UV[] = [];
+
+  phase: MapTilePhase;
+
+  abortTexturing = false;
+
+  setPhase(phase: MapTilePhase) {
+    if (this.phase === "mesh" && phase === "removed") {
+      console.log(`[tile]`, this.xyz, this.phase);
+      this.abortTexturing = true;
+    }
+
+    this.phase = phase;
+  }
 
   private southwest_in_meters = new THREE.Vector3();
   private northeast_in_meters = new THREE.Vector3();
@@ -227,19 +260,21 @@ class MapTile {
     this.latlngLerp = this.createLatlngLerp();
     this.uvLerp = this.createUVLerp();
     this.uv1Lerp = this.createUV1Lerp();
+
+    this.setPhase("created");
   }
 
   private getLayers() {
     // return "NE2_HR_LC_SR_W";
     const zoom = this.zoom;
     if (zoom < 4) {
-      return `ne_10m_admin_0_countries_nep,ne_10m_ocean`;
-    } else if (zoom < 7) {
-      return `ne_10m_ocean,ne_10m_admin_1_states_provinces`;
-    } else if (zoom < 10) {
-      return `ne_10m_ocean,ne_10m_admin_1_states_provinces,ne_10m_roads`;
+      return `ne_10m_ocean,ne_10m_admin_0_countries_lakes`;
+    } else if (zoom < 5) {
+      return `ne_10m_ocean,ne_10m_admin_0_countries_lakes`;
+    } else if (zoom < 8) {
+      return `ne_10m_ocean,ne_10m_admin_0_countries_lakes,ne_10m_roads`;
     } else {
-      return `ne_10m_ocean,ne_10m_admin_1_states_provinces,ne_10m_roads,ADM_ADM_3,ne_50m_urban_areas`;
+      return `ne_10m_ocean,ne_10m_admin_0_countries_lakes,ADM_ADM_3,ne_10m_roads`;
     }
   }
 
@@ -355,11 +390,11 @@ class MapTile {
   }
 
   getTileSrc4() {
-    return `http://localhost:8080/qgis-server/?SERVICE=WMTS&REQUEST=GetTile&LAYER=ne_10m_admin_0_countries_nep&FORMAT=image/png&TILEMATRIX=${this.zoom}&TILEMATRIXSET=EPSG:3857&TILEROW=${this.y}&TILECOL=${this.x}`;
+    return `http://localhost:8080/qgis-server/?SERVICE=WMTS&REQUEST=GetTile&LAYER=ne_10m_admin_0_countries_nep&FORMAT=image/png&TILEMATRIX=${this.zoom}&TILEMATRIXSET=EPSG:3857&TILEROW=${this.y}&TILECOL=${this.x}&TRANSPARENT=false&BGCOLOR=green`;
   }
 
   getTileSrc3() {
-    return `http://localhost:8080/qgis-server/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=${this.layers}&FORMAT=image/png&STYLES=default,default&SLD_VERSION=1.1.0&CRS=EPSG:4326&BBOX=${this.bbox}&DPI=96&WIDTH=256&HEIGHT=256`;
+    return `http://localhost:8080/qgis-server/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=${this.layers}&FORMAT=image/png&STYLES=default,default&SLD_VERSION=1.1.0&CRS=EPSG:4326&BBOX=${this.bbox}&DPI=96&WIDTH=256&HEIGHT=256&DPI=96`;
   }
 }
 
@@ -451,27 +486,39 @@ const walkTiles = (
 };
 
 function isSpherePointVisible(p: THREE.Vector3, frustum: THREE.Frustum) {
+  if (!frustum.containsPoint(p)) return false;
+
   normUtil.copy(p);
   const normal = normUtil.normalize();
-  const tangent = vec3util.subVectors(camera.position, p).normalize();
-  const a = normal.dot(tangent);
-  const contains = frustum.containsPoint(p);
-  return contains && a > 0;
+  const cnormal = vec3util.subVectors(camera.position, p).normalize();
+  const a = normal.dot(cnormal);
+
+  return a > 0;
 }
 
-orbitControls.addEventListener("end", () => {
+const notifyCameraOnPosChanged = () => {
+  console.log("notifyCameraOnPosChanged");
+
   const { lat } = sphereToLatlng(camera.position);
   const dist = getCameraDistanceFromEarthSurface(camera, lat);
   const ppm = pixelsPerMeter(camera, threejsContainer.clientHeight, lat);
-  const zoom = getTileZoomLevel(ppm, lat, 0);
+
+  console.log(ppm);
+
+  const zoom = getTileZoomLevel(ppm, lat, 0, 22);
+
+  console.log(zoom);
 
   const speeds = zoomSpeedLevels[zoom];
-  // orbitControls.zoomSpeed = speeds.zoom;
+  orbitControls.zoomSpeed = speeds.zoom;
   orbitControls.rotateSpeed = speeds.pan;
 
   // Source - https://stackoverflow.com/a
   // Posted by Leeft, modified by community. See post 'Timeline' for change history
   // Retrieved 2025-12-06, License - CC BY-SA 3.0
+
+  camera.updateProjectionMatrix();
+  camera.updateMatrixWorld();
 
   cameraFrustum.setFromProjectionMatrix(
     new THREE.Matrix4().multiplyMatrices(
@@ -481,7 +528,23 @@ orbitControls.addEventListener("end", () => {
   );
 
   updateTiles(zoom, dist);
-});
+};
+
+const setCameraPosition = (latlng: string, alt: number) => {
+  const [lat, lng] = latlng.split(",").map((n) => Number(n.trim()));
+  console.log(lat, lng);
+  const sphere = latlngToSphere({ lat, lng });
+  const r = getEarthRadiusOnLat(lat);
+  camera.position.copy(sphere).setLength(r + alt);
+
+  camera.updateMatrixWorld();
+  camera.updateProjectionMatrix();
+
+  orbitControls.update();
+  notifyCameraOnPosChanged();
+};
+
+orbitControls.addEventListener("end", notifyCameraOnPosChanged);
 
 const updateTiles = (zoom: number, dist: number) => {
   const latlon = findTheCenterTile(zoom);
@@ -499,13 +562,19 @@ const updateTiles = (zoom: number, dist: number) => {
     cameraFrustum
   );
 
+  /**
+   * for rotation, end after key up.
+   * for zooming, end every click!
+   */
   __setTiles?.([...visibleTileIndices]);
   __setLV?.({ z: zoom, d: dist });
 };
 
 const cameraFrustum = new THREE.Frustum();
+
 let highlightedTiles: Set<string> = null;
 let visibleTileIndices: Set<TileIndex> = null;
+const __tiles__ = new Set<MapTile>();
 
 let __setLV: (lv: any) => void;
 let __setTiles: (tiles: TileIndex[]) => void;
@@ -521,8 +590,6 @@ const tileIndexToKey = (ti: TileIndex) => `${ti.x}.${ti.y}.${ti.z}`;
 const RenderTiles = memo(() => {
   const [tiles, setTiles] = useState<TileIndex[]>([]);
   __setTiles = setTiles;
-
-  console.log("tiles number", tiles.length);
 
   return (
     <>
@@ -558,71 +625,61 @@ const createMeshFromMaptile = (tile: MapTile, segments = 1) => {
     new THREE.MeshPhongMaterial({
       wireframe: true,
       color: 0x000000,
-      transparent: false,
+      transparent: true,
       opacity: 0.3,
     })
   );
 
-  tLoader.load(tile.getTileSrc(), (texture) => {
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.minFilter = THREE.LinearMipMapLinearFilter;
-    texture.magFilter = THREE.LinearFilter;
+  setTimeout(() => {
+    if (tile.abortTexturing) {
+      console.log(tile.xyz, "aborted before load");
+      return;
+    }
 
-    mesh.material.map = texture;
-    mesh.material.wireframe = false;
-    mesh.material.transparent = false;
-    mesh.material.opacity = 1;
-    mesh.material.color.setHex(0xffffff);
+    tLoader.load(tile.getTileSrc(), (texture) => {
+      if (tile.abortTexturing) {
+        console.log(tile.xyz, "aborted after load");
+        return;
+      }
 
-    mesh.material.needsUpdate = true;
-  });
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearMipMapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+
+      mesh.material.map = texture;
+      mesh.material.wireframe = false;
+      mesh.material.transparent = true;
+      mesh.material.opacity = 1;
+      mesh.material.color.setHex(0xffffff);
+
+      mesh.material.needsUpdate = true;
+
+      tile.setPhase("texture");
+    });
+  }, 300);
 
   mesh.userData.tile = tile;
 
+  tile.setPhase("mesh");
   return mesh;
 };
 
 const tilesToRemove: Set<MapTile> = new Set();
-
-threeJs.onAnimate((delta) => {
-  for (const tile of tilesToRemove) {
-    tile.alpha -= 0.005;
-
-    if (tile.alpha <= 0) {
-      tilesToRemove.delete(tile);
-      _removeTile(tile);
-      continue;
-    }
-
-    const mesh = tile.mesh;
-
-    mesh.material.opacity = tile.alpha;
-    mesh.material.needsUpdate = true;
-  }
-
-  console.log("to remove", tilesToRemove.size);
-});
+const tilesGroup = new THREE.Group();
+world.add(tilesGroup);
 
 const removeTile = (tile: MapTile) => {
   const mesh = tile.mesh;
 
-  mesh.material.transparent = true;
-  mesh.material.depthTest = false;
-  mesh.material.needsUpdate = true;
-
-  tilesToRemove.add(tile);
-};
-
-const _removeTile = (tile: MapTile) => {
-  const mesh = tile.mesh;
-
-  world.remove(mesh);
+  tilesGroup.remove(mesh);
 
   mesh.geometry.dispose();
   mesh.material.map?.dispose();
   mesh.material.displacementMap?.dispose();
   mesh.material.dispose();
+
+  tile.setPhase("removed");
 };
 
 type RenderTileOne = { id: string; x: number; y: number; z: number };
@@ -631,25 +688,161 @@ const RenderTileOne = memo(({ x, y, z }: RenderTileOne) => {
   const tile = new MapTile(x, y, z);
   const mesh = createMeshFromMaptile(tile, 20);
   tile.mesh = mesh;
-  world.add(mesh);
+  tilesGroup.add(mesh);
 
   useEffect(() => {
+    __tiles__.add(tile);
     return () => {
-      _removeTile(tile);
+      removeTile(tile);
+      __tiles__.delete(tile);
     };
   }, []);
 
   return null;
 });
 
+function horizonView() {
+  const vec = camera.position.clone();
+  const { lat } = sphereToLatlng(vec);
+  const r = getEarthRadiusOnLat(lat);
+  const theta = Math.acos(r / camera.position.length());
+  console.log(r, camera.position.length(), theta);
+  vec.setLength(EARTH_RADIUS).applyEuler(new THREE.Euler(theta));
+  orbitControls.target.copy(vec);
+  // camera.rotation.z += 0.1;
+  // camera.updateProjectionMatrix();
+  orbitControls.update();
+}
+
+function lowHeightView(alt: number) {
+  // const globalCamera = threeJs.activeCamera;
+
+  const latlng = sphereToLatlng(camera.position);
+  const shift = { ...latlng, lat: latlng.lat + 0.01 };
+
+  // look at the west
+  // latlng.lat += 0.01;
+
+  const target = latlngToSphere(shift);
+
+  /**
+   * 10 km far can be seen.
+   */
+  const cam = new THREE.PerspectiveCamera(75, camera.aspect, 0.01, 1000 * 100);
+
+  cam.up.copy(camera.position.clone().normalize());
+
+  cam.position.copy(
+    camera.position.clone().setLength(getEarthRadiusOnLat(latlng.lat) + alt)
+  );
+
+  const targetVec3 = new THREE.Vector3().copy(target);
+  targetVec3.setLength(getEarthRadiusOnLat(shift.lat) + alt / 4);
+
+  cam.lookAt(targetVec3);
+
+  const fpControls = new FirstPersonControls(cam, threejsContainer);
+
+  orbitControls.enabled = false;
+  fpControls.enabled = true;
+  fpControls.autoForward = true;
+
+  threeJs.activeCamera = cam;
+
+  threeJs.onAnimate((delta) => {
+    fpControls.update(delta);
+  });
+
+  lowHeightViewCancel = () => {
+    fpControls.enabled = false;
+    fpControls.dispose();
+
+    threeJs.activeCamera = camera;
+    orbitControls.enabled = true;
+
+    lowHeightViewCancel = null;
+  };
+}
+
+function showHiddenTiles() {
+  tilesGroup.visible = !tilesGroup.visible;
+}
+
+let lowHeightViewCancel: () => void = null;
+
+const earthMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(EARTH_RADIUS),
+  new THREE.MeshBasicMaterial({
+    visible: false,
+    wireframe: true,
+    color: 0xfe00fe,
+  })
+);
+
+// earthMesh.rotateX(Math.PI / 2);
+
+world.add(earthMesh);
+
+const ptsViz = new THREE.Points(
+  new THREE.BufferGeometry(),
+  new THREE.PointsMaterial({
+    color: 0xfe0100,
+    sizeAttenuation: false,
+    size: 1.2,
+    depthTest: true,
+    depthWrite: false,
+  })
+);
+
+ptsViz.renderOrder = 1911;
+ptsViz.frustumCulled = false;
+world.add(ptsViz);
+
+const getScreenBbox = () => {
+  const top = camera === threeJs.activeCamera ? 1 : 0;
+  const [_0, rt, lb, _1] = getWorldBBox(threeJs.activeCamera, tilesGroup, top);
+
+  const sphere0 = latlngToSphere({ lat: rt.lat, lon: rt.lng });
+  const sphere1 = latlngToSphere({ lat: lb.lat, lon: lb.lng });
+
+  const line = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3().copy(sphere0).setLength(EARTH_RADIUS),
+      new THREE.Vector3().copy(sphere1).setLength(EARTH_RADIUS),
+    ]),
+    new THREE.LineBasicMaterial({
+      color: 0xfe9100,
+    })
+  );
+
+  world.add(line);
+
+  return `${lb.lat},${lb.lng},${rt.lat},${rt.lng}`;
+};
+
 const Tile = () => {
-  const [lv, setLv] = useState({ z: currentZoomLv, d: 0 });
+  const [lv, setLv] = useState({ z: 0, d: 0 });
   __setLV = setLv;
   const latlon = findTheCenterTile(lv.z);
   const tileIndex = latLonToTile(latlon.lat, latlon.lng, lv.z);
 
+  const loadOsm = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const bbox = getScreenBbox();
+    console.log(bbox);
+
+    if (lv.z < 10) return;
+
+    const way = (event.target as HTMLButtonElement).getAttribute("itemtype");
+
+    const geojson = await fetch(
+      `http://0.0.0.0:3003/osm?bbox=${bbox}&way=${way}`
+    ).then((r) => r.json());
+
+    world.add(osmRender.building(geojson));
+  };
+
   return (
-    <div className=" pointer-events-none w-fit bg-green-700/70 text-white fixed top-2 right-2 p-4">
+    <div className=" w-fit bg-green-700/70 text-white fixed top-2 right-2 p-4">
       <div>zoom-level: {lv.z}</div>
       <div>tiles: {Math.pow(Math.pow(2, lv.z), 2)}</div>
       <div>
@@ -658,6 +851,100 @@ const Tile = () => {
       <div>tile: {tileIndex.join(",")}</div>
       <div>dist: {(lv.d / 1000).toPrecision(3)} km</div>
       <div>ro speed: {orbitControls.rotateSpeed}</div>
+      <div>
+        <button onClick={horizonView}>horizon view</button>
+      </div>
+      <div>
+        <button itemType="building" onClick={loadOsm}>
+          load osm (building)
+        </button>
+      </div>
+      <div>
+        <button itemType="highway" onClick={loadOsm}>
+          load osm (highway)
+        </button>
+      </div>
+      <div>
+        <button itemType="waterway" onClick={loadOsm}>
+          load osm (waterway)
+        </button>
+      </div>
+      <div>
+        <button itemType="shop" onClick={loadOsm}>
+          load osm (shop)
+        </button>
+      </div>
+      <div>
+        <button itemType="amenity" onClick={loadOsm}>
+          load osm (amenity)
+        </button>
+      </div>
+      <div>
+        <button itemType="natural" onClick={loadOsm}>
+          load osm (natural)
+        </button>
+      </div>
+      <div>
+        <button itemType="office" onClick={loadOsm}>
+          load osm (office)
+        </button>
+      </div>
+      <div>
+        <button itemType="bridge" onClick={loadOsm}>
+          load osm (bridge)
+        </button>
+      </div>
+      <div>
+        <button itemType="man_made" onClick={loadOsm}>
+          load osm (man_made)
+        </button>
+      </div>
+      <div>
+        <button itemType="leisure" onClick={loadOsm}>
+          load osm (leisure)
+        </button>
+      </div>
+      <div>
+        <button itemType="sidewalk" onClick={loadOsm}>
+          load osm (sidewalk)
+        </button>
+      </div>
+      <div>
+        <button itemType="landuse" onClick={loadOsm}>
+          load osm (landuse)
+        </button>
+      </div>
+      <div>
+        <button itemType="boundary" onClick={loadOsm}>
+          load osm (boundary)
+        </button>
+      </div>
+      <div>
+        <button onClick={showHiddenTiles}>hidden/show tiles</button>
+      </div>
+      <div>
+        <button
+          className=" hover:border-green-700 rounded-sm border border-green-500 bg-green-900 text-white"
+          onClick={() => {
+            setCameraPosition("22.941218348032187, 113.37771495479173", 2000);
+          }}
+        >
+          locate to Tengchong
+        </button>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            if (lowHeightViewCancel) {
+              lowHeightViewCancel();
+            } else {
+              lowHeightView(300);
+            }
+          }}
+        >
+          Low height view
+        </button>
+      </div>
       <RenderTiles />
     </div>
   );

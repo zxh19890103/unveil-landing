@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import osmtogeojson from "osmtogeojson";
-import * as turf from "@turf/turf";
 
 // const filename = "";
 // const filename = "_coastlines";
