@@ -8,6 +8,7 @@ import config from "./_config.js";
 import * as osmroute from "./dev.osm.js";
 import * as demroute from "./dev.dem.js";
 import * as texroute from "./dev.texture.js";
+import * as gtileroute from "./dev.gtile.js";
 
 const PORT = 3003;
 const allowedOrigin = "*";
@@ -213,6 +214,9 @@ const server = http.createServer(async (req, res) => {
     return;
   } else if (demroute.route.test(req.url)) {
     demroute.handler(req, res);
+    return;
+  } else if (gtileroute.route.test(req.url)) {
+    gtileroute.handler(req, res);
     return;
   }
 

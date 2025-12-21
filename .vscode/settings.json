@@ -3,13 +3,14 @@
   // "editor.fontFamily": "Anonymous Pro, Yuppy TC",
   // "editor.fontFamily": "Chalkboard SE, Yuppy TC",
   // "editor.fontFamily": "Monolisa",
-  "editor.fontFamily": "Ubuntu Mono",
+  "editor.fontFamily": "Wawati TC",
+  // "editor.fontFamily": "Ubuntu Mono",
   "editor.fontSize": 16,
   "workbench.fontAliasing": "antialiased",
   "editor.fontLigatures": true,
   "editor.fontWeight": "300",
-  "window.zoomLevel": 0.8,
+  "window.zoomLevel": 1,
   "editor.letterSpacing": 0,
-  "workbench.colorTheme": "GitHub Light Colorblind (Beta)"
+  "workbench.colorTheme": "Atom One Dark Coal"
   // "workbench.colorTheme": "Atom One Light"
 }

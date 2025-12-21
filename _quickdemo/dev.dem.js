@@ -27,7 +27,9 @@ export const handler = (req, res) => {
   const savetoPicture = `./datadem/${tZ}-${tX}-${tY}.png`;
 
   if (regen !== "true" && fs.existsSync(savetoPicture)) {
-    fs.createReadStream(savetoPicture).pipe(res);
+    // fs.createReadStream(savetoPicture).pipe(res);
+    res.write("exits", "utf8");
+    res.end();
     return;
   }
 
@@ -35,7 +37,7 @@ export const handler = (req, res) => {
 
   if (fs.existsSync(savetoGtiff)) {
     convertsion_gdal_translate(savetoGtiff, savetoPicture, () => {
-      fs.createReadStream(savetoPicture).pipe(res);
+      res.write("converted!", "utf8");
     });
     return;
   }
@@ -53,7 +55,7 @@ export const handler = (req, res) => {
         },
       },
       (incoming) => {
-        console.log("incoming...");
+        console.log("[dem] incoming...");
         const file = fs.createWriteStream(savetoGtiff, "binary");
 
         incoming
@@ -62,7 +64,8 @@ export const handler = (req, res) => {
             console.log("saved as gtiff", savetoGtiff);
 
             convertsion_gdal_translate(savetoGtiff, savetoPicture, () => {
-              fs.createReadStream(savetoPicture).pipe(res);
+              res.write("done!", "utf8");
+              res.end();
             });
           })
           .on("error", logErr);
@@ -114,6 +117,17 @@ async function convertsion_gdal_translate(
 
   const minElevation = channels[0].min;
   const maxElevation = channels[0].max;
+
+  fs.writeFileSync(
+    savetoGtiff + ".elevation.json",
+    JSON.stringify({
+      minElevation,
+      maxElevation,
+    }),
+    "utf-8"
+  );
+
+  console.log("write elevation file.");
 
   console.log("minElevation, maxElevation", minElevation, maxElevation);
 

@@ -15,7 +15,19 @@ export function handler(req, res) {
   const bbox = query.get("bbox");
   const way = query.get("way");
 
-  console.log(bbox, way);
+  const tX = query.get("x");
+  const tY = query.get("y");
+  const tZ = query.get("z");
+  const regen = query.get("regen") === "true";
+
+  const saveToOsm = `./dataosm/${way}-${tZ}-${tX}-${tY}.json`;
+  const saveToGeojson = `./dataosm/${way}-${tZ}-${tX}-${tY}.geojson`;
+
+  if (!regen && fs.existsSync(saveToGeojson)) {
+    console.log("geojson file loaded before: ", saveToGeojson);
+    fs.createReadStream(saveToGeojson).pipe(res);
+    return;
+  }
 
   const sender = https
     .request(
@@ -33,20 +45,25 @@ export function handler(req, res) {
         },
       },
       (incoming) => {
-        console.log("incoming is com");
-        const saveto = `./dataosm/${Date.now()}.json`;
-        const writtable = fs.createWriteStream(saveto, "utf8");
+        console.log("[osm] incoming, ", "file will be saved in:", saveToOsm);
+        const writtable = fs.createWriteStream(saveToOsm, "utf8");
+
         incoming
           .pipe(writtable)
           .on("finish", () => {
-            console.log("finish pip local file.");
-            const json = fs.readFileSync(saveto, "utf8");
+            console.log("finish saved", saveToOsm);
+            const json = fs.readFileSync(saveToOsm, "utf8");
             const geojson = osmtogeojson(JSON.parse(json), {});
-            res.write(JSON.stringify(geojson), "utf8");
-            res.end();
+
+            const filewrite = fs.createWriteStream(saveToGeojson, "utf8");
+            const geojsonStr = JSON.stringify(geojson);
+            filewrite.write(geojsonStr, "utf8");
+
             res.on("error", (ex) => {
               console.log("res", ex);
             });
+            res.write(JSON.stringify(geojson), "utf8");
+            res.end();
           })
           .on("error", (ex) => {
             console.log("incoming", ex);
@@ -61,8 +78,9 @@ export function handler(req, res) {
   us.set(
     "data",
     `
-[out:json][timeout:25];
+[out:json][timeout:360];
 (
+relation[${way}](${bbox});
 way[${way}](${bbox});
 );
 out body;
@@ -70,7 +88,6 @@ out body;
 out skel qt;`
   );
 
-  console.log(us.toString());
   sender.write(us.toString(), "utf8");
   sender.end();
 }
