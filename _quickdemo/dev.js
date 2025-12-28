@@ -1,6 +1,6 @@
 import http from "http";
 import path from "path";
-import ts from "typescript";
+import ts, { ModuleKind } from "typescript";
 import fs from "node:fs";
 import chokidar from "chokidar";
 import { Transform } from "node:stream";
@@ -8,7 +8,7 @@ import config from "./_config.js";
 import * as osmroute from "./dev.osm.js";
 import * as demroute from "./dev.dem.js";
 import * as texroute from "./dev.texture.js";
-import * as gtileroute from "./dev.gtile.js";
+import * as gootileroute from "./dev.gootile.js";
 
 const PORT = 3003;
 const allowedOrigin = "*";
@@ -83,13 +83,13 @@ async function compileTsFile(filePath, rewriteFn, config = null) {
     ...config,
   };
 
-  if (config) {
-  }
-  console.log(tsCfg.rootDir, filePath);
+  console.log("tsconfig rootDir: ", tsCfg.rootDir);
+  console.log("file:", filePath);
 
   const program = ts.createProgram([filePath], tsCfg);
 
   const sourceFile = program.getSourceFile(filePath);
+
   if (!sourceFile) throw new Error(`File not found: ${filePath}`);
 
   let outputText = "";
@@ -215,30 +215,45 @@ const server = http.createServer(async (req, res) => {
   } else if (demroute.route.test(req.url)) {
     demroute.handler(req, res);
     return;
-  } else if (gtileroute.route.test(req.url)) {
-    gtileroute.handler(req, res);
+  } else if (gootileroute.route.test(req.url)) {
+    gootileroute.handler(req, res);
     return;
   }
 
   // default: ts and js
   try {
-    if (/\$npm/.test(req.url)) {
+    const regx = /^\/\$npm\/(.+)\.js$/;
+    if (regx.test(req.url)) {
       // $npm/three-geojson-geometry
-      const [, pkg] = /^\/\$npm\/(.+)\.js$/.exec(req.url);
-      // console.log(folder, pkg)
-      // const js = getUnpackFile(folder, pkg);
       res.setHeader("Content-Type", "application/javascript");
-
       res.statusCode = 200;
+      /// consider ghost.js
+      let [, pkg] = regx.exec(req.url);
+
+      if (pkg.endsWith("ghost")) {
+        pkg = pkg.replace("/ghost", "");
+      }
 
       const folder = path.join(ROOT_DIR, `./node_modules/${pkg}`);
-      const mainfile = "./index.js";
-      const esmfile = path.join(folder, mainfile);
+      const mainfile = getEntryFile(folder);
+      const isFolder = mainfile !== null;
+      const esmfile = mainfile ? path.join(folder, mainfile) : `${folder}.js`;
+
+      if (moduleCache.has(esmfile)) {
+        res.setHeader("Content-Type", "application/javascript");
+        res.end(moduleCache.get(esmfile));
+        return;
+      }
+
+      console.log(`esmfile resolved under ${pkg}!`, esmfile);
+
+      const workdir = isFolder ? folder : path.join(folder, "..");
 
       const [esmCode, _] = await compileTsFile(esmfile, defaultEsmTransformer, {
         allowJs: true,
-        rootDir: folder,
-        baseUrl: folder,
+        rootDir: workdir,
+        baseUrl: workdir,
+        module: ModuleKind.ESNext,
         paths: [],
       });
       res.setHeader("Content-Type", "application/javascript");
@@ -308,14 +323,60 @@ function defaultEsmTransformer(importPath) {
       return importPath;
     }
 
+    if (importPath.endsWith(".js")) {
+      return "$npm/" + importPath;
+    }
+
     // Leave node_modules or absolute imports untouched
-    return "$npm/" + importPath + ".js";
+    return "$npm/" + importPath + "/ghost.js";
   }
 
   // Add ".js" extension if missing
-  if (!importPath.endsWith(".js")) {
-    return importPath + ".js";
+  if (importPath.endsWith(".js")) {
+    return importPath;
   }
 
-  return importPath;
+  return importPath + ".js";
+}
+
+function getEntryFile(npmFolder) {
+  if (fs.existsSync(npmFolder)) {
+    const pkg = path.join(npmFolder, "./package.json");
+    if (fs.existsSync(pkg)) {
+      const packageCfg = JSON.parse(fs.readFileSync(pkg));
+      const entry = packageCfg.module || packageCfg.main;
+      if (entry) {
+        return entry;
+      } else {
+      }
+    }
+    return "./index.js";
+  } else {
+    // no folder.
+    return null;
+  }
+}
+
+function createFileCache() {
+  const datanpmjsdir = "./datanpmjs";
+  const metadatafile = "./datanpmjs/metadata.json";
+
+  if (fs.existsSync(datanpmjsdir)) {
+    fs.mkdirSync(datanpmjsdir);
+  }
+
+  let metadata = {};
+
+  const init = () => {};
+  const md5 = (input) => input;
+
+  const writeNpmjs = (esmfile) => {
+    metadata[esmfile] = md5(esmfile);
+  };
+
+  const readNpmjs = (esmfile) => {
+    const id = metadata[esmfile];
+    if (!id) return null;
+    return id;
+  };
 }

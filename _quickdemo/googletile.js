@@ -124,14 +124,32 @@ async function extractTilePalette(inputPath, jsonOutputPath) {
   }
 }
 
+async function simplifyImage(inputPath, outputPath) {
+  try {
+    await sharp(inputPath)
+      .median(10) // Remove noise while keeping edges
+      .png({
+        palette: true,
+        colors: 16, // Force reduction to 16 colors
+        quality: 80,
+      })
+      .sharpen()
+      .toFile(outputPath);
+
+    console.log("Image simplified successfully.");
+  } catch (err) {
+    console.error("Error processing image:", err);
+  }
+}
+
 // Helper to convert RGB to Hex for your Three.js uniforms
 function rgbToHex(r, g, b) {
   return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-extractTilePalette("tile_yunnan.jpg", "palette.json");
+// extractTilePalette("tile_yunnan.jpg", "palette.json");
 
-// processCleanIllustration(
-//   "./data-gtiles/googletile.jpeg",
-//   "./data-gtiles/googletile.cute_3d_tile.4.png"
-// );
+simplifyImage(
+  "./data-gtiles/googletile.jpeg",
+  "./data-gtiles/googletile.cute_3d_tile.5.png"
+);

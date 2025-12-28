@@ -36,6 +36,7 @@ export const handler = (req, res) => {
   const savetoGtiff = `./datadem/${tZ}-${tX}-${tY}.gtiff`;
 
   if (fs.existsSync(savetoGtiff)) {
+    console.log("got gtiff file", savetoGtiff);
     convertsion_gdal_translate(savetoGtiff, savetoPicture, () => {
       res.write("converted!", "utf8");
     });

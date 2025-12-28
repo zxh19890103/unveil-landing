@@ -3,9 +3,15 @@ import {
   latLonToTile,
   tileToLatLon,
 } from "@/30days-map-challenge-shared/core/clac.js";
-import { __lights__, whenReady } from "@/_shared/SoCFramework.js";
+import {
+  __lights__,
+  animationLoop,
+  whenReady,
+} from "@/_shared/SoCFramework.js";
 import { textLoader } from "@/_shared/loader.js";
 import { Sky } from "three/addons/objects/Sky.js";
+import { pointToPolygonDistance } from "@turf/point-to-polygon-distance";
+import { bbox as turfBbox } from "@turf/bbox";
 
 /**
  * @todo
@@ -29,9 +35,10 @@ whenReady(async (world, camera, renderer, controls) => {
     // Set sky uniforms
     const uniforms = sky.material.uniforms;
     uniforms["turbidity"].value = 10;
-    uniforms["rayleigh"].value = 0.1;
-    uniforms["mieCoefficient"].value = 0.5;
-    uniforms["mieDirectionalG"].value = 0.1;
+    uniforms["rayleigh"].value = 3;
+    uniforms["mieCoefficient"].value = 0.005;
+    uniforms["mieDirectionalG"].value = 0.7;
+    uniforms["mieDirectionalG"].value = 0.7;
 
     // Set sun position
     const sun = new THREE.Vector3();
@@ -44,6 +51,12 @@ whenReady(async (world, camera, renderer, controls) => {
 
     sky.material.needsUpdate = true;
     world.add(sky);
+
+    const fogColor = new THREE.Color().setHSL(0.6, 0.2, 0.8);
+    const density = 0.0003;
+    world.fog = new THREE.FogExp2(fogColor, density);
+    // Ensure the background matches the fog color for a seamless sky
+    renderer.setClearColor(fogColor);
   }
 
   //   camera.far = 10 * EARTH_RADIUS;
@@ -56,8 +69,9 @@ whenReady(async (world, camera, renderer, controls) => {
 
   const reGen = false;
 
-  const [lat, lng] = [23.365712319441123, 103.40022228363058];
-  const zoom = 12;
+  const [lat, lng] = [26.5708557002629, 106.72092736301941];
+  // const [lng, lat] = [106.5774281, 29.5526704];
+  const zoom = 12; // it's the best zoom level to load the data of osm and dem.
 
   const __ti__ = latLonToTile(lat, lng, zoom);
   console.log(__ti__, zoom);
@@ -169,16 +183,20 @@ whenReady(async (world, camera, renderer, controls) => {
     return `https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?${query.toString()}`;
   };
 
+  const getGooTileUrl = (xyz: { x: number; y: number; z: number }) => {
+    return `http://0.0.0.0:3003/gtile/${xyz.z}/${xyz.x}/${xyz.y}`;
+  };
+
   const bbbbbbox3 = splitTo4();
 
   // const overlayUrl=`https://tile.openstreetmap.org/${zoom}/${__ti__[0]}/${__ti__[1]}.png`
   // const overlayUrl = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief/default/GoogleMapsCompatible_Level8/${zoom}/${__ti__[1]}/${__ti__[0]}.jpg`;
-  const overlayUrl = `https://mt1.google.com/vt/lyrs=s&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&scale=4&hl=en`;
+  const overlayUrl = getGooTileUrl({ z: zoom, x: __ti__[0], y: __ti__[1] });
   // const overlayUrl = `http://0.0.0.0:3003/texture/data-gtiles/googletile.cute_3d_tile.png`;
-  const overlayUrl1 = `https://mt1.google.com/vt/lyrs=s&x=${bbbbbbox3.bbox0.x}&y=${bbbbbbox3.bbox0.y}&z=${bbbbbbox3.bbox0.z}&scale=4&hl=en`;
-  const overlayUrl2 = `https://mt1.google.com/vt/lyrs=s&x=${bbbbbbox3.bbox1.x}&y=${bbbbbbox3.bbox1.y}&z=${bbbbbbox3.bbox1.z}&scale=4&hl=en`;
-  const overlayUrl3 = `https://mt1.google.com/vt/lyrs=s&x=${bbbbbbox3.bbox2.x}&y=${bbbbbbox3.bbox2.y}&z=${bbbbbbox3.bbox2.z}&scale=4&hl=en`;
-  const overlayUrl4 = `https://mt1.google.com/vt/lyrs=s&x=${bbbbbbox3.bbox3.x}&y=${bbbbbbox3.bbox3.y}&z=${bbbbbbox3.bbox3.z}&scale=4&hl=en`;
+  const overlayUrl1 = getGooTileUrl(bbbbbbox3.bbox0);
+  const overlayUrl2 = getGooTileUrl(bbbbbbox3.bbox1);
+  const overlayUrl3 = getGooTileUrl(bbbbbbox3.bbox2);
+  const overlayUrl4 = getGooTileUrl(bbbbbbox3.bbox3);
 
   // const overlayUrl = getArcGisTileUrl(bbox3857, 1024); //`https://mt1.google.com/vt/lyrs=s&x=${ti[0]}&y=${ti[1]}&z=${zoom}&scale=4&hl=en`;
 
@@ -209,6 +227,7 @@ whenReady(async (world, camera, renderer, controls) => {
   // request osm data from overpass api.
   // const osmWay = "building";
 
+  // line
   function buildHighways(geojson) {
     const pts: number[] = [];
     const indices: number[] = [];
@@ -313,7 +332,7 @@ whenReady(async (world, camera, renderer, controls) => {
       const factor = 0.02;
       const isBigRoad = highwayType === "motorway" || highwayType === "trunk";
       const u0 = isBigRoad ? 0 : 0.56;
-      const u1 = isBigRoad ? 0.56: 1;
+      const u1 = isBigRoad ? 0.56 : 1;
       let i = 0;
       let v = 0;
 
@@ -431,8 +450,8 @@ whenReady(async (world, camera, renderer, controls) => {
     const edgeViz = new THREE.Mesh(
       edgeVizGeo,
       new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        map: surfaceMap,
+        color: 0xef9aef,
+        // map: surfaceMap,
         roughness: 1.0,
         side: THREE.DoubleSide,
         displacementMap: demmap,
@@ -487,6 +506,7 @@ whenReady(async (world, camera, renderer, controls) => {
     // mesh.add(ptViz);
   }
 
+  // line
   function buildWaterways(geojson) {
     const pts: number[] = [];
     const indices: number[] = [];
@@ -550,7 +570,7 @@ whenReady(async (world, camera, renderer, controls) => {
     const edgeIndices: number[] = [];
 
     let edgePtCursor = 0;
-    const width = 30;
+    const width = 20;
 
     lines.forEach((line) => {
       const l = line.length;
@@ -671,7 +691,7 @@ whenReady(async (world, camera, renderer, controls) => {
         side: THREE.DoubleSide,
         displacementMap: demmap,
         displacementScale: elevationSpan,
-        displacementBias: elevations.minElevation + 1,
+        displacementBias: elevations.minElevation + 5,
       })
     );
 
@@ -680,7 +700,8 @@ whenReady(async (world, camera, renderer, controls) => {
     mesh.add(edgeViz);
   }
 
-  function buildNatrual(geojson) {
+  // polygon
+  function buildNatrual(geojson, waterwayGeojson) {
     const geodat: GeometryAttriData = {
       tileSize: { x: meters_by_x, y: meters_by_y },
       offset: 0,
@@ -696,27 +717,64 @@ whenReady(async (world, camera, renderer, controls) => {
       return calcXYZFromLatlng(lnglat[1], lnglat[0]) as XY;
     };
 
+    const polygons: Polygon[] = [];
     let count = 0;
+
     for (const { geometry, properties } of geojson.features) {
       if (properties.natural !== "water") continue;
 
       if (geometry.type === "Polygon") {
         for (const polygon of geometry.coordinates) {
+          polygons.push({ type: "Polygon", coordinates: [polygon] });
           makeOneNaturalArea(polygon, projectFn, geodat);
           count++;
         }
       }
     }
 
+    const waterWaysLineStrs = waterwayGeojson.features
+      .map(({ properties, geometry }) => {
+        if (properties.waterway !== "river") return null;
+        if (geometry.type !== "LineString") return null;
+        return geometry.coordinates;
+      })
+      .filter(Boolean);
+
+    console.time("raster polygon");
+    const polygonizedRaster = rasterPolygons(
+      polygons,
+      projectFn,
+      new THREE.Vector2(meters_by_x, meters_by_y),
+      1024
+    );
+    console.timeEnd("raster polygon");
+
+    console.time("flowDirField");
+    const flowDirField = createFlowField(
+      waterWaysLineStrs,
+      projectFn,
+      new THREE.Vector2(meters_by_x, meters_by_y),
+      512,
+      800
+    );
+    console.timeEnd("flowDirField");
+
+    // const binaryGrid = polygonizedRasterToBiArray(polygonizedRaster);
+    // const sdfTexture = BinaryGridToDataTexure(binaryGrid, 512);
+    const shoreTexture = new THREE.CanvasTexture(polygonizedRaster);
+    shoreTexture.magFilter = THREE.LinearFilter;
+    shoreTexture.minFilter = THREE.LinearFilter;
+
     console.log("natural areas count", count);
 
     const surface = textLoader.load(
-      "/quickdemo/30days-map-challenge-8-urban/river.jpeg"
+      "/quickdemo/30days-map-challenge-8-urban/WaterPlain0012_1_350.jpg"
+      // "/quickdemo/30days-map-challenge-8-urban/river.jpeg"
     );
     surface.channel = 0;
-    surface.wrapS = THREE.MirroredRepeatWrapping;
-    surface.wrapT = THREE.MirroredRepeatWrapping;
-    surface.minFilter = THREE.NearestMipMapNearestFilter;
+    surface.wrapS = THREE.RepeatWrapping;
+    surface.wrapT = THREE.RepeatWrapping;
+    surface.minFilter = THREE.LinearFilter;
     surface.magFilter = THREE.LinearFilter;
 
     const geometry = new THREE.BufferGeometry();
@@ -731,27 +789,84 @@ whenReady(async (world, camera, renderer, controls) => {
     );
     geometry.setIndex(geodat.indices);
 
-    const mesh0 = new THREE.Mesh(
-      geometry,
-      new THREE.MeshStandardMaterial({
-        wireframe: false,
-        map: surface,
-        color: 0xffffff,
-        side: THREE.DoubleSide,
-        displacementMap: demmap,
-        displacementScale: elevationSpan,
-        displacementBias: elevations.minElevation + 5,
-      })
-    );
+    const materil0 = new THREE.MeshStandardMaterial({
+      wireframe: false,
+      map: surface,
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      displacementMap: demmap,
+      displacementScale: elevationSpan,
+      displacementBias: elevations.minElevation + 5,
+    });
+
+    const material2 = new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: surface },
+        u_time: { value: 0 },
+        shoreMap: { value: shoreTexture },
+        flowMap: { value: flowDirField },
+        displacementMap: { value: demmap },
+        displacementScale: { value: elevationSpan },
+        displacementBias: { value: elevations.minElevation + 10 },
+      },
+      transparent: true,
+      wireframe: false,
+      visible: true,
+      vertexShader: `
+      uniform sampler2D displacementMap;
+      uniform float displacementScale;
+      uniform float displacementBias;
+
+      varying vec2 vUv;
+
+      void main() {
+        vec3 pos = position.xyz;
+        vUv = uv;
+        float h = texture2D(displacementMap, uv).r;
+        pos.z += displacementBias + displacementScale * h;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      }
+      `,
+      fragmentShader: `
+      uniform sampler2D map;
+      uniform sampler2D shoreMap;
+      uniform sampler2D flowMap;
+
+      uniform float u_time;
+
+      varying vec2 vUv;
+
+      void main() {
+        vec2 uv = fract(vUv);
+        vec2 flowUV = texture2D(flowMap, uv).rg;
+        float dist = texture2D(shoreMap, uv).r;
+        flowUV.t += 0.1 * u_time;
+        flowUV = fract(flowUV);
+        vec3 waterColor = texture2D(map, flowUV).rgb;
+        gl_FragColor = vec4(waterColor, 1.0);
+      }
+      `,
+    });
+
+    // animationLoop((delta, elapsed) => {
+    //   material2.uniforms.u_time.value = elapsed;
+    //   material2.needsUpdate = true;
+    // });
+
+    const mesh0 = new THREE.Mesh(geometry, material2);
 
     mesh.add(mesh0);
     mesh0.frustumCulled = false;
   }
 
+  // polygon
   function buildBuildings(geojson) {
     const geodat: GeometryAttriData = {
       tileSize: { x: meters_by_x, y: meters_by_y },
       offset: 0,
+      group: [],
+      groupIndex: 0,
       position: [],
       indices: [],
       uv: [],
@@ -792,18 +907,28 @@ whenReady(async (world, camera, renderer, controls) => {
     console.log("buildings count", count);
 
     const surface = textLoader.load(
-      "/quickdemo/30days-map-challenge-8-urban/building-wall.jpeg"
+      "/quickdemo/30days-map-challenge-8-urban/city-buildings.modern.png"
     );
     surface.channel = 1;
-    surface.wrapS = THREE.RepeatWrapping;
-    surface.wrapT = THREE.RepeatWrapping;
-    surface.minFilter = THREE.NearestMipMapNearestFilter;
-    surface.magFilter = THREE.NearestFilter;
+    // surface.wrapS = THREE.RepeatWrapping;
+    // surface.wrapT = THREE.RepeatWrapping;
+    surface.minFilter = THREE.LinearMipMapNearestFilter;
+    surface.magFilter = THREE.LinearFilter;
 
+    /**
+     * to use atlas texture,
+     * 1. tell the shader the offset and scale
+     * 2. but, all vertex are together, u must group them by buildings.
+     * 3. how to group?
+     */
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(
       "position",
       new THREE.Float32BufferAttribute(geodat.position, 3)
+    );
+    geometry.setAttribute(
+      "aBuildingType",
+      new THREE.Float32BufferAttribute(geodat.group, 1)
     );
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(geodat.uv, 2));
     geometry.setAttribute(
@@ -820,20 +945,81 @@ whenReady(async (world, camera, renderer, controls) => {
     );
     geometry.setIndex(geodat.indices);
 
-    const mesh0 = new THREE.Mesh(
-      geometry,
-      new THREE.MeshStandardMaterial({
-        wireframe: false,
-        map: surface,
-        color: 0xffffff,
-        vertexColors: true,
-        side: THREE.DoubleSide,
-        displacementMap: demmap,
-        displacementScale: elevationSpan,
-        displacementBias: elevations.minElevation + 5,
-      })
-    );
+    const mapSubdivisions = new Float32Array(16 * 4);
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        const scale = new THREE.Vector2(0.25, 0.25);
+        const offset = new THREE.Vector2(0.25 * x, 0.25 * y);
+        const basis = 4 * (y * 4 + x);
+        mapSubdivisions[basis] = scale.x;
+        mapSubdivisions[basis + 1] = scale.y;
+        mapSubdivisions[basis + 2] = offset.x;
+        mapSubdivisions[basis + 3] = offset.y;
+      }
+    }
 
+    const material = new THREE.MeshStandardMaterial({
+      wireframe: false,
+      map: surface,
+      color: 0xffffff,
+      vertexColors: true,
+      side: THREE.DoubleSide,
+      displacementMap: demmap,
+      displacementScale: elevationSpan,
+      displacementBias: elevations.minElevation + 5,
+    });
+
+    const material2 = new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: surface },
+        mapSubdivisions: { value: mapSubdivisions },
+        displacementMap: { value: demmap },
+        displacementScale: { value: elevationSpan },
+        displacementBias: { value: elevations.minElevation + 5 },
+      },
+      wireframe: false,
+      vertexShader: `
+      attribute vec2 uv1;
+      attribute float aBuildingType;
+
+      uniform sampler2D displacementMap;
+      uniform float displacementScale;
+      uniform float displacementBias;
+
+      varying vec2 vUv;
+      varying float vBuildingType;
+
+      void main() {
+        vec3 pos = position.xyz;
+        vUv = uv1;
+        vBuildingType = aBuildingType;
+        float h = texture2D(displacementMap, uv).r;
+        pos.z += displacementBias + displacementScale * h;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      }
+      `,
+      fragmentShader: `
+      uniform sampler2D map;
+      uniform vec4 mapSubdivisions[16];
+
+      varying vec2 vUv;
+      varying float vBuildingType;
+
+      void main() {
+        vec2 uv = fract(vUv);
+        vec4  offsetScale = mapSubdivisions[int(vBuildingType)];
+        vec2 scale = offsetScale.rg;
+        vec2 offset = offsetScale.ba;
+        uv *= scale;
+        uv += offset;
+        vec4 color = texture2D(map, uv);
+        gl_FragColor = vec4(color.rgb, 1.0);
+      }
+      `,
+    });
+
+    const mesh0 = new THREE.Mesh(geometry, material2);
     mesh.add(mesh0);
     mesh0.frustumCulled = false;
   }
@@ -954,56 +1140,80 @@ whenReady(async (world, camera, renderer, controls) => {
   const overlayMap2 = textLoader.load(overlayUrl2);
   const overlayMap3 = textLoader.load(overlayUrl3);
   const overlayMap4 = textLoader.load(overlayUrl4);
+  const overlayMapDetail = textLoader.load(
+    `/quickdemo/30days-map-challenge-8-urban/Gemini_Generated_Image_6wxvix6wxvix6wxv.png`
+  );
 
-  const isSplitTo4 = false;
+  [
+    overlayMap1,
+    overlayMap2,
+    overlayMap3,
+    overlayMap4,
+    overlayMapDetail,
+  ].forEach((overlay) => {
+    overlay.minFilter = THREE.LinearMipmapLinearFilter;
+    overlay.magFilter = THREE.LinearFilter;
+  });
+
+  const isSplitTo4 = true;
 
   const mat1 = new THREE.ShaderMaterial({
     visible: true,
-    uniforms: {
-      ambLightColor: {
-        value: __lights__.amb.color,
+    fog: true,
+    uniforms: THREE.UniformsUtils.merge([
+      THREE.UniformsLib["fog"],
+      {
+        ambLightColor: {
+          value: __lights__.amb.color,
+        },
+        ambLightIntensity: {
+          value: __lights__.amb.intensity,
+        },
+        dirLightColor: {
+          value: __lights__.dir.color,
+        },
+        dirLightDir: {
+          value: __lights__.dir.position.clone().negate(),
+        },
+        dirLightIntensity: {
+          value: __lights__.dir.intensity,
+        },
+        uDetailAmount: {
+          value: 0.2,
+        },
+        uOverlayMap: {
+          value: overlayMap,
+        },
+        uOverlayMap1: {
+          value: overlayMap1,
+        },
+        uOverlayMap2: {
+          value: overlayMap2,
+        },
+        uOverlayMap3: {
+          value: overlayMap3,
+        },
+        uOverlayMap4: {
+          value: overlayMap4,
+        },
+        overlayMapDetail: {
+          value: overlayMapDetail,
+        },
+        uDem: {
+          value: demmap,
+        },
+        uElevations: {
+          value: new THREE.Vector3(
+            elevations.minElevation,
+            elevations.maxElevation,
+            elevationSpan
+          ),
+        },
+        uSize: {
+          value: new THREE.Vector2(meters_by_x, meters_by_y),
+        },
       },
-      ambLightIntensity: {
-        value: __lights__.amb.intensity,
-      },
-      dirLightColor: {
-        value: __lights__.dir.color,
-      },
-      dirLightDir: {
-        value: __lights__.dir.position.clone().negate(),
-      },
-      dirLightIntensity: {
-        value: __lights__.dir.intensity,
-      },
-      uOverlayMap: {
-        value: overlayMap,
-      },
-      uOverlayMap1: {
-        value: overlayMap1,
-      },
-      uOverlayMap2: {
-        value: overlayMap2,
-      },
-      uOverlayMap3: {
-        value: overlayMap3,
-      },
-      uOverlayMap4: {
-        value: overlayMap4,
-      },
-      uDem: {
-        value: demmap,
-      },
-      uElevations: {
-        value: new THREE.Vector3(
-          elevations.minElevation,
-          elevations.maxElevation,
-          elevationSpan
-        ),
-      },
-      uSize: {
-        value: new THREE.Vector2(meters_by_x, meters_by_y),
-      },
-    },
+    ]),
     vertexShader: /**glsl */ `
             uniform sampler2D uDem;
             uniform vec2 uSize;
@@ -1011,6 +1221,8 @@ whenReady(async (world, camera, renderer, controls) => {
 
             varying vec2 vUv;
             varying vec3 vViewPosition;
+            varying float vElevation;
+            varying float vViewDistance;
 
             void main() {
               vec3 pos = position.xyz;
@@ -1018,9 +1230,12 @@ whenReady(async (world, camera, renderer, controls) => {
               float h = texture2D(uDem, uv).r;
               pos.z = uElevations.x + uElevations.z * h;
 
-              vViewPosition = pos;
+              vec4 mvpos = modelViewMatrix * vec4(pos, 1.0);
+              vElevation = h;
+              vViewPosition = mvpos.xyz;
+              vViewDistance = - mvpos.z;
 
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+              gl_Position = projectionMatrix * mvpos;
             }
           `,
     fragmentShader: isSplitTo4
@@ -1030,15 +1245,51 @@ whenReady(async (world, camera, renderer, controls) => {
             uniform sampler2D uOverlayMap2; // rightTop
             uniform sampler2D uOverlayMap3; // leftBottom
             uniform sampler2D uOverlayMap4; // rightBottom
+            uniform sampler2D overlayMapDetail; // rightBottom
 
             varying vec2 vUv;
+
+            uniform vec3 ambLightColor;
+            uniform float ambLightIntensity;
+            uniform vec3 dirLightColor;
+            uniform float dirLightIntensity;
+            uniform vec3 dirLightDir;
+
+            uniform float uDetailAmount;
+
+            varying vec3 vViewPosition; // Pass the modelViewPosition from Vertex
+            varying float vElevation;
+
+            uniform vec3 fogColor;
+            uniform float fogDensity;
+
+            varying float vViewDistance;
+
+            float random(vec2 st) {
+                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+            }
 
             void main() {
               vec4 color;
               vec2 aUv;
 
+              float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vViewDistance * vViewDistance);
+              fogFactor = clamp(fogFactor, 0.0, 1.0);
+
+              // vec3 baseColor = vec3(0.5, 0.5, 0.5); // Neutral gray
+              // vec4 targetGreen = vec4(0.0, 1.0, 0.0, 1.0); // Pure green
+
               if (vUv.x <= 0.5 && vUv.y <= 0.5) {
-                color = texture2D(uOverlayMap3, vUv * 2.0);
+                aUv = 2.0 * vUv;
+                color = texture2D(uOverlayMap3, aUv);
+
+                // float luminance = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+
+                // if (luminance < 0.32) {
+                  // color = vec4(mix(color.rgb, vec3(0.81, 0.79, 0.75), 0.5), 1.0);
+                    // Perceptually very close to black
+                // }
+                // color = texture2D(uOverlayMap3, aUv);
               } else if (vUv.x <= 0.5 && vUv.y > 0.5) {
                 aUv.x = 2.0 * vUv.x;
                 aUv.y = 2.0 * (vUv.y - 0.5);
@@ -1053,8 +1304,15 @@ whenReady(async (world, camera, renderer, controls) => {
                 color = texture2D(uOverlayMap2, aUv);
               }
 
-              // can modify the output here
-              gl_FragColor = vec4(color.rgb, 1.0);
+              vec3 fdx = dFdx(vViewPosition);
+              vec3 fdy = dFdy(vViewPosition);
+
+              vec3 normal0 = normalize(cross(fdx, fdy));
+
+              float diffuse = max(dot(normal0, dirLightDir), 0.0);
+              vec3 lighting = ambLightColor.rgb * ambLightIntensity + (dirLightColor.rgb * diffuse) * dirLightIntensity;
+
+              gl_FragColor = vec4(mix(color.rgb, fogColor, fogFactor), 1.0);
             }
           `
       : `
@@ -1078,10 +1336,9 @@ whenReady(async (world, camera, renderer, controls) => {
               vec3 normal0 = normalize(cross(fdx, fdy));
 
               float diffuse = max(dot(normal0, dirLightDir), 0.0);
-
               vec3 lighting = ambLightColor.rgb * ambLightIntensity + (dirLightColor.rgb * diffuse) * dirLightIntensity;
 
-              gl_FragColor = vec4(color.rgb * lighting, 1.0);
+              gl_FragColor = vec4(color.rgb * lighting * 0.618, 1.0);
             }
           `,
   });
@@ -1130,17 +1387,19 @@ whenReady(async (world, camera, renderer, controls) => {
     .then((r) => r.json())
     .then(buildHighways);
 
-  await fetch(
+  const waterwayGeojson = await fetch(
     `http://0.0.0.0:3003/osm?bbox=${bbox}&way=waterway&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&regen=${reGen}`
-  )
-    .then((r) => r.json())
-    .then(buildWaterways);
+  ).then((r) => r.json());
+
+  buildWaterways(waterwayGeojson);
 
   await fetch(
     `http://0.0.0.0:3003/osm?bbox=${bbox}&way=natural&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&regen=${reGen}`
   )
     .then((r) => r.json())
-    .then(buildNatrual);
+    .then((geojson) => {
+      buildNatrual(geojson, waterwayGeojson);
+    });
 });
 
 const vec3Util = new THREE.Vector3();
@@ -1152,12 +1411,14 @@ type DemElevations = {
   maxElevation: number;
 };
 type LngLat = [number, number];
-type XY = [number, number, number];
+type XY = [number, number];
 type Projector = (lnglat: LngLat) => XY;
 type GeometryAttriData = {
   tileSize: Readonly<{ x: number; y: number }>;
   offset: number;
   position: number[];
+  group?: number[];
+  groupIndex?: number;
   indices: number[];
   normal: number[];
   color: number[];
@@ -1173,12 +1434,17 @@ function makeOneBuilding(
   properties
 ) {
   const pts = lnglats.map(project);
-  const { tileSize, position, color, indices, normal, uv, uv1 } = geoAttriData;
+  const { group, tileSize, position, color, indices, normal, uv, uv1 } =
+    geoAttriData;
   const max = pts.length - 1;
   const uniformColor = new THREE.Color(
     BuildingColor[properties.building] ?? 0xffffff
   );
 
+  const uniformType =
+    BuildingType[properties.building] ?? BuildingType.unclassified;
+
+  const metersToUvFactor = 0.2; //
   let offset = geoAttriData.offset;
   let cursor = 0;
   let x = 0;
@@ -1187,21 +1453,23 @@ function makeOneBuilding(
 
   for (const pt of pts) {
     if (cursor > 0) {
-      u += Math.hypot(pt[0] - x, pt[1] - y) * 0.05;
+      u += Math.hypot(pt[0] - x, pt[1] - y) * metersToUvFactor;
     }
 
     x = pt[0];
     y = pt[1];
 
     position.push(x, y, 0); // 0, 2
+    group.push(uniformType);
     color.push(uniformColor.r, uniformColor.g, uniformColor.b);
     uv.push(x / tileSize.x, y / tileSize.y);
     uv1.push(u, 0);
     normal.push(0, 0, 1);
     position.push(x, y, height); // 1, 3
+    group.push(uniformType);
     color.push(uniformColor.r, uniformColor.g, uniformColor.b);
     uv.push(x / tileSize.x, y / tileSize.y);
-    uv1.push(u, height * 0.1);
+    uv1.push(u, height * metersToUvFactor);
     normal.push(0, 0, 1);
 
     if (cursor < max) {
@@ -1227,6 +1495,7 @@ function makeOneBuilding(
 
   for (const vec of vec2s) {
     position.push(vec.x, vec.y, height);
+    group.push(uniformType);
     uv.push(vec.x / tileSize.x, vec.y / tileSize.y);
     color.push(uniformColor.r, uniformColor.g, uniformColor.b);
     uv1.push(0.5, 0.5); // pure color.
@@ -1240,6 +1509,7 @@ function makeOneBuilding(
     indices.push(offset0 + tri[0], offset0 + tri[1], offset0 + tri[2]);
   }
 
+  geoAttriData.groupIndex += 1;
   geoAttriData.offset = offset;
 }
 
@@ -1304,6 +1574,192 @@ function makeOneNaturalArea(
   geoAttriData.offset = offset;
 }
 
+type Polygon = { type: "Polygon"; coordinates: LngLat[][] };
+
+function rasterPolygons(
+  polygons: Polygon[],
+  project: Projector,
+  tileSize: THREE.Vector2,
+  dimension = 64
+) {
+  const canvas = document.createElement("canvas");
+  canvas.width = dimension;
+  canvas.height = dimension;
+
+  const scaleX = dimension / tileSize.x;
+  const scaleY = dimension / tileSize.y;
+
+  const ctx2d = canvas.getContext("2d");
+  ctx2d.fillStyle = "#ff0000";
+  ctx2d.fillRect(0, 0, dimension, dimension);
+
+  ctx2d.fillStyle = "white";
+
+  let positions: LngLat[];
+  let size = 0;
+  let coord: LngLat;
+  let x: number;
+  let y: number;
+  let cursor = 0;
+
+  const line = () => {
+    coord = positions[cursor];
+    [x, y] = project(coord);
+    x *= scaleX;
+    y *= scaleY;
+    y = dimension - y;
+  };
+
+  const render = () => {
+    for (const polygon of polygons) {
+      ctx2d.beginPath();
+
+      positions = polygon.coordinates[0];
+      size = positions.length;
+
+      cursor = 0;
+
+      line();
+      ctx2d.moveTo(x, y);
+
+      cursor = 1;
+      for (; cursor < size; cursor++) {
+        line();
+        ctx2d.lineTo(x, y);
+      }
+
+      ctx2d.closePath();
+      ctx2d.stroke();
+    }
+  };
+
+  ctx2d.strokeStyle = "#af0000";
+  ctx2d.lineWidth = 16;
+  render();
+  ctx2d.strokeStyle = "#bf0000";
+  ctx2d.lineWidth = 8;
+  render();
+  ctx2d.strokeStyle = "#cf0000";
+  ctx2d.lineWidth = 4;
+  render();
+  ctx2d.strokeStyle = "#df0000";
+  ctx2d.lineWidth = 2;
+  render();
+
+  // canvas.style.cssText = `
+  //   position: fixed;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: 999;
+  // `;
+  // document.body.appendChild(canvas);
+
+  return canvas;
+}
+
+type LineString = LngLat[];
+function createFlowField(
+  lineStrs: LineString[],
+  project: Projector,
+  tileSize: THREE.Vector2,
+  dimension = 64,
+  width: number = 100
+): THREE.DataTexture {
+  const data = new Float32Array(dimension * dimension * 2);
+
+  const scale = new THREE.Vector2(
+    dimension / tileSize.x,
+    dimension / tileSize.y
+  );
+
+  const step = 1 / scale.x;
+
+  const waterFlow = (lineStr: LineString) => {
+    const curve = new THREE.Path(
+      lineStr.map((coord) => {
+        const xy = project(coord);
+        return new THREE.Vector2(xy[0], xy[1]);
+      })
+    );
+
+    const dir = new THREE.Vector2();
+    const dir2 = new THREE.Vector2();
+
+    let depth = 0;
+    let lastPos: THREE.Vector2;
+
+    const totalDistance = curve.getLength();
+    console.log("totalDist", totalDistance);
+    const n = Math.ceil(totalDistance / step);
+
+    let u = 0;
+    let v = 0;
+
+    for (let i = 0; i <= n; i++) {
+      const position = curve.getPointAt(i / n);
+      const tangent = curve.getTangentAt(i / n);
+
+      if (lastPos) {
+        depth += position.distanceTo(lastPos);
+      }
+
+      lastPos = position;
+
+      // no care scale.
+      dir.x = tangent.x;
+      dir.y = tangent.y;
+
+      // find the horizonal direction.
+      dir2.x = dir.y;
+      dir2.y = -dir.x;
+
+      const factor = step / (width * 2);
+
+      u = 0;
+
+      for (let w = -width; w <= width + step; w += step) {
+        const x2 = position.x + dir2.x * w;
+        const y2 = position.y + dir2.y * w;
+
+        const ix = Math.floor(x2 * scale.x);
+        const iy = Math.floor(y2 * scale.y);
+
+        const i0 = 2 * (iy * dimension + ix);
+
+        u += factor;
+        u %= 1;
+
+        data[i0] = u; // 0-2 width
+        data[i0 + 1] = v;
+      }
+
+      v += factor;
+      v %= 1;
+    }
+  };
+
+  for (const lineStr of lineStrs) {
+    waterFlow(lineStr);
+  }
+
+  const texture = new THREE.DataTexture(
+    data,
+    dimension,
+    dimension,
+    THREE.RGFormat,
+    THREE.FloatType,
+    THREE.UVMapping,
+    THREE.RepeatWrapping,
+    THREE.RepeatWrapping,
+    THREE.LinearFilter,
+    THREE.LinearFilter
+  );
+
+  texture.needsUpdate = true;
+
+  return texture;
+}
+
 /**
  * Enum mapping building types to Hexadecimal numbers.
  * Format: 0xRRGGBB
@@ -1336,3 +1792,12 @@ enum BuildingColor {
   temple = 0xaf7ac5,
   hotel = 0xeb984e,
 }
+
+const BuildingType = {
+  industrial: 12,
+  office: 9,
+  commercial: 10,
+  apartments: 0,
+  residential: 1,
+  unclassified: 8,
+};

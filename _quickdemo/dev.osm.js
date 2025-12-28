@@ -36,6 +36,7 @@ export function handler(req, res) {
         host: "overpass-api.de",
         path: "/api/interpreter",
         protocol: "https:",
+        timeout: 360,
         headers: {
           origin: "https://overpass-api.de",
           referer: "https://overpass-api.de/query_form.html",
@@ -47,23 +48,53 @@ export function handler(req, res) {
       (incoming) => {
         console.log("[osm] incoming, ", "file will be saved in:", saveToOsm);
         const writtable = fs.createWriteStream(saveToOsm, "utf8");
+        let byteLength = 0;
+        let startAt = performance.now();
+        let time = 0;
+        let seq = 0;
 
         incoming
+          .on("data", (chunk) => {
+            byteLength += chunk.byteLength;
+            time = performance.now() - startAt;
+            time /= 1000;
+            console.log(
+              `[osm].${seq++} loading...`,
+              saveToOsm,
+              Math.floor(byteLength / 1024) + "kb",
+              `; taken ${Math.floor(time)}s`
+            );
+          })
+          .on("pause", () => {
+            console.log("[osm] paused...", saveToOsm, byteLength);
+          })
           .pipe(writtable)
           .on("finish", () => {
             console.log("finish saved", saveToOsm);
             const json = fs.readFileSync(saveToOsm, "utf8");
-            const geojson = osmtogeojson(JSON.parse(json), {});
 
-            const filewrite = fs.createWriteStream(saveToGeojson, "utf8");
-            const geojsonStr = JSON.stringify(geojson);
-            filewrite.write(geojsonStr, "utf8");
+            try {
+              const jsonO = JSON.parse(json);
+              const geojson = osmtogeojson(jsonO, {});
+              const filewrite = fs.createWriteStream(saveToGeojson, "utf8");
+              const geojsonStr = JSON.stringify(geojson);
+              filewrite.write(geojsonStr, "utf8");
+              res.write(JSON.stringify(geojson), "utf8");
+              res.end();
+            } catch (er_) {
+              console.log(">>>>>[osm]", saveToOsm);
+              console.log(json);
+              console.log("<<<<<[osm]", saveToOsm);
+              res.write(JSON.stringify({ features: [] }), "utf8");
+              res.end();
+            }
 
             res.on("error", (ex) => {
-              console.log("res", ex);
+              console.log("[osm] res", ex);
             });
-            res.write(JSON.stringify(geojson), "utf8");
-            res.end();
+          })
+          .on("close", () => {
+            console.log("[osm] close", saveToOsm);
           })
           .on("error", (ex) => {
             console.log("incoming", ex);
@@ -88,6 +119,14 @@ out body;
 out skel qt;`
   );
 
+  sender
+    .on("timeout", () => {
+      console.log("[osm] timeout", saveToOsm);
+    })
+    .on("error", (err_) => {
+      console.log("[osm] err");
+      console.log(err_);
+    });
   sender.write(us.toString(), "utf8");
   sender.end();
 }
