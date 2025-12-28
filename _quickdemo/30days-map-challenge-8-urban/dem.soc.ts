@@ -69,7 +69,7 @@ whenReady(async (world, camera, renderer, controls) => {
 
   const reGen = false;
 
-  const [lat, lng] = [26.5708557002629, 106.72092736301941];
+  const [lat, lng] = [30.515688958026615, 105.59937676738033];
   // const [lng, lat] = [106.5774281, 29.5526704];
   const zoom = 12; // it's the best zoom level to load the data of osm and dem.
 
@@ -183,8 +183,11 @@ whenReady(async (world, camera, renderer, controls) => {
     return `https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?${query.toString()}`;
   };
 
-  const getGooTileUrl = (xyz: { x: number; y: number; z: number }) => {
-    return `http://0.0.0.0:3003/gtile/${xyz.z}/${xyz.x}/${xyz.y}`;
+  const getGooTileUrl = (
+    xyz: { x: number; y: number; z: number },
+    styled = true
+  ) => {
+    return `http://0.0.0.0:3003/gtile/${xyz.z}/${xyz.x}/${xyz.y}?styled=${styled}`;
   };
 
   const bbbbbbox3 = splitTo4();
@@ -193,10 +196,15 @@ whenReady(async (world, camera, renderer, controls) => {
   // const overlayUrl = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief/default/GoogleMapsCompatible_Level8/${zoom}/${__ti__[1]}/${__ti__[0]}.jpg`;
   const overlayUrl = getGooTileUrl({ z: zoom, x: __ti__[0], y: __ti__[1] });
   // const overlayUrl = `http://0.0.0.0:3003/texture/data-gtiles/googletile.cute_3d_tile.png`;
-  const overlayUrl1 = getGooTileUrl(bbbbbbox3.bbox0);
-  const overlayUrl2 = getGooTileUrl(bbbbbbox3.bbox1);
-  const overlayUrl3 = getGooTileUrl(bbbbbbox3.bbox2);
-  const overlayUrl4 = getGooTileUrl(bbbbbbox3.bbox3);
+  const overlayUrl1 = getGooTileUrl(bbbbbbox3.bbox0, false);
+  const overlayUrl2 = getGooTileUrl(bbbbbbox3.bbox1, false);
+  const overlayUrl3 = getGooTileUrl(bbbbbbox3.bbox2, false);
+  const overlayUrl4 = getGooTileUrl(bbbbbbox3.bbox3, false);
+
+  const overlayUrl11 = getGooTileUrl(bbbbbbox3.bbox0, true);
+  const overlayUrl21 = getGooTileUrl(bbbbbbox3.bbox1, true);
+  const overlayUrl31 = getGooTileUrl(bbbbbbox3.bbox2, true);
+  const overlayUrl41 = getGooTileUrl(bbbbbbox3.bbox3, true);
 
   // const overlayUrl = getArcGisTileUrl(bbox3857, 1024); //`https://mt1.google.com/vt/lyrs=s&x=${ti[0]}&y=${ti[1]}&z=${zoom}&scale=4&hl=en`;
 
@@ -1140,15 +1148,26 @@ whenReady(async (world, camera, renderer, controls) => {
   const overlayMap2 = textLoader.load(overlayUrl2);
   const overlayMap3 = textLoader.load(overlayUrl3);
   const overlayMap4 = textLoader.load(overlayUrl4);
+
+  const overlayMap11 = textLoader.load(overlayUrl11);
+  const overlayMap21 = textLoader.load(overlayUrl21);
+  const overlayMap31 = textLoader.load(overlayUrl31);
+  const overlayMap41 = textLoader.load(overlayUrl41);
+
   const overlayMapDetail = textLoader.load(
     `/quickdemo/30days-map-challenge-8-urban/Gemini_Generated_Image_6wxvix6wxvix6wxv.png`
   );
 
   [
+    overlayMap,
     overlayMap1,
     overlayMap2,
     overlayMap3,
     overlayMap4,
+    overlayMap11,
+    overlayMap21,
+    overlayMap31,
+    overlayMap41,
     overlayMapDetail,
   ].forEach((overlay) => {
     overlay.minFilter = THREE.LinearMipmapLinearFilter;
@@ -1196,6 +1215,18 @@ whenReady(async (world, camera, renderer, controls) => {
         uOverlayMap4: {
           value: overlayMap4,
         },
+        uOverlayMap11: {
+          value: overlayMap11,
+        },
+        uOverlayMap21: {
+          value: overlayMap21,
+        },
+        uOverlayMap31: {
+          value: overlayMap31,
+        },
+        uOverlayMap41: {
+          value: overlayMap41,
+        },
         overlayMapDetail: {
           value: overlayMapDetail,
         },
@@ -1208,6 +1239,9 @@ whenReady(async (world, camera, renderer, controls) => {
             elevations.maxElevation,
             elevationSpan
           ),
+        },
+        transition: {
+          value: 0.2,
         },
         uSize: {
           value: new THREE.Vector2(meters_by_x, meters_by_y),
@@ -1245,6 +1279,12 @@ whenReady(async (world, camera, renderer, controls) => {
             uniform sampler2D uOverlayMap2; // rightTop
             uniform sampler2D uOverlayMap3; // leftBottom
             uniform sampler2D uOverlayMap4; // rightBottom
+
+            uniform sampler2D uOverlayMap11; // leftTop
+            uniform sampler2D uOverlayMap21; // rightTop
+            uniform sampler2D uOverlayMap31; // leftBottom
+            uniform sampler2D uOverlayMap41; // rightBottom
+
             uniform sampler2D overlayMapDetail; // rightBottom
 
             varying vec2 vUv;
@@ -1263,6 +1303,8 @@ whenReady(async (world, camera, renderer, controls) => {
             uniform vec3 fogColor;
             uniform float fogDensity;
 
+            uniform float transition;
+
             varying float vViewDistance;
 
             float random(vec2 st) {
@@ -1270,38 +1312,37 @@ whenReady(async (world, camera, renderer, controls) => {
             }
 
             void main() {
+              vec4 ocolor;
+              vec4 gcolor;
               vec4 color;
               vec2 aUv;
 
               float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vViewDistance * vViewDistance);
               fogFactor = clamp(fogFactor, 0.0, 1.0);
 
-              // vec3 baseColor = vec3(0.5, 0.5, 0.5); // Neutral gray
-              // vec4 targetGreen = vec4(0.0, 1.0, 0.0, 1.0); // Pure green
-
               if (vUv.x <= 0.5 && vUv.y <= 0.5) {
                 aUv = 2.0 * vUv;
-                color = texture2D(uOverlayMap3, aUv);
-
-                // float luminance = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-
-                // if (luminance < 0.32) {
-                  // color = vec4(mix(color.rgb, vec3(0.81, 0.79, 0.75), 0.5), 1.0);
-                    // Perceptually very close to black
-                // }
-                // color = texture2D(uOverlayMap3, aUv);
+                ocolor = texture2D(uOverlayMap3, aUv);
+                gcolor = texture2D(uOverlayMap31, aUv);
+                color = mix(ocolor, gcolor, transition);
               } else if (vUv.x <= 0.5 && vUv.y > 0.5) {
                 aUv.x = 2.0 * vUv.x;
                 aUv.y = 2.0 * (vUv.y - 0.5);
-                color = texture2D(uOverlayMap1, aUv);
+                ocolor = texture2D(uOverlayMap1, aUv);
+                gcolor = texture2D(uOverlayMap11, aUv);
+                color = mix(ocolor, gcolor, transition);
               } else if (vUv.x > 0.5 && vUv.y <= 0.5) {
                 aUv.x = 2.0 * (vUv.x - 0.5);
                 aUv.y = 2.0 * vUv.y;
-                color = texture2D(uOverlayMap4, aUv);
+                ocolor = texture2D(uOverlayMap4, aUv);
+                gcolor = texture2D(uOverlayMap41, aUv);
+                color = mix(ocolor, gcolor, transition);
               } else {
                 aUv.x = 2.0 * (vUv.x - 0.5);
                 aUv.y = 2.0 * (vUv.y - 0.5);
-                color = texture2D(uOverlayMap2, aUv);
+                ocolor = texture2D(uOverlayMap2, aUv);
+                gcolor = texture2D(uOverlayMap21, aUv);
+                color = mix(ocolor, gcolor, transition);
               }
 
               vec3 fdx = dFdx(vViewPosition);
@@ -1312,7 +1353,8 @@ whenReady(async (world, camera, renderer, controls) => {
               float diffuse = max(dot(normal0, dirLightDir), 0.0);
               vec3 lighting = ambLightColor.rgb * ambLightIntensity + (dirLightColor.rgb * diffuse) * dirLightIntensity;
 
-              gl_FragColor = vec4(mix(color.rgb, fogColor, fogFactor), 1.0);
+              // gl_FragColor = vec4(mix(color.rgb, fogColor, fogFactor), 1.0);
+              gl_FragColor = vec4(color.rgb, 1.0);
             }
           `
       : `
@@ -1341,6 +1383,13 @@ whenReady(async (world, camera, renderer, controls) => {
               gl_FragColor = vec4(color.rgb * lighting * 0.618, 1.0);
             }
           `,
+  });
+
+  controls.addEventListener("change", (event) => {
+    const angle = controls.getPolarAngle();
+    const halfPi = Math.PI / 2;
+    const transition = angle / halfPi;
+    mat1.uniforms.transition.value = transition;
   });
 
   const mat2 = new THREE.MeshStandardMaterial({
@@ -1393,13 +1442,13 @@ whenReady(async (world, camera, renderer, controls) => {
 
   buildWaterways(waterwayGeojson);
 
-  await fetch(
-    `http://0.0.0.0:3003/osm?bbox=${bbox}&way=natural&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&regen=${reGen}`
-  )
-    .then((r) => r.json())
-    .then((geojson) => {
-      buildNatrual(geojson, waterwayGeojson);
-    });
+  // await fetch(
+  //   `http://0.0.0.0:3003/osm?bbox=${bbox}&way=name&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&regen=${reGen}`
+  // )
+  //   .then((r) => r.json())
+  //   .then((geojson) => {
+  //     console.log(geojson);
+  //   });
 });
 
 const vec3Util = new THREE.Vector3();

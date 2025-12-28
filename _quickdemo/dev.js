@@ -9,6 +9,7 @@ import * as osmroute from "./dev.osm.js";
 import * as demroute from "./dev.dem.js";
 import * as texroute from "./dev.texture.js";
 import * as gootileroute from "./dev.gootile.js";
+import md5 from "md5";
 
 const PORT = 3003;
 const allowedOrigin = "*";
@@ -245,6 +246,10 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
+      if (tryGetCachedNpmjs(esmfile, res)) {
+        return;
+      }
+
       console.log(`esmfile resolved under ${pkg}!`, esmfile);
 
       const workdir = isFolder ? folder : path.join(folder, "..");
@@ -256,8 +261,12 @@ const server = http.createServer(async (req, res) => {
         module: ModuleKind.ESNext,
         paths: [],
       });
+
+      trySaveCachedNpmjs(esmfile, esmCode);
+
       res.setHeader("Content-Type", "application/javascript");
       moduleCache.set(esmfile, esmCode);
+
       res.end(esmCode);
     } else {
       if (!req.url.endsWith(".js")) {
@@ -357,26 +366,26 @@ function getEntryFile(npmFolder) {
   }
 }
 
-function createFileCache() {
-  const datanpmjsdir = "./datanpmjs";
-  const metadatafile = "./datanpmjs/metadata.json";
+const npmjsfileSavedto = `./data-npmjs`;
 
-  if (fs.existsSync(datanpmjsdir)) {
-    fs.mkdirSync(datanpmjsdir);
+function tryGetCachedNpmjs(esmfile, res) {
+  const id = md5(esmfile);
+  const jsfile = path.join(ROOT_DIR, npmjsfileSavedto, `${id}.js`);
+  if (fs.existsSync(jsfile)) {
+    console.log("find cached file", esmfile);
+    res.setHeader("Content-Type", "application/javascript");
+    const jsCode = fs.readFileSync(jsfile, "utf-8");
+    res.end(jsCode);
+    moduleCache.set(esmfile, jsCode);
+    return true;
+  } else {
+    return false;
   }
+}
 
-  let metadata = {};
-
-  const init = () => {};
-  const md5 = (input) => input;
-
-  const writeNpmjs = (esmfile) => {
-    metadata[esmfile] = md5(esmfile);
-  };
-
-  const readNpmjs = (esmfile) => {
-    const id = metadata[esmfile];
-    if (!id) return null;
-    return id;
-  };
+function trySaveCachedNpmjs(esmfile, jsCode) {
+  const id = md5(esmfile);
+  const jsfile = path.join(ROOT_DIR, npmjsfileSavedto, `${id}.js`);
+  fs.writeFileSync(jsfile, jsCode, "utf-8");
+  console.log("jscode saved", esmfile);
 }

@@ -4,31 +4,33 @@ import sharp from "sharp";
 
 export const route = /^\/gtile/;
 
+const fallback = "./data-gtiles/12/3228/1747.jpeg";
+
 export const handler = (req, res) => {
   // /z/x/y
   const pathname = req.url.slice(6);
 
-  const [, z, x, y, styled] = pathname.split("/");
+  const [, z, x, y, qs] = pathname.split(/[\?\/]/g);
 
   const dirpath = `./data-gtiles/${z}/${x}`;
   const originalFilepath = `./data-gtiles/${z}/${x}/${y}.jpeg`;
   const styledFilepath = `./data-gtiles/${z}/${x}/${y}.styled.png`;
 
-  // if (fs.existsSync(originalFilepath)) {
-  //   fs.createReadStream(originalFilepath).pipe(res);
-  //   return;
-  // }
-
   if (fs.existsSync(originalFilepath)) {
-    simplifyImage(originalFilepath, styledFilepath).then(
-      (after) => {
-        fs.createReadStream(styledFilepath).pipe(res);
-      },
-      (err) => {
-        console.log(err);
-        fs.createReadStream(originalFilepath).pipe(res);
-      }
-    );
+    if (qs === "styled=true") {
+      simplifyImage(originalFilepath, styledFilepath).then(
+        (after) => {
+          fs.createReadStream(styledFilepath).pipe(res);
+        },
+        (err) => {
+          console.log(err);
+          fs.rmSync(originalFilepath, { force: true });
+          fs.createReadStream(fallback).pipe(res);
+        }
+      );
+    } else {
+      fs.createReadStream(originalFilepath).pipe(res);
+    }
     return;
   }
 
@@ -56,15 +58,18 @@ export const handler = (req, res) => {
           "[google tile] downloading, is to be saved to: ",
           originalFilepath
         );
-        // const styled = fs.createWriteStream(styledFilepath);
 
         incomming
           .pipe(originalFile)
           .on("error", logErr)
           .on("finish", () => {
-            simplifyImage(originalFilepath, styledFilepath);
-            fs.createReadStream(originalFilepath).pipe(res);
             console.log("[google tile] finish downloaded", originalFilepath);
+            simplifyImage_del_if_error(originalFilepath, styledFilepath);
+            if (fs.existsSync(originalFilepath)) {
+              fs.createReadStream(originalFilepath).pipe(res);
+            } else {
+              fs.createReadStream(fallback).pipe(res);
+            }
           });
       }
     )
@@ -75,6 +80,16 @@ export const handler = (req, res) => {
 const logErr = (err_) => {
   console.log(err_);
 };
+
+async function simplifyImage_del_if_error(inputPath, outputPath) {
+  try {
+    await simplifyImage(inputPath, outputPath);
+  } catch (Err_) {
+    logErr(Err_);
+    fs.rmSync(inputPath, { force: true });
+    console.log("[goog tile] orinal file is broken, rm it", inputPath);
+  }
+}
 
 async function simplifyImage(inputPath, outputPath) {
   const input = sharp(inputPath);

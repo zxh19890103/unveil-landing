@@ -113,6 +113,7 @@ export function handler(req, res) {
 (
 relation[${way}](${bbox});
 way[${way}](${bbox});
+node[${way}](${{bbox}});
 );
 out body;
 >;

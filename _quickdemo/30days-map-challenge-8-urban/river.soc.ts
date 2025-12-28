@@ -43,6 +43,7 @@ const Meters_per_lon = (lat: number) =>
 
 whenReady(async (world, camera, renderer, controls) => {
   const [lat, lng] = [29.56538468258404, 106.5875480740474];
+
   // const [lng, lat] = [106.5774281, 29.5526704];
   const zoom = 12; // it's the best zoom level to load the data of osm and dem.
 
@@ -105,7 +106,6 @@ whenReady(async (world, camera, renderer, controls) => {
       return (
         feature.properties.waterway === "river" &&
         feature.properties.id !== "relation/288614" &&
-        feature.properties.name === "长江" &&
         !(feature.properties.layer === "-1") &&
         feature.geometry.type === "LineString"
       );
@@ -146,11 +146,11 @@ whenReady(async (world, camera, renderer, controls) => {
   texture.minFilter = THREE.LinearFilter;
 
   const riverMap = textLoader.load(
-    "/quickdemo/30days-map-challenge-8-urban/river-huge.jpeg"
+    "/quickdemo/30days-map-challenge-8-urban/river-hello.jpg"
   );
 
   riverMap.wrapS = THREE.RepeatWrapping;
-  riverMap.wrapT = THREE.RepeatWrapping;
+  riverMap.wrapT = THREE.MirroredRepeatWrapping;
   riverMap.minFilter = THREE.LinearFilter;
   riverMap.magFilter = THREE.LinearFilter;
 
@@ -162,7 +162,7 @@ whenReady(async (world, camera, renderer, controls) => {
       segments_by_y
     ),
     new THREE.ShaderMaterial({
-      transparent: true,
+      transparent: false,
       uniforms: {
         map: {
           value: textLoader.load(
@@ -173,35 +173,38 @@ whenReady(async (world, camera, renderer, controls) => {
             })
           ),
         },
+        riverMap: {
+          value: riverMap
+        },
         riverMask: {
           value: texture,
         },
       },
-      vertexShader: `
+      vertexShader: /*glsl */`
 
       varying vec2 vUv;
 
       void main() {
         vec4 pos = vec4(position, 1.0);
         vUv = uv;
-        gl_Position=projectionMatrix * modelViewMatrix * pos;
+        gl_Position = projectionMatrix * modelViewMatrix * pos;
       }
         `,
-      fragmentShader: `
+      fragmentShader: /*glsl */`
         uniform sampler2D map;
         uniform sampler2D riverMask;
+        uniform sampler2D riverMap;
 
         varying vec2 vUv;
 
         void main() {
             vec4 color = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
             vec4 color2 = texture2D(map, vUv);
+            vec4 color3 = texture2D(riverMap, vUv);
 
-            if (length(color.rgb) == 0.0) {
-                gl_FragColor = vec4(color2.rgb, 1.0);
-            } else {
-                gl_FragColor = vec4(0.6 * color2.rgb, 1.0);
-            }
+            float isRiver = step(0.001, length(color.rgb));
+
+            gl_FragColor = mix(color2, color3, isRiver);
         }
         `,
     })
@@ -224,24 +227,22 @@ whenReady(async (world, camera, renderer, controls) => {
         value: 0,
       },
     },
+    // side: THREE.DoubleSide,
     transparent: true,
     wireframe: false,
-    vertexColors: true,
+    vertexColors: false,
     depthTest: false,
-    blending: THREE.CustomBlending,
-    blendEquation: THREE.MaxEquation,
-    blendDst: THREE.OneFactor,
-    blendSrc: THREE.OneFactor,
+    // blending: THREE.NoBlending,
+    // blendEquation: THREE.AddEquation,
+    // // blendDst: THREE.ZeroFactor,
+    // blendSrc: THREE.ZeroFactor,
     // blending: THREE.SubtractiveBlending,
     // premultipliedAlpha: true,
-    vertexShader: `
+    vertexShader: /*glsl*/`
       attribute vec2 uv1;
-
-      // uniform sampler2D riverMask;
 
       varying vec2 vUv;
       varying vec2 vUv1;
-      varying vec3 vColor;
 
       uniform float utime;
 
@@ -249,31 +250,27 @@ whenReady(async (world, camera, renderer, controls) => {
         vec4 pos = vec4(position, 1.0);
         vUv = uv;
         vUv1 = uv1;
-        vColor = color;
-        gl_Position=projectionMatrix * modelViewMatrix * pos;
+        gl_Position = projectionMatrix * modelViewMatrix * pos;
       }
         `,
-    fragmentShader: `
+    fragmentShader: /*glsl*/`
         uniform sampler2D map;
         uniform sampler2D riverMask;
         uniform float utime;
 
-        varying vec3 vColor;
         varying vec2 vUv;
         varying vec2 vUv1;
 
         void main() {
             vec4 color = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
 
-            vec2 uv1 = vec2(vUv1.x, vUv1.y + 0.1 * utime);
+            vec2 uv1 = vec2(vUv1.x, 0.01 * (vUv1.y + utime));
 
             vec4 color2 = texture2D(map, uv1);
 
-            if (length(color.rgb) == 0.0) {
-                discard;
-            } else {
-                gl_FragColor = vec4(color2.rgb, 0.5);
-            }
+            float isRiver = step(0.001, length(color.rgb));
+
+            gl_FragColor = mix(vec4(1.0, 0.0, 0.0, 0.0), vec4(color2.rgb, 0.7), isRiver);
         }
         `,
   });
@@ -291,6 +288,8 @@ whenReady(async (world, camera, renderer, controls) => {
     // })
   );
 
+  flowRiver.frustumCulled = false;
+
   flowRiver.position.set(-meters_by_x / 2, -meters_by_y / 2, 0);
 
   tile.add(flowRiver);
@@ -298,7 +297,8 @@ whenReady(async (world, camera, renderer, controls) => {
   function creatWaterwayGeometry(
     waterways: OsmWaterway[],
     dimension = 1024,
-    width_half = 900
+    width_half = 900,
+    extend = 100
   ) {
     const geometry = new THREE.BufferGeometry();
 
@@ -319,6 +319,11 @@ whenReady(async (world, camera, renderer, controls) => {
     let curve: THREE.SplineCurve;
     let cursor = 0;
 
+    const timesFactor = 0.025 * scale;
+    const V_delta = 6; // meters;
+
+    const times_add = Math.ceil(extend * timesFactor);
+
     waterways.forEach(({ name, waterway }) => {
       curve = new THREE.SplineCurve(
         waterway.coordinates.map((coord) => {
@@ -327,28 +332,23 @@ whenReady(async (world, camera, renderer, controls) => {
       );
 
       const distance = curve.getLength();
-      const times = Math.ceil(scale * distance);
+
+      const times = Math.ceil(timesFactor * distance);
       const color = new THREE.Color(Math.random() * 0xffffff);
       console.log(`%c${name}`, `background: ${color.getStyle()}; color: white`);
 
       let v = 0;
-      let v_delta = 0.005;
+      let curve_u = 0;
+      let v_delta = V_delta * timesFactor;
       const v_max = 1;
 
-      for (let i = 0; i <= times; i++) {
-        if (v > v_max) {
-          v_delta = -0.005;
-        }
+      for (let i = 0, n = times + 1; i < n; i++) {
+        v += V_delta;
 
-        if (v < 0) {
-          v_delta = 0.005;
-        }
+        curve_u = i / times;
 
-        v += v_delta;
-
-        console.log(v);
-        curve.getPointAt(i / times, P);
-        curve.getTangentAt(i / times, tan);
+        curve.getPointAt(curve_u, P);
+        curve.getTangentAt(curve_u, tan);
 
         S.x = tan.y;
         S.y = -tan.x;

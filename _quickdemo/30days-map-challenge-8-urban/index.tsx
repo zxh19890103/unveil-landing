@@ -377,7 +377,7 @@ class MapTile {
     return this.indices;
   }
 
-  getTileSrc1() {
+  getTileSrc() {
     return `https://tile.openstreetmap.org/${this.zoom}/${this.x}/${this.y}.png`;
   }
 
@@ -385,7 +385,7 @@ class MapTile {
     return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief/default/GoogleMapsCompatible_Level8/${this.zoom}/${this.y}/${this.x}.jpg`;
   }
 
-  getTileSrc() {
+  getTileSrc5() {
     return `https://mt1.google.com/vt/lyrs=s&x=${this.x}&y=${this.y}&z=${this.zoom}&scale=4&hl=en`;
   }
 
