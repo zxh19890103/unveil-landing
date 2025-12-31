@@ -106,19 +106,22 @@ export function handler(req, res) {
     });
 
   const us = new URLSearchParams();
-  us.set(
-    "data",
-    `
+
+  const osmQuery = `
 [out:json][timeout:360];
 (
 relation[${way}](${bbox});
 way[${way}](${bbox});
-node[${way}](${{bbox}});
+node[${way}](${bbox});
 );
 out body;
 >;
-out skel qt;`
-  );
+out skel qt;`;
+
+  us.set("data", osmQuery);
+
+  console.log("[osm] ", saveToOsm);
+  console.log(osmQuery);
 
   sender
     .on("timeout", () => {

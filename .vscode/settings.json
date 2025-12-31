@@ -4,13 +4,11 @@
   "editor.fontFamily": "Chalkboard SE, Yuppy TC",
   // "editor.fontFamily": "Monolisa",
   // "editor.fontFamily": "Wawati TC",
-  // "editor.fontFamily": "Ubuntu Mono",
-  "editor.fontSize": 14,
+  // "editor.fontFamily": "Ubuntu Sans Mono",
+  "editor.fontSize": 16,
   "workbench.fontAliasing": "antialiased",
   "editor.fontLigatures": true,
   "editor.fontWeight": "300",
   "window.zoomLevel": 1,
   "editor.letterSpacing": 1,
-  "workbench.colorTheme": "Atom One Dark"
-  // "workbench.colorTheme": "Atom One Light"
 }

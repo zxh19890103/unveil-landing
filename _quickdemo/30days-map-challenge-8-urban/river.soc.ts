@@ -13,6 +13,20 @@ import { Sky } from "three/addons/objects/Sky.js";
 import { pointToPolygonDistance } from "@turf/point-to-polygon-distance";
 import { bbox as turfBbox } from "@turf/bbox";
 
+const paletteColors = [
+  'rgb(132,128,128)',
+  'rgb(172,158,138)',
+  'rgb(140,148,134)',
+  'rgb(150,137,161)',
+  'rgb(150,140,124)',
+  'rgb(124,120,108)',
+  'rgb(124,108,132)'
+].map((color) => {
+  return new THREE.Color(color);
+});
+
+const paletteColors_n = paletteColors.length;
+
 /**
  *
  * create a geometry like waterways.
@@ -42,7 +56,7 @@ const Meters_per_lon = (lat: number) =>
   111320 * Math.cos((lat * Math.PI) / 180);
 
 whenReady(async (world, camera, renderer, controls) => {
-  const [lat, lng] = [29.56538468258404, 106.5875480740474];
+  const [lat, lng] = [23.090569847494365, 113.39090491906563];
 
   // const [lng, lat] = [106.5774281, 29.5526704];
   const zoom = 12; // it's the best zoom level to load the data of osm and dem.
@@ -140,19 +154,30 @@ whenReady(async (world, camera, renderer, controls) => {
     false
   );
 
-  const texture = new THREE.CanvasTexture(canvas);
+  const riverMask = new THREE.CanvasTexture(canvas);
 
-  texture.magFilter = THREE.LinearFilter;
-  texture.minFilter = THREE.LinearFilter;
+  riverMask.magFilter = THREE.LinearFilter;
+  riverMask.minFilter = THREE.LinearFilter;
 
   const riverMap = textLoader.load(
     "/quickdemo/30days-map-challenge-8-urban/river-hello.jpg"
   );
 
-  riverMap.wrapS = THREE.RepeatWrapping;
+  riverMap.wrapS = THREE.MirroredRepeatWrapping;
   riverMap.wrapT = THREE.MirroredRepeatWrapping;
   riverMap.minFilter = THREE.LinearFilter;
   riverMap.magFilter = THREE.LinearFilter;
+
+  const baseMap = textLoader.load(
+    getGooTileUrl({
+      x: __ti__[0],
+      y: __ti__[1],
+      z: zoom,
+    })
+  );
+
+  baseMap.minFilter = THREE.LinearFilter;
+  baseMap.magFilter = THREE.NearestFilter;
 
   const tile = new THREE.Mesh(
     new THREE.PlaneGeometry(
@@ -165,22 +190,19 @@ whenReady(async (world, camera, renderer, controls) => {
       transparent: false,
       uniforms: {
         map: {
-          value: textLoader.load(
-            getGooTileUrl({
-              x: __ti__[0],
-              y: __ti__[1],
-              z: zoom,
-            })
-          ),
+          value: baseMap,
         },
         riverMap: {
-          value: riverMap
+          value: riverMap,
         },
         riverMask: {
-          value: texture,
+          value: riverMask,
+        },
+        uPalette: {
+          value: paletteColors,
         },
       },
-      vertexShader: /*glsl */`
+      vertexShader: /*glsl */ `
 
       varying vec2 vUv;
 
@@ -190,109 +212,359 @@ whenReady(async (world, camera, renderer, controls) => {
         gl_Position = projectionMatrix * modelViewMatrix * pos;
       }
         `,
-      fragmentShader: /*glsl */`
+      fragmentShader: /*glsl */ `
         uniform sampler2D map;
         uniform sampler2D riverMask;
         uniform sampler2D riverMap;
+        uniform vec3 uPalette[${paletteColors_n}];
 
         varying vec2 vUv;
 
         void main() {
-            vec4 color = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
-            vec4 color2 = texture2D(map, vUv);
-            vec4 color3 = texture2D(riverMap, vUv);
+            vec4 maskColor = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
+            vec4 baseColor = texture2D(map, vUv);
+            vec4 riverColor = texture2D(riverMap, vUv);
 
-            float isRiver = step(0.001, length(color.rgb));
+            vec3 texColor = baseColor.rgb;
+            vec3 finalColor = texColor;
 
-            gl_FragColor = mix(color2, color3, isRiver);
+            // 1. Calculate Luminance
+            // float luminance = dot(texColor, vec3(0.299, 0.587, 0.114));
+            // float blueRatio = texColor.b / (texColor.r + 0.001);
+            // float shadowMask = smoothstep(0.4, 0.1, luminance) * smoothstep(0.8, 1.2, blueRatio);
+            // vec3 shadowFillColor = texColor * 2.5;
+            // vec3 sunlitTint = vec3(1.1, 1.05, 0.9); // Warm solar tint
+            // vec3 recoveredColor = shadowFillColor * sunlitTint;
+            // finalColor = mix(texColor, recoveredColor, shadowMask);
+
+            float maskIntensity = maskColor.r;
+            
+            // float levels = 8.0; // Adjust this for more/less detail
+            // baseColor.rgb = floor(baseColor.rgb * levels) / levels;
+
+            // float offset = 1.0 / 512.0; // Based on tile resolution
+            // vec4 n = texture2D(map, vec2(vUv.x, vUv.y + offset));
+            // vec4 s = texture2D(map, vec2(vUv.x, vUv.y - offset));
+            // vec4 e = texture2D(map, vec2(vUv.x + offset, vUv.y));
+            // vec4 w = texture2D(map, vec2(vUv.x - offset, vUv.y));
+
+            // // Calculate intensity difference
+            // float edge = length(n.rgb - s.rgb) + length(e.rgb - w.rgb);
+            // float edgeFactor = smoothstep(0.1, 0.6, edge);
+
+            // finalColor = mix(baseColor.rgb, vec3(0.0), edgeFactor * 0.5);
+
+            // // 1. Saturation
+            // float grayscale = dot(finalColor, vec3(0.299, 0.587, 0.114));
+            // vec3 saturatedColor = mix(vec3(grayscale), finalColor, 1.5); // 1.5 = 150% saturation
+
+            // float contrast = 1.2; 
+            // vec3 highContrastColor = (saturatedColor - 0.5) * contrast + 0.5;
+
+            // float exposure = 1.1;
+            // finalColor = highContrastColor * exposure;
+
+            // 1. Define your "Pure Colors" (The Clean Look)
+            // vec3 fallYellow = vec3(0.95, 0.82, 0.2); // Vivid Fall Field
+            // vec3 forestGreen = vec3(0.1, 0.35, 0.15); // Deep Mountain Green
+            // vec3 waterBlue = vec3(0.2, 0.4, 0.6);    // Clean River Blue
+
+            // 2. Measure "Distance" from the messy pixel to your target
+            // We use distance() to see how close the RGB value is to our goal
+            // float distToYellow = distance(texColor, vec3(0.6, 0.5, 0.2)); // Messy brown range
+            // float distToGreen = distance(texColor, vec3(0.2, 0.3, 0.1));  // Messy dark green range
+
+            // 3. Logic: If it's close to Fall Yellow, snap it!
+            // finalColor = texColor;
+
+            // Use a threshold (e.g., 0.25). If distance is low, use pure yellow.
+            // smoothstep helps avoid "shimmering" at the edges of the fields.
+            // float yellowMask = 1.0 - smoothstep(0.1, 0.45, distToYellow);
+            // finalColor = mix(finalColor, fallYellow, yellowMask);
+
+            // float greenMask = 1.0 - smoothstep(0.1, 0.25, distToGreen);
+            // finalColor = mix(finalColor, forestGreen, greenMask);
+
+            // finalColor = uPalette[0];
+            // float minDistance = distance(texColor, uPalette[0]);
+
+            // for (int i = 1, l = ${paletteColors_n}; i < l; i++) {
+            //     float d = distance(texColor, uPalette[i]);
+
+            //     if (d < minDistance) {
+            //         minDistance = d;
+            //         finalColor = uPalette[i];
+            //     }
+            // }
+
+            float levels = 5.0; // Adjust this for more/less detail
+            finalColor = floor(finalColor.rgb * levels) / levels;
+
+            // float offset = 1.0 / 1024.0; // Based on tile resolution
+            // vec4 n = texture2D(map, vec2(vUv.x, vUv.y + offset));
+            // vec4 s = texture2D(map, vec2(vUv.x, vUv.y - offset));
+            // vec4 e = texture2D(map, vec2(vUv.x + offset, vUv.y));
+            // vec4 w = texture2D(map, vec2(vUv.x - offset, vUv.y));
+
+            // // // Calculate intensity difference
+            // float edge = length(n.rgb - s.rgb) + length(e.rgb - w.rgb);
+            // float edgeFactor = smoothstep(0.2, 0.5, edge);
+
+            // finalColor = mix(finalColor, vec3(0.0), edgeFactor * 0.5);
+
+            // 1. Saturation
+            // float grayscale = dot(finalColor, vec3(0.299, 0.587, 0.114));
+            // vec3 saturatedColor = mix(vec3(grayscale), finalColor, 1.5); // 1.5 = 150% saturation
+
+            // float contrast = 1.2; 
+            // vec3 highContrastColor = (saturatedColor - 0.5) * contrast + 0.5;
+
+            // float exposure = 1.1;
+            // finalColor = highContrastColor * exposure;
+
+            float isRiver = smoothstep(0.1, 0.2, maskIntensity);
+            gl_FragColor = mix(vec4(finalColor, 1.0), riverColor, isRiver);
         }
         `,
     })
   );
 
-  tile.rotation.x = -Math.PI / 2;
+  // tile.rotation.x = -Math.PI / 2;
   world.add(tile);
 
-  const flowRiverGeo = creatWaterwayGeometry(waterways, 1024, 1100);
+  waterways.forEach(({ name, waterway }) => {
+    const points = waterway.coordinates.map((coord) => {
+      return new THREE.Vector3(...projectFn(coord), 0);
+    });
 
-  const myMat = new THREE.ShaderMaterial({
-    uniforms: {
-      map: {
-        value: riverMap,
+    const shapePath = new THREE.CatmullRomCurve3(points);
+    const shape = new THREE.Shape();
+
+    const picRatio = 680 / 460;
+    const riverWidth = 1.5 * 1e3; // on horizon, 1: 1000;
+    const v_per_meter = picRatio / riverWidth; // V varys with the distance of flow.
+
+    shape.moveTo(0, -riverWidth / 2);
+    shape.lineTo(0, riverWidth / 2);
+
+    const Pa = new THREE.Vector3();
+    const Pb = new THREE.Vector3();
+    const Pc = new THREE.Vector3();
+    const Pd = new THREE.Vector3();
+
+    const setP = (vertices: number[], i: number, P: THREE.Vector3) => {
+      const i3 = i * 3;
+      P.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]);
+    };
+
+    let Uad = 0;
+    let Ubc = 0;
+
+    const QuadUvs: number[] = [];
+
+    const riverGeometry = new THREE.ExtrudeGeometry(shape, {
+      extrudePath: shapePath,
+      depth: 10,
+      steps: Math.ceil(shapePath.getLength() / 200),
+      bevelEnabled: false,
+      bevelSize: 10,
+      bevelSegments: 5,
+      bevelThickness: 1,
+      UVGenerator: {
+        generateTopUV: (geometry, vertices, indexA, indexB, indexC) => {
+          return [
+            new THREE.Vector2(0, 0),
+            new THREE.Vector2(0, 0),
+            new THREE.Vector2(0, 0),
+          ];
+        },
+        generateSideWallUV(geometry, vertices, indexA, indexB, indexC, indexD) {
+          setP(vertices, indexA, Pa); // bottom left
+          setP(vertices, indexB, Pb); // bottom right
+          setP(vertices, indexC, Pc); // top right
+          setP(vertices, indexD, Pd); // top left
+
+          const Dad = Pa.distanceTo(Pd);
+          const Dbc = Pc.distanceTo(Pb);
+          const Davg = 0.5 * (Dad + Dbc);
+
+          const Dad_0 = Davg;
+          const Dbc_0 = Davg;
+
+          const uvs = [
+            new THREE.Vector2(0, Uad), // a
+            new THREE.Vector2(1, Ubc), // b
+            new THREE.Vector2(1, (Ubc += Dbc_0 * v_per_meter)), // c
+            new THREE.Vector2(0, (Uad += Dad_0 * v_per_meter)), // d
+          ];
+
+          return uvs;
+        },
       },
-      riverMask: {
-        value: texture,
-      },
-      utime: {
-        value: 0,
-      },
-    },
-    // side: THREE.DoubleSide,
-    transparent: true,
-    wireframe: false,
-    vertexColors: false,
-    depthTest: false,
-    // blending: THREE.NoBlending,
-    // blendEquation: THREE.AddEquation,
-    // // blendDst: THREE.ZeroFactor,
-    // blendSrc: THREE.ZeroFactor,
-    // blending: THREE.SubtractiveBlending,
-    // premultipliedAlpha: true,
-    vertexShader: /*glsl*/`
-      attribute vec2 uv1;
+    });
 
-      varying vec2 vUv;
-      varying vec2 vUv1;
+    const attriPos = riverGeometry.attributes.position;
+    for (let i = 0; i < attriPos.count; i++) {
+      QuadUvs.push(
+        attriPos.getX(i) / meters_by_x,
+        attriPos.getY(i) / meters_by_y
+      );
+    }
 
-      uniform float utime;
+    // console.log(QuadUvs.length);
+    riverGeometry.setAttribute(
+      "uv1",
+      new THREE.Float32BufferAttribute(QuadUvs, 2)
+    );
 
-      void main() {
-        vec4 pos = vec4(position, 1.0);
-        vUv = uv;
-        vUv1 = uv1;
-        gl_Position = projectionMatrix * modelViewMatrix * pos;
-      }
-        `,
-    fragmentShader: /*glsl*/`
-        uniform sampler2D map;
-        uniform sampler2D riverMask;
-        uniform float utime;
+    const mesh = new THREE.Mesh(
+      riverGeometry,
+      new THREE.ShaderMaterial({
+        uniforms: {
+          map: {
+            value: riverMap,
+          },
+          riverMask: {
+            value: riverMask,
+          },
+          utime: {
+            value: 0,
+          },
+        },
+        transparent: true,
+        wireframe: false,
+        vertexColors: false,
+        depthTest: false,
+        blending: THREE.CustomBlending,
+        blendEquation: THREE.MaxEquation,
+        vertexShader: /*glsl */ `
+          attribute vec2 uv1;
 
-        varying vec2 vUv;
-        varying vec2 vUv1;
+          varying vec2 vUv;
+          varying vec2 vUv1;
 
-        void main() {
-            vec4 color = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
+          void main() {
+            vec4 pos = vec4(position, 1.0);
+            
+            vUv = uv;
+            vUv1 = uv1;
 
-            vec2 uv1 = vec2(vUv1.x, 0.01 * (vUv1.y + utime));
+            gl_Position = projectionMatrix * modelViewMatrix * pos;
+          }
+            `,
+        fragmentShader: /*glsl */ `
+            uniform sampler2D map;
+            uniform sampler2D riverMask;
+            uniform float utime;
 
-            vec4 color2 = texture2D(map, uv1);
+            varying vec2 vUv;
+            varying vec2 vUv1;
 
-            float isRiver = step(0.001, length(color.rgb));
+            void main() {
+                vec4 maskColor = texture2D(riverMask, vec2(vUv1.x, 1.0 - vUv1.y));
 
-            gl_FragColor = mix(vec4(1.0, 0.0, 0.0, 0.0), vec4(color2.rgb, 0.7), isRiver);
-        }
-        `,
+                vec2 uv = vec2(vUv.x, (vUv.y + utime));
+
+                vec4 riverColor = texture2D(map, uv);
+
+                float isRiver = step(0.00001, maskColor.r);
+
+                gl_FragColor = mix(vec4(0.0, 0.0, 0.0, 0.0), vec4(riverColor.rgb, 0.65), isRiver);
+            }
+            `,
+      })
+    );
+
+    const flowSpeed = 0.1;
+    animationLoop((delta, elapsed) => {
+      mesh.material.uniforms.utime.value = flowSpeed * elapsed;
+    });
+
+    // mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(-meters_by_x / 2, -meters_by_y / 2, 0);
+    world.add(mesh);
   });
 
-  animationLoop((delta, elapsed) => {
-    myMat.uniforms.utime.value = elapsed;
-  });
+  // const flowRiverGeo = creatWaterwayGeometry(waterways, 1024, 1100);
 
-  const flowRiver = new THREE.Mesh(
-    flowRiverGeo,
-    myMat
-    // new THREE.MeshBasicMaterial({
-    //   wireframe: true,
-    //   color: 0xffffff,
-    // })
-  );
+  // const myMat = new THREE.ShaderMaterial({
+  //   uniforms: {
+  //     map: {
+  //       value: riverMap,
+  //     },
+  //     riverMask: {
+  //       value: riverMask,
+  //     },
+  //     utime: {
+  //       value: 0,
+  //     },
+  //   },
+  //   side: THREE.DoubleSide,
+  //   transparent: true,
+  //   wireframe: true,
+  //   vertexColors: false,
+  //   depthTest: false,
+  //   // blending: THREE.NoBlending,
+  //   // blendEquation: THREE.AddEquation,
+  //   // // blendDst: THREE.ZeroFactor,
+  //   // blendSrc: THREE.ZeroFactor,
+  //   // blending: THREE.SubtractiveBlending,
+  //   // premultipliedAlpha: true,
+  //   vertexShader: /*glsl*/ `
+  //     attribute vec2 uv1;
 
-  flowRiver.frustumCulled = false;
+  //     varying vec2 vUv;
+  //     varying vec2 vUv1;
 
-  flowRiver.position.set(-meters_by_x / 2, -meters_by_y / 2, 0);
+  //     uniform float utime;
 
-  tile.add(flowRiver);
+  //     void main() {
+  //       vec4 pos = vec4(position, 1.0);
+  //       vUv = uv;
+  //       vUv1 = uv1;
+  //       gl_Position = projectionMatrix * modelViewMatrix * pos;
+  //     }
+  //       `,
+  //   fragmentShader: /*glsl */ `
+  //       uniform sampler2D map;
+  //       uniform sampler2D riverMask;
+  //       uniform float utime;
+
+  //       varying vec2 vUv;
+  //       varying vec2 vUv1;
+
+  //       void main() {
+  //           vec4 color = texture2D(riverMask, vec2(vUv.x, 1.0 - vUv.y));
+
+  //           vec2 uv1 = vec2(vUv1.x, 0.01 * (vUv1.y + utime));
+
+  //           vec4 color2 = texture2D(map, uv1);
+
+  //           float isRiver = step(0.001, length(color.rgb));
+
+  //           gl_FragColor = mix(vec4(1.0, 0.0, 0.0, 0.0), vec4(color2.rgb, 0.7), isRiver);
+  //       }
+  //       `,
+  // });
+
+  // animationLoop((delta, elapsed) => {
+  //   myMat.uniforms.utime.value = elapsed;
+  // });
+
+  // const flowRiver = new THREE.Mesh(
+  //   flowRiverGeo,
+  //   myMat
+  //   // new THREE.MeshBasicMaterial({
+  //   //   wireframe: true,
+  //   //   color: 0xffffff,
+  //   // })
+  // );
+
+  // flowRiver.frustumCulled = false;
+
+  // flowRiver.position.set(-meters_by_x / 2, -meters_by_y / 2, 0);
+
+  // tile.add(flowRiver);
 
   function creatWaterwayGeometry(
     waterways: OsmWaterway[],
@@ -308,7 +580,7 @@ whenReady(async (world, camera, renderer, controls) => {
     const uv1: number[] = [];
     const colors: number[] = [];
 
-    const P = new THREE.Vector2();
+    const P0 = new THREE.Vector2();
     const P1 = new THREE.Vector2();
     const P2 = new THREE.Vector2();
     const tan = new THREE.Vector2();
@@ -319,74 +591,57 @@ whenReady(async (world, camera, renderer, controls) => {
     let curve: THREE.SplineCurve;
     let cursor = 0;
 
-    const timesFactor = 0.025 * scale;
-    const V_delta = 6; // meters;
-
-    const times_add = Math.ceil(extend * timesFactor);
+    const timesFactor = 0.1 * scale;
 
     waterways.forEach(({ name, waterway }) => {
-      curve = new THREE.SplineCurve(
-        waterway.coordinates.map((coord) => {
-          return new THREE.Vector2(...projectFn(coord));
-        })
-      );
-
-      const distance = curve.getLength();
-
-      const times = Math.ceil(timesFactor * distance);
-      const color = new THREE.Color(Math.random() * 0xffffff);
-      console.log(`%c${name}`, `background: ${color.getStyle()}; color: white`);
-
-      let v = 0;
-      let curve_u = 0;
-      let v_delta = V_delta * timesFactor;
-      const v_max = 1;
-
-      for (let i = 0, n = times + 1; i < n; i++) {
-        v += V_delta;
-
-        curve_u = i / times;
-
-        curve.getPointAt(curve_u, P);
-        curve.getTangentAt(curve_u, tan);
-
-        S.x = tan.y;
-        S.y = -tan.x;
-
-        S.setLength(width_half).add(P);
-        P1.copy(S);
-
-        S.x = tan.y;
-        S.y = -tan.x;
-        S.negate();
-
-        S.setLength(width_half).add(P);
-        P2.copy(S);
-
-        positions.push(P1.x, P1.y, 0, P2.x, P2.y, 0);
-        colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
-
-        uv.push(
-          P1.x / meters_by_x,
-          P1.y / meters_by_y,
-          P2.x / meters_by_x,
-          P2.y / meters_by_y
-        );
-        uv1.push(0.0, v, 1.0, v);
-
-        if (i < times) {
-          indices.push(
-            cursor,
-            cursor + 2,
-            cursor + 1,
-            cursor + 1,
-            cursor + 2,
-            cursor + 3
-          );
-        }
-
-        cursor += 2;
-      }
+      // curve = new THREE.SplineCurve(points);
+      // const distance = curve.getLength();
+      // const times = Math.ceil(timesFactor * distance);
+      // const times_x = Math.ceil(timesFactor * 2 * width_half);
+      // const color = new THREE.Color(Math.random() * 0xffffff);
+      // console.log(`%c${name}`, `background: ${color.getStyle()}; color: white`);
+      // let u_flow = 0;
+      // let v_flow = 0;
+      // let curve_u = 0;
+      // const step_x = (2 * width_half) / times_x;
+      // const V_delta = 6; // meters;
+      // const U_delta = step_x;
+      // for (let i = 0, n = times + 1; i < n; i++) {
+      //   v_flow += V_delta;
+      //   curve_u = i / times;
+      //   curve.getPointAt(curve_u, P0);
+      //   curve.getTangentAt(curve_u, tan);
+      //   S.x = tan.y;
+      //   S.y = -tan.x;
+      //   S.setLength(width_half).add(P0);
+      //   P1.copy(S);
+      //   // S.x = tan.y;
+      //   // S.y = -tan.x;
+      //   // S.negate();
+      //   // S.setLength(width_half).add(P0);
+      //   // P2.copy(S);
+      //   u_flow = 0;
+      //   for (let j = 0; j <= times_x; j++) {
+      //     const Pij = S.clone();
+      //     Pij.setLength(j * step_x).add(P1);
+      //     positions.push(Pij.x, Pij.y, 0);
+      //     colors.push(color.r, color.g, color.b);
+      //     uv.push(Pij.x / meters_by_x, Pij.y / meters_by_y);
+      //     uv1.push(u_flow, v_flow);
+      //     indices.push(
+      //       cursor,
+      //       cursor + 2,
+      //       cursor + 1,
+      //       cursor + 1,
+      //       cursor + 2,
+      //       cursor + 3
+      //     );
+      //     cursor++;
+      //     u_flow += U_delta;
+      //   }
+      //   positions.push(P1.x, P1.y, 0, P2.x, P2.y, 0);
+      //   colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+      // }
     });
 
     geometry.setAttribute(

@@ -4,7 +4,9 @@ import sharp from "sharp";
 
 export const route = /^\/gtile/;
 
-const fallback = "./data-gtiles/12/3228/1747.jpeg";
+const fallback = "./data-gtiles/googletile.jpeg";
+
+const downloading = new Map();
 
 export const handler = (req, res) => {
   // /z/x/y
@@ -17,6 +19,12 @@ export const handler = (req, res) => {
   const styledFilepath = `./data-gtiles/${z}/${x}/${y}.styled.png`;
 
   if (fs.existsSync(originalFilepath)) {
+    if (downloading.has(originalFilepath)) {
+      console.log(`gtile`, "is downloading..., just wait ", originalFilepath);
+      fs.createReadStream(fallback).pipe(res);
+      return;
+    }
+
     if (qs === "styled=true") {
       simplifyImage(originalFilepath, styledFilepath).then(
         (after) => {
@@ -39,6 +47,9 @@ export const handler = (req, res) => {
   }
 
   // download origin file
+  console.log("request images from google. tiles.", originalFilepath);
+
+  downloading.set(originalFilepath, true);
   https
     .request(
       {
@@ -61,8 +72,12 @@ export const handler = (req, res) => {
 
         incomming
           .pipe(originalFile)
-          .on("error", logErr)
+          .on("error", (err_) => {
+            downloading.delete(originalFilepath);
+            logErr(err_);
+          })
           .on("finish", () => {
+            downloading.delete(originalFilepath);
             console.log("[google tile] finish downloaded", originalFilepath);
             simplifyImage_del_if_error(originalFilepath, styledFilepath);
             if (fs.existsSync(originalFilepath)) {
@@ -73,7 +88,10 @@ export const handler = (req, res) => {
           });
       }
     )
-    .on("error", logErr)
+    .on("error", (err_) => {
+      downloading.delete(originalFilepath);
+      logErr(err_);
+    })
     .end();
 };
 

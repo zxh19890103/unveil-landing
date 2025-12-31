@@ -69,7 +69,7 @@ whenReady(async (world, camera, renderer, controls) => {
 
   const reGen = false;
 
-  const [lat, lng] = [30.515688958026615, 105.59937676738033];
+  const [lat, lng] = [22.37283029912182, 106.7561720064471];
   // const [lng, lat] = [106.5774281, 29.5526704];
   const zoom = 12; // it's the best zoom level to load the data of osm and dem.
 
@@ -1311,6 +1311,46 @@ whenReady(async (world, camera, renderer, controls) => {
                 return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
             }
 
+            vec4 edgeit(vec4 texColor, sampler2D map, vec2 uv0) {
+              float offset = 1.0 / 1024.0; // Based on tile resolution
+              vec4 n = texture2D(map, vec2(uv0.x, uv0.y + offset));
+              vec4 s = texture2D(map, vec2(uv0.x, uv0.y - offset));
+              vec4 e = texture2D(map, vec2(uv0.x + offset, uv0.y));
+              vec4 w = texture2D(map, vec2(uv0.x - offset, uv0.y));
+
+              // // Calculate intensity difference
+              float edge = 0.5 * ( length(n.rgb - s.rgb) + length(e.rgb - w.rgb) );
+              float edgeFactor = smoothstep(0.1, 0.2, edge);
+
+              vec3 color = mix(texColor.rgb, vec3(0.0), 0.5 * edgeFactor);
+              return vec4(color, 1.0);
+            }
+
+            vec4 morelighten(vec4 texColor) {
+              // 1. Saturation
+              float grayscale = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+              vec3 saturatedColor = mix(vec3(grayscale), texColor.rgb, 1.5); // 1.5 = 150% saturation
+
+              float contrast = 1.2; 
+              vec3 highContrastColor = (saturatedColor - 0.5) * contrast + 0.5;
+
+              float exposure = 1.1;
+              vec3 color = highContrastColor * exposure;
+              return vec4(color, 1.0);
+            }
+
+            vec4 eraseShadow(vec3 texColor) {
+              // 1. Calculate Luminance
+              float luminance = dot(texColor, vec3(0.299, 0.587, 0.114));
+              float blueRatio = texColor.b / (texColor.r + 0.001);
+              float shadowMask = smoothstep(0.4, 0.1, luminance) * smoothstep(0.8, 1.2, blueRatio);
+              vec3 shadowFillColor = texColor * 2.5;
+              vec3 sunlitTint = vec3(1.1, 1.05, 0.9); // Warm solar tint
+              vec3 recoveredColor = shadowFillColor * sunlitTint;
+              vec3 color = mix(texColor, recoveredColor, shadowMask);
+              return vec4(color, 1.0);
+            }
+
             void main() {
               vec4 ocolor;
               vec4 gcolor;
@@ -1325,24 +1365,32 @@ whenReady(async (world, camera, renderer, controls) => {
                 ocolor = texture2D(uOverlayMap3, aUv);
                 gcolor = texture2D(uOverlayMap31, aUv);
                 color = mix(ocolor, gcolor, transition);
+                // color = eraseShadow(color.rgb);
+                // color = edgeit(color, uOverlayMap3, aUv);
               } else if (vUv.x <= 0.5 && vUv.y > 0.5) {
                 aUv.x = 2.0 * vUv.x;
                 aUv.y = 2.0 * (vUv.y - 0.5);
                 ocolor = texture2D(uOverlayMap1, aUv);
                 gcolor = texture2D(uOverlayMap11, aUv);
                 color = mix(ocolor, gcolor, transition);
+                // color = eraseShadow(color.rgb);
+                color = edgeit(color, uOverlayMap3, aUv);
               } else if (vUv.x > 0.5 && vUv.y <= 0.5) {
                 aUv.x = 2.0 * (vUv.x - 0.5);
                 aUv.y = 2.0 * vUv.y;
                 ocolor = texture2D(uOverlayMap4, aUv);
                 gcolor = texture2D(uOverlayMap41, aUv);
                 color = mix(ocolor, gcolor, transition);
+                // color = eraseShadow(color.rgb);
+                color = edgeit(color, uOverlayMap3, aUv);
               } else {
                 aUv.x = 2.0 * (vUv.x - 0.5);
                 aUv.y = 2.0 * (vUv.y - 0.5);
                 ocolor = texture2D(uOverlayMap2, aUv);
                 gcolor = texture2D(uOverlayMap21, aUv);
                 color = mix(ocolor, gcolor, transition);
+                // color = eraseShadow(color.rgb);
+                color = edgeit(color, uOverlayMap3, aUv);
               }
 
               vec3 fdx = dFdx(vViewPosition);
@@ -1354,6 +1402,9 @@ whenReady(async (world, camera, renderer, controls) => {
               vec3 lighting = ambLightColor.rgb * ambLightIntensity + (dirLightColor.rgb * diffuse) * dirLightIntensity;
 
               // gl_FragColor = vec4(mix(color.rgb, fogColor, fogFactor), 1.0);
+              
+              color = morelighten(color);
+
               gl_FragColor = vec4(color.rgb, 1.0);
             }
           `
@@ -1441,14 +1492,6 @@ whenReady(async (world, camera, renderer, controls) => {
   ).then((r) => r.json());
 
   buildWaterways(waterwayGeojson);
-
-  // await fetch(
-  //   `http://0.0.0.0:3003/osm?bbox=${bbox}&way=name&x=${__ti__[0]}&y=${__ti__[1]}&z=${zoom}&regen=${reGen}`
-  // )
-  //   .then((r) => r.json())
-  //   .then((geojson) => {
-  //     console.log(geojson);
-  //   });
 });
 
 const vec3Util = new THREE.Vector3();
