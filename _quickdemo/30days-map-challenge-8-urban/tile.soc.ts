@@ -12,6 +12,8 @@ import { textLoader } from "@/_shared/loader.js";
 
 //#region  Google tile
 
+const houseColor = new THREE.Color("#744850");
+
 const getGooTileUrl = (
   xyz: { x: number; y: number; z: number },
   styled = false
@@ -149,6 +151,9 @@ class GoogleTile extends THREE.Group {
           displacementMap: {
             value: this.googleTileRoot.demTexture,
           },
+          uHouseColor: {
+            value: houseColor,
+          },
           displacementScale: { value: this.googleTileRoot.elevations.span },
           displacementBias: {
             value: this.googleTileRoot.elevations.minElevation + 5,
@@ -187,6 +192,7 @@ class GoogleTile extends THREE.Group {
           uniform sampler2D styledMap;
           uniform vec3 uCameraPos;
           uniform float uCameraPolarAngle;
+          uniform vec3 uHouseColor;
 
           varying vec2 vUv;
           varying float vElevation;
@@ -197,20 +203,52 @@ class GoogleTile extends THREE.Group {
             vec3 baseColor = texture2D(map, vUv).rgb;
             vec3 styledBaseColor = texture2D(styledMap, vUv).rgb;
             // float distMask = smoothstep(100.0, 3000.0, camDist);
-            // float elevationMask = step(50.0, vElevation);
+            float lowElevMask = smoothstep(30.0, 120.0, vElevation);
             // float finalMask = distMask;
             // baseColor = mix(vec3(0.9, 0.78, 0.11), baseColor, finalMask);
-            float angleMask = smoothstep(0.01, 0.65, uCameraPolarAngle);
-            baseColor = mix(styledBaseColor, baseColor, angleMask);
-            // 增加饱和度
-            float luma = dot(baseColor, vec3(0.299, 0.587, 0.114));
-            baseColor = mix(vec3(luma), baseColor, 1.5); 
-            // 调成暖色调或粉色调
-            baseColor.r *= 1.1; 
-            baseColor.g *= 1.05;
 
-            float levels = 12.0; // Adjust this for more/less detail
-            baseColor = floor(baseColor * levels) / levels;
+            // vec3 neutralSand = vec3(0.855, 0.843, 0.804);
+
+            // 增加饱和度
+
+            float angleMask = smoothstep(0.02, 1.5, uCameraPolarAngle);
+            baseColor = mix(styledBaseColor, baseColor, max(lowElevMask, angleMask));
+ 
+            // 调成暖色调或粉色调
+            // baseColor.r *= 1.1; 
+            // baseColor.g *= 1.05;
+
+            // float levels = angleMask * 5.0; // Adjust this for more/less detail
+            // baseColor = floor(baseColor * levels) / levels;
+
+            // float luma = dot(baseColor, vec3(0.299, 0.587, 0.114));
+            // float lowElevMask = step(50.0, vElevation);
+
+            // float shadowMask = max(lowElevMask, smoothstep(0.1, 0.25, luma));
+            // baseColor = mix(neutralSand, baseColor, shadowMask);
+
+
+            // vec2 texSize = vec2(1024.0); // Standard tile size
+            
+            // // Sample neighbors to "blur" small details
+            // vec3 sum = vec3(0.0);
+            // for(int i = -2; i <= 2; i++) {
+            //     for(int j = -2; j <= 2; j++) {
+            //         sum += texture2D(map, vUv + vec2(i, j) / texSize).rgb;
+            //     }
+            // }
+
+            // vec3 blurred = sum / 8.0;
+            // Mix based on luminance to keep large features sharp
+            // float luminance = dot(baseColor.rgb, vec3(0.299, 0.587, 0.114));
+            // baseColor = mix(blurred, baseColor, step(0.75, luminance));
+
+            // float lowElevMask = smoothstep(80.0, 90.0, vElevation);
+
+            // float luminanceMask = 1.0 - smoothstep(0.35, 0.47, luminance);
+
+            // baseColor = mix(vec3(0.7, 0.9, 0.2), baseColor, lowElevMask);
+            // baseColor = mix(vec3(0.7, 0.8, 0.19), baseColor, luminanceMask);
 
             gl_FragColor = vec4(baseColor, 1.0);
           }
@@ -221,6 +259,9 @@ class GoogleTile extends THREE.Group {
     this.add(mesh);
     // @ts-ignore
     this.mesh = mesh;
+
+    mesh.frustumCulled = false;
+
     return mesh;
   }
 
@@ -516,7 +557,7 @@ const Meters_per_lon = (lat: number) =>
   111320 * Math.cos((lat * Math.PI) / 180);
 
 whenReady(async (world, camera, renderer, controls) => {
-  const [lat, lng] = [22.03781706922663, 106.81848782285955];
+  const [lat, lng] = [22.31508521180131, 106.96588992646268];
   const zoom = zoom_basis; // it's the best zoom level to load the data of osm and dem.
 
   const tileIndex = latLonToTile(lat, lng, zoom);
@@ -533,7 +574,7 @@ whenReady(async (world, camera, renderer, controls) => {
 
   rootTile.rotation.x = -Math.PI / 2;
 
-  controls.addEventListener("end", () => {
+  controls.addEventListener("change", () => {
     rootTile.cameraPosLive.copy(camera.position);
     rootTile.cameraPolarAngle = Math.PI / 2 - controls.getPolarAngle();
 

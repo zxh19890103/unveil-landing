@@ -127,13 +127,29 @@ async function extractTilePalette(inputPath, jsonOutputPath) {
 async function simplifyImage(inputPath, outputPath) {
   try {
     await sharp(inputPath)
-      .median(10) // Remove noise while keeping edges
+      .median(20) // Remove noise while keeping edges
+      .modulate({
+        brightness: 1.5, // Significantly brighter overall
+        saturation: 2.5, // Punchier, vibrant colors
+        hue: 0,
+      })
+      .recomb([
+        [1.21, 0.0, 0.0], // Boost Red (feeds into Yellow)
+        [0.0, 1.3, 0.0], // Boost Green significantly
+        [0.0, 0.0, 0.7], // Slightly lower Blue to make Green/Yellow "pure"
+      ])
+      .blur(1.2)
       .png({
         palette: true,
-        colors: 16, // Force reduction to 16 colors
-        quality: 80,
+        colors: 6, // Force reduction to 16 colors
+        quality: 100,
+        compressionLevel: 9,
+        dither: 0.0,
       })
-      .sharpen()
+      .resize({
+        width: 1024,
+        kernel: sharp.kernel.nearest,
+      })
       .toFile(outputPath);
 
     console.log("Image simplified successfully.");
@@ -150,6 +166,7 @@ function rgbToHex(r, g, b) {
 // extractTilePalette("tile_yunnan.jpg", "palette.json");
 
 simplifyImage(
-  "./data-gtiles/googletile.jpeg",
+  "./data-gtiles/12/3260/1695.jpeg",
+  // "./data-gtiles/googletile.jpeg",
   "./data-gtiles/googletile.cute_3d_tile.5.png"
 );
