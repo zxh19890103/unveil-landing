@@ -125,7 +125,7 @@ async function simplifyImage(inputPath, outputPath) {
   const buildingMask1 = await input
     .clone()
     .greyscale()
-    .threshold(200) // Adjust this: higher captures only white roofs, lower captures more grey
+    .threshold(167) // Adjust this: higher captures only white roofs, lower captures more grey
     .toBuffer();
 
   const buildingMask = await buildingMask0
@@ -139,7 +139,7 @@ async function simplifyImage(inputPath, outputPath) {
 
   // 2. Create a "Ground" color layer
   // We create a solid tile of a "close color" (e.g., forest green or dirt brown)
-  const replacementColor = "#B4A578"; // { r: 70, g: 90, b: 60 }; // Dark olive/grass green
+  const replacementColor = "#eaAe48"; // { r: 70, g: 90, b: 60 }; // Dark olive/grass green
   const groundBase = await sharp({
     create: {
       width,
@@ -161,9 +161,10 @@ async function simplifyImage(inputPath, outputPath) {
       },
     ])
     .modulate({
-      brightness: 1.2, // Increase brightness by 20%
+      brightness: 1.5, // Increase brightness by 20%
       saturation: 1.5,
     })
+    .gamma(2.2)
     .toFile(outputPath);
 
   console.log("[simplifyImage] yes!", outputPath);
