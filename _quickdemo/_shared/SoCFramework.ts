@@ -29,12 +29,14 @@ export type AnimationLoopFn = (
 export const readyFns: ReadyFn[] = [];
 
 export const whenReady = (fn: ReadyFn) => {
-  if (readyFns["__args"]) {
-    const params = readyFns["__args"] as any[];
-    fn(params[0], params[1], params[2], params[3]);
-  } else {
-    readyFns.push(fn);
-  }
+  // if (readyFns["__args"]) {
+  //   const params = readyFns["__args"] as any[];
+  //   fn(params[0], params[1], params[2], params[3]);
+  // } else {
+  //   readyFns.push(fn);
+  // }
+
+  readyFns.push(fn);
 };
 
 export const animationLoopFns: AnimationLoopFn[] = [];

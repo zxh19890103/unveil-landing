@@ -96,11 +96,12 @@ __lights__.dir = directionalLight;
 __lights__.amb = ambientLight;
 
 {
-  let fn: ReadyFn = null;
-  while ((fn = readyFns.shift())) {
-    fn(scene, camera, renderer, controls);
-  }
-
+  // setTimeout(() => {
+  //   let fn: ReadyFn = null;
+  //   while ((fn = readyFns.shift())) {
+  //     fn(scene, camera, renderer, controls);
+  //   }
+  // }, 300);
   readyFns["__args"] = [scene, camera, renderer, controls];
 }
 
@@ -108,4 +109,9 @@ const urlS = new URLSearchParams(location.search);
 const urlPath = urlS.get("main");
 const mainUrl = `${__quickdemoJsHost__}${urlPath}.soc.js`;
 
-import(mainUrl);
+import(mainUrl).then(() => {
+  let fn: ReadyFn = null;
+  while ((fn = readyFns.shift())) {
+    fn(scene, camera, renderer, controls);
+  }
+});

@@ -11,6 +11,7 @@ export default {
   importmaps: {
     imports: {
       three: "/assets/jslibs/three/three.module.js",
+      suncalc: "/assets/jslibs/suncalc/suncalc.js",
       "three/addons/": "https://threejs.org/examples/jsm/",
       react: "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
       "react/jsx-runtime":
