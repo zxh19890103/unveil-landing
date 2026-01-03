@@ -17,6 +17,7 @@ export const handler = (req, res) => {
   const dirpath = `./data-gtiles/${z}/${x}`;
   const originalFilepath = `./data-gtiles/${z}/${x}/${y}.jpeg`;
   const styledFilepath = `./data-gtiles/${z}/${x}/${y}.styled.png`;
+  const styledFilepathGreen = `./data-gtiles/${z}/${x}/${y}.green.png`;
 
   if (fs.existsSync(originalFilepath)) {
     if (downloading.has(originalFilepath)) {
@@ -36,6 +37,8 @@ export const handler = (req, res) => {
           fs.createReadStream(fallback).pipe(res);
         }
       );
+    } else if (qs === "styled=green") {
+      extractGreenToMask(originalFilepath, )
     } else {
       fs.createReadStream(originalFilepath).pipe(res);
     }
@@ -109,67 +112,6 @@ async function simplifyImage_del_if_error(inputPath, outputPath) {
   }
 }
 
-async function simplifyImage2(inputPath, outputPath) {
-  const input = sharp(inputPath);
-
-  const { width, height } = await input.metadata();
-
-  // 1. Create a "Building Mask"
-  // Buildings in satellite tiles are usually high-luminance (bright)
-  // or neutral grey. We isolate these areas.
-  const buildingMask0 = await input.clone().greyscale().threshold(100); // Adjust this: higher captures only white roofs, lower captures more grey
-  // .png({})
-  // .toFile(outputPath);
-  // .toBuffer();
-
-  const buildingMask1 = await input
-    .clone()
-    .greyscale()
-    .threshold(167) // Adjust this: higher captures only white roofs, lower captures more grey
-    .toBuffer();
-
-  const buildingMask = await buildingMask0
-    .composite([
-      {
-        input: buildingMask1,
-        blend: "add",
-      },
-    ])
-    .toBuffer();
-
-  // 2. Create a "Ground" color layer
-  // We create a solid tile of a "close color" (e.g., forest green or dirt brown)
-  const replacementColor = "#eaAe48"; // { r: 70, g: 90, b: 60 }; // Dark olive/grass green
-  const groundBase = await sharp({
-    create: {
-      width,
-      height,
-      channels: 3,
-      background: replacementColor,
-    },
-  })
-    .joinChannel(buildingMask)
-    .png()
-    .toBuffer();
-
-  // 3. Composite: Only show the "Ground" where the "Building Mask" is active
-  await input
-    .composite([
-      {
-        input: groundBase,
-        blend: "over",
-      },
-    ])
-    .modulate({
-      brightness: 1.5, // Increase brightness by 20%
-      saturation: 1.5,
-    })
-    .gamma(2.2)
-    .toFile(outputPath);
-
-  console.log("[simplifyImage] yes!", outputPath);
-}
-
 async function simplifyImage(inputPath, outputPath) {
   await sharp(inputPath)
     .median(20) // Remove noise while keeping edges
@@ -198,4 +140,23 @@ async function simplifyImage(inputPath, outputPath) {
     .toFile(outputPath);
 
   console.log("Image simplified successfully.");
+}
+
+async function extractGreenToMask(inputPath, outputPath) {
+  try {
+    await sharp(inputPath)
+      // 1. Ensure we are working with standard sRGB
+      .toColourspace("srgb")
+      // 2. Use 'reband' or channel manipulation to highlight green.
+      // A common approach is (Green - Red - Blue) to isolate saturation.
+      .extractChannel("green")
+      // 3. Apply a threshold. Pixels above '128' become white (255),
+      // pixels below become black (0).
+      .threshold(140)
+      .toFile(outputPath);
+
+    console.log("Green area mask generated successfully.");
+  } catch (error) {
+    console.error("Error processing spatial imagery:", error);
+  }
 }

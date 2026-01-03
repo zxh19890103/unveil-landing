@@ -158,15 +158,27 @@ async function simplifyImage(inputPath, outputPath) {
   }
 }
 
-// Helper to convert RGB to Hex for your Three.js uniforms
-function rgbToHex(r, g, b) {
-  return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
+async function extractGreenToMask(inputPath, outputPath) {
+  try {
+    await sharp(inputPath)
+      // 1. Ensure we are working with standard sRGB
+      .median(16)
+      .toColourspace("srgb")
+      // 2. Use 'reband' or channel manipulation to highlight green.
+      // A common approach is (Green - Red - Blue) to isolate saturation.
+      .extractChannel("green")
+      // 3. Apply a threshold. Pixels above '128' become white (255),
+      // pixels below become black (0).
+      .threshold(140)
+      .toFile(outputPath);
+
+    console.log("Green area mask generated successfully.");
+  } catch (error) {
+    console.error("Error processing spatial imagery:", error);
+  }
 }
 
-// extractTilePalette("tile_yunnan.jpg", "palette.json");
-
-simplifyImage(
-  "./data-gtiles/12/3260/1695.jpeg",
-  // "./data-gtiles/googletile.jpeg",
+extractGreenToMask(
+  "./data-gtiles/googletile.jpeg",
   "./data-gtiles/googletile.cute_3d_tile.5.png"
 );

@@ -70,7 +70,8 @@ whenReady(async (world, camera, renderer, controls) => {
       uniforms: {
         map: {
           value: textLoader.load(
-            getGooTileUrl({ x: __ti__[0], y: __ti__[1], z: zoom }, true)
+            // getGooTileUrl({ x: __ti__[0], y: __ti__[1], z: zoom }, true)
+            `http://0.0.0.0:3003/texture/data-gtiles/googletile.jpeg`
           ),
         },
       },
@@ -134,6 +135,7 @@ whenReady(async (world, camera, renderer, controls) => {
       .map(() => {
         return new THREE.Vector2(Math.random() * 1000, Math.random() * 1000);
       }),
+    worldSize: new THREE.Vector2(meters_by_x, meters_by_y),
   });
   world.add(trees);
   //   CreateSky();
@@ -188,30 +190,60 @@ whenReady(async (world, camera, renderer, controls) => {
 
 type TreesClusterOptions = {
   locations: THREE.Vector2[];
+  worldSize: THREE.Vector2;
 };
 
 class TreesCluster extends THREE.Group {
-  constructor(options: TreesClusterOptions) {
+  constructor({ locations, worldSize }: TreesClusterOptions) {
     super();
 
-    const geometry = new THREE.BufferGeometry().setFromPoints(
-      options.locations.map((vec2) => new THREE.Vector3(vec2.x, 0.0, vec2.y))
-    );
+    const pts: number[] = [];
+    const uv1: number[] = [];
+
+    const scale = 0.05;
+    const delta = 1 / scale;
+    const scaledSize = worldSize.clone().multiplyScalar(scale);
+    const offset = worldSize.clone().multiplyScalar(-0.5);
+
+    for (let i = 0, S = Math.ceil(scaledSize.x); i < S; i++) {
+      for (let j = 0, T = Math.ceil(scaledSize.y); j < T; j++) {
+        const x = i * delta;
+        const y = j * delta;
+        const r0 = -delta + 2 * Math.random() * delta;
+        const r1 = -delta + 2 * Math.random() * delta;
+        pts.push(offset.x + x + r0, 0.0, offset.y + y + r1);
+        uv1.push(x / worldSize.x, 1 - y / worldSize.y);
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry();
+
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+    geometry.setAttribute("uv1", new THREE.Float32BufferAttribute(uv1, 2));
 
     const myMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uSize: {
-          value: 100,
+          value: 80,
         },
         map: {
-          value: textLoader.load("/quickdemo/green-forest-isolated-on-background-3d-rendering-illustration-png.png"),
+          value: textLoader.load(
+            "/quickdemo/green-forest-isolated-on-background-3d-rendering-illustration-png.png"
+          ),
+        },
+        greenMask: {
+          value: textLoader.load(
+            "http://0.0.0.0:3003/texture/data-gtiles/googletile.cute_3d_tile.5.png"
+          ),
         },
       },
       transparent: true,
       depthTest: false,
       vertexShader: `
-
+            attribute vec2 uv1;
             uniform float uSize;
+
+            varying vec2 vUv1;
 
             void main() {
                 // Apply a slight "sway" based on time for wind effect
@@ -220,20 +252,27 @@ class TreesCluster extends THREE.Group {
                 // Size attenuation: PointSize decreases as distance (-mvPosition.z) increases
                 gl_PointSize = uSize * (300.0 / -mvPosition.z);
 
+                vUv1 = uv1;
+
                 gl_Position = projectionMatrix * mvPosition;
             }
 
         `,
       fragmentShader: `
         uniform sampler2D map;
-        varying vec2 vUv;
+        uniform sampler2D greenMask;
+        varying vec2 vUv1;
 
         void main() {
             // gl_PointCoord gives us (0,0) to (1,1) for the current point square
             vec2 uv = gl_PointCoord;
             uv.t = 1.0 - uv.t;
             vec4 color = texture2D(map, uv);
+            vec4 greenMaskColor = texture2D(greenMask, vUv1);
+            
             if (color.a < 0.5) discard;
+            if (greenMaskColor.r > 0.5) discard;
+
             float alphaMask = step(0.5, 1.0 - color.r);
             gl_FragColor = vec4(color.rgb, alphaMask);
         }
